@@ -5,7 +5,7 @@ const projects = [
   {name:'OpenNGP', platform:'Campaign software', status:'In development', description:'Local-first fundraising and organizing software, with separate records for each campaign workspace.', detail:'Brings donor profiles, pledges, contributions, and call outcomes into one workflow. Public distribution is not available yet.'},
   {name:'2DO', platform:'Mac & iPhone', status:'In development', description:'A checklist app for quick capture, straightforward lists, and getting tasks finished.', detail:'Local-first storage and a whiteboard-inspired interface. Mac and iPhone releases are in preparation.'},
   {name:'Dreamer', platform:'Agent tools', status:'In development', description:'Resume agent work from checked evidence and review proposed preferences before saving them.', detail:'The store listing is a draft and has not been submitted for review. Dreamer is not available in the store yet.'},
-  {name:'LocalModelFit', platform:'Local AI', status:'Private preview', description:'Find AI models suited to your hardware, with runtime-aware memory estimates and Hugging Face discovery.', detail:'Currently available as an owner-only preview. Public access is not open. Memory estimates are guidance, not measured performance guarantees.'},
+  {name:'LocalModelFit', platform:'Local AI', status:'Preview', description:'Find AI models suited to your hardware, with runtime-aware memory estimates and Hugging Face discovery.', detail:'Release details will be posted here as the project develops. Memory estimates are guidance, not measured performance guarantees.'},
 ] satisfies ReadonlyArray<{name:string;platform:string;status:string;description:string;detail:string}>;
 
 export default function Home(){return <>
