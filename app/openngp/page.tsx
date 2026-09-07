@@ -1,5 +1,12 @@
 import Link from 'next/link';
-export const metadata = { title: 'OpenNGP — PatchworkMD' };
+const title = 'OpenNGP — Campaign records, organized by workspace';
+const description = 'Local-first fundraising and organizing software with separate campaign workspaces. Explore current workflows and development status.';
+export const metadata = {
+  title, description,
+  alternates: { canonical: 'https://patchworkmd.dev/openngp' },
+  openGraph: { title, description, url: 'https://patchworkmd.dev/openngp', type: 'website' },
+  twitter: { card: 'summary', title, description },
+};
 export default function OpenNGPPage() {
   return (
     <>

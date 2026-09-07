@@ -306,8 +306,20 @@ export async function generateMetadata({
 }: {
   params: Promise<{ product: string }>;
 }) {
-  const p = product((await params).product);
-  return { title: p ? p.name + ' — PatchworkMD' : 'Not found' };
+  const requested = (await params).product;
+  const slug = requested === 'localmodelfit' ? 'localmodelmatch' : requested;
+  const p = product(slug);
+  if (!p) return { title: 'Not found', robots: { index: false } };
+  const title = p.name + ' — ' + p.tagline;
+  const description = p.intro + ' ' + p.status + '.';
+  const url = 'https://patchworkmd.dev/' + slug;
+  return {
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: { title, description, url, type: 'website' },
+    twitter: { card: 'summary', title, description },
+  };
 }
 export default async function Product({
   params,

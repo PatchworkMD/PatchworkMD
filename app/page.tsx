@@ -210,7 +210,7 @@ export default function Home() {
           </div>
           <div className="more-projects">
             <Link href="/appdesignresearch/">
-              App Design Research <span>View the example &amp; install ↗</span>
+              <span className="product-wordmark"><Image src="/app-design-research-icon.svg" alt="" width={32} height={32} unoptimized /> App Design Research</span> <span>View the example &amp; install ↗</span>
             </Link>
             <Link href="/airplayify/">
               Airplayify Jam <span>Experimental macOS alpha ↗</span>

@@ -1,6 +1,13 @@
 import Image from "next/image";
 import Link from 'next/link';
-export const metadata = { title: 'App Design Research — PatchworkMD' };
+const title = 'App Design Research — Find the friction. Fix the flow.';
+const description = 'Evidence-backed design reviews of screenshots, interface text, and app code you supply. Explore the example and install version 0.1.1.';
+export const metadata = {
+  title, description,
+  alternates: { canonical: 'https://patchworkmd.dev/app-design-research' },
+  openGraph: { title, description, url: 'https://patchworkmd.dev/app-design-research', type: 'website' },
+  twitter: { card: 'summary', title, description },
+};
 const faq = [
   [
     'What can I review?',
@@ -38,6 +45,7 @@ export default function Page() {
       <main>
         <section className="intro">
           <div className="intro-copy">
+            <Image src="/app-design-research-icon.svg" alt="App Design Research logo" width={64} height={64} unoptimized />
             <p className="eyebrow">App Design Research · v0.1.1</p>
             <h1>
               Find the friction.
