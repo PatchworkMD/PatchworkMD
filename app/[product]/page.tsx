@@ -16,10 +16,10 @@ type ProductInfo = {
 const products: Record<string, ProductInfo> = {
   airplayify: {
     name: 'Airplayify Jam',
-    status: 'Experimental alpha · 0.1.0-alpha.1',
+    status: 'Experimental alpha · 0.1.0-alpha.2',
     tagline: 'Explore grouped audio on your Mac.',
     intro: 'An experimental macOS app for audio-output grouping with Spotify.',
-    url: 'https://github.com/PatchworkMD/airplayify-jam/releases/tag/v0.1.0-alpha.1',
+    url: 'https://github.com/PatchworkMD/airplayify-jam/releases/tag/v0.1.0-alpha.2',
     cta: 'View alpha download',
     repo: 'https://github.com/PatchworkMD/airplayify-jam',
     benefits: [
