@@ -10,8 +10,49 @@ type ProductInfo = {
   faq: string[][];
   url?: string;
   cta?: string;
+  repo?: string;
 };
 const products: Record<string, ProductInfo> = {
+  airplayify: {
+    name: 'Airplayify Jam',
+    status: 'Experimental alpha · 0.1.0-alpha.1',
+    tagline: 'Explore grouped audio on your Mac.',
+    intro: 'An experimental macOS app for audio-output grouping with Spotify.',
+    url: 'https://github.com/PatchworkMD/airplayify-jam/releases/tag/v0.1.0-alpha.1',
+    cta: 'View alpha download',
+    repo: 'https://github.com/PatchworkMD/airplayify-jam',
+    benefits: [
+      [
+        'Made for Apple Silicon',
+        'Requires an Apple Silicon Mac running macOS 14 or later.',
+      ],
+      [
+        'Open source',
+        'Explore the MIT-licensed source and report reproducible issues on GitHub.',
+      ],
+      [
+        'An early audio experiment',
+        'Real-world audio acceptance is still pending. This alpha is not a verified playback release.',
+      ],
+    ],
+    setup:
+      'Read the GitHub release notes before downloading the Apple Silicon ZIP. This alpha is ad-hoc signed and not notarized. It is not available in the Mac App Store. Keep macOS security protections enabled.',
+    faq: [
+      [
+        'Is playback verified?',
+        'No. Audio acceptance remains pending; this is an experimental alpha.',
+      ],
+      [
+        'Is it on the Mac App Store?',
+        'No. Mac App Store support is in development.',
+      ],
+      [
+        'Where do I get help?',
+        'Use the GitHub repository for reproducible issues or email hello@patchworkmd.dev.',
+      ],
+    ],
+  },
+
   orbit: {
     name: 'Orbit',
     status: 'Release candidate',
@@ -217,14 +258,14 @@ const products: Record<string, ProductInfo> = {
   },
   unicycle: {
     name: 'UNICYCLE',
-    status: 'In development',
+    status: 'Locally tested candidate · 0.1.0',
     tagline: 'Keep agent coordination accountable.',
     intro:
-      'Coordination tooling for tracking work and acknowledgements across agent workflows.',
+      'A Codex workflow plugin for tracking requests, handoffs and acknowledgements across agent work.',
     benefits: [
       [
         'Track coordination state',
-        'Keep local workflow state available for the coordination process.',
+        'Keep workflow state local and make progress visible.',
       ],
       [
         'Use explicit handoffs',
@@ -232,23 +273,23 @@ const products: Record<string, ProductInfo> = {
       ],
       [
         'Preserve host boundaries',
-        'The agent host and any adapters retain their own permissions and processing behavior.',
+        'The agent host and adapters retain their own permissions and processing behavior.',
       ],
     ],
     setup:
-      'A directory draft has been prepared. No public directory listing or supported installation is verified on this page.',
+      'The 0.1.0 candidate has passed local installation checks. A public directory link and a supported public ZIP installation flow are not yet verified. Contact hello@patchworkmd.dev for availability; this page will link the verified release when ready.',
     faq: [
       [
-        'Is it publicly released?',
-        'A prepared package or uploaded directory draft does not establish a public release.',
+        'Can I install it from this page?',
+        'A public download and installation path are not available here yet. Local testing does not establish a public directory release.',
       ],
       [
-        'Is local state encrypted by the app?',
-        'The current helper uses local SQLite state with file permissions. It does not add application-level encryption.',
+        'Is local state encrypted by the plugin?',
+        'The helper uses local SQLite state with file permissions. It does not add application-level encryption.',
       ],
       [
         'Does removing local state erase everything?',
-        'No. Host histories, logs and backups are separate. Review the eventual supported reset instructions before changing state.',
+        'No. Host histories, logs and backups are separate. Review the supported reset instructions before changing state.',
       ],
     ],
   },
@@ -295,6 +336,11 @@ export default async function Product({
             </p>
             <h1>{p.tagline}</h1>
             <p className="bio">{p.intro}</p>
+            {p.repo && (
+              <a className="product-cta" href={p.repo}>
+                View source on GitHub →
+              </a>
+            )}
             {p.url && (
               <a className="product-cta" href={p.url}>
                 {p.cta} →
