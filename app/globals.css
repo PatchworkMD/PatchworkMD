@@ -1287,3 +1287,10 @@ footer small {
 }
 
 .product-wordmark{display:inline-flex;align-items:center;gap:12px!important;color:var(--ink)!important;font:inherit!important}.project-name>img{margin-bottom:12px;border-radius:7px}.product-wordmark img{border-radius:4px}
+
+/* ADR title hierarchy stays independent of the portfolio hero. */
+.adr-identity { display: flex; align-items: center; gap: 14px; margin-bottom: 30px; }
+.adr-identity .eyebrow { margin: 0; color: var(--ink); font-size: 12px; letter-spacing: .04em; }
+.adr-identity .eyebrow span { display: block; margin-top: 5px; color: var(--muted); font-size: 10px; }
+.adr-intro h1 { font-size: clamp(32px, 5.2vw, 60px); line-height: 1.08; letter-spacing: -.045em; font-weight: 550; }
+.adr-intro .bio { max-width: 34ch; margin-top: 24px; font-size: clamp(17px, 2vw, 21px); line-height: 1.5; }

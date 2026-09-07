@@ -43,10 +43,9 @@ export default function Page() {
         </nav>
       </header>
       <main>
-        <section className="intro">
+        <section className="intro adr-intro">
           <div className="intro-copy">
-            <Image src="/app-design-research-icon.svg" alt="App Design Research logo" width={64} height={64} unoptimized />
-            <p className="eyebrow">App Design Research · v0.1.1</p>
+            <div className="adr-identity"><Image src="/app-design-research-icon.svg" alt="" width={40} height={40} unoptimized /><p className="eyebrow">App Design Research<span>Version 0.1.1</span></p></div>
             <h1>
               Find the friction.
               <br />
