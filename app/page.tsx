@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 const projects = [
   [
     'OpenNGP',
@@ -73,9 +74,10 @@ export default function Home() {
           </div>
           <figure className="cover-image">
             <div className="image-frame">
-              <img
-                width="1536"
-                height="1024"
+              <Image
+                unoptimized
+                width={1536}
+                height={1024}
                 fetchPriority="high"
                 src="/brand/studio.jpg"
                 alt="Atmospheric illustration of a creative software workspace"
