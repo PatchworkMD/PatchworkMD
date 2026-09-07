@@ -1,5 +1,12 @@
 import Link from 'next/link';
-export const metadata = { title: 'OpenNGP FAQ — PatchworkMD' };
+const title = 'OpenNGP FAQ — Workspaces, imports, and development status';
+const description = 'Answers about OpenNGP campaign workspaces, reviewed imports, access controls, and current release limits.';
+export const metadata = {
+  title, description,
+  alternates: { canonical: 'https://patchworkmd.dev/openngp/faq' },
+  openGraph: { title, description, url: 'https://patchworkmd.dev/openngp/faq', type: 'website' },
+  twitter: { card: 'summary', title, description },
+};
 const questions = [
   [
     'Who is OpenNGP for?',
