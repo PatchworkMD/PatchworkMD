@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from 'next/link';
 export const metadata = { title: 'App Design Research — PatchworkMD' };
 const faq = [
@@ -56,7 +57,7 @@ export default function Page() {
           </div>
         </section>
         <figure className="product-art">
-          <img src="/adr-hero.png" alt="" width="1672" height="941" />
+          <Image src="/adr-hero.png" alt="" width={1672} height={941} unoptimized />
           <figcaption>
             Original marketing illustration; abstract screens are not app
             screenshots.
