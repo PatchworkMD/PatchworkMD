@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 type ProductInfo = {
   name: string;
   status: string;
@@ -139,14 +139,14 @@ const products: Record<string, ProductInfo> = {
       ],
     ],
   },
-  localmodelfit: {
-    name: 'LocalModelFit',
+  localmodelmatch: {
+    name: 'LocalModelMatch',
     status: 'Public preview',
     tagline: 'Find a model that fits your machine.',
     intro:
       'Compare local AI models with runtime-aware memory estimates and Hugging Face discovery.',
-    url: 'https://localmodelfit.bowbowbow69.chatgpt.site',
-    cta: 'Open LocalModelFit',
+    url: 'https://localmodelmatch.com',
+    cta: 'Open LocalModelMatch',
     benefits: [
       [
         'Start with your hardware',
@@ -272,7 +272,9 @@ export default async function Product({
 }: {
   params: Promise<{ product: string }>;
 }) {
-  const p = product((await params).product);
+  const slug = (await params).product;
+  if (slug === 'localmodelfit') permanentRedirect('/localmodelmatch');
+  const p = product(slug);
   if (!p) notFound();
   return (
     <>

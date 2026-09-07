@@ -37,7 +37,7 @@ const projects = [
       'The store listing is a draft and has not been submitted for review. Dreamer is not available in the store yet.',
   },
   {
-    name: 'LocalModelFit',
+    name: 'LocalModelMatch',
     platform: 'Local AI',
     status: 'Preview',
     description:
@@ -202,7 +202,7 @@ export default function Home() {
                 <dd>
                   Working with local data, hardware constraints, and model
                   choices instead of assuming everything belongs in the cloud.
-                  <span>In practice: OpenNGP, 2D0, and LocalModelFit</span>
+                  <span>In practice: OpenNGP, 2D0, and LocalModelMatch</span>
                 </dd>
               </div>
             </dl>
