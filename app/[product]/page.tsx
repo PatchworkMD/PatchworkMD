@@ -343,7 +343,7 @@ export default async function Product({
       </main>
       <footer>
         <Link href="/">All projects</Link>
-        <span>PatchworkMD</span>
+        <a href="https://patchworkmd.dev">Made by PatchworkMD</a>
       </footer>
     </>
   );

@@ -111,7 +111,7 @@ export default function FAQ() {
       </main>
       <footer>
         <Link href="/openngp">Back to OpenNGP</Link>
-        <span>In development</span>
+        <a href="https://patchworkmd.dev">Made by PatchworkMD</a>
       </footer>
     </>
   );

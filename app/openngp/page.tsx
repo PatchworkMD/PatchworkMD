@@ -68,7 +68,7 @@ export default function OpenNGPPage() {
       </main>
       <footer>
         <Link href="/">Back to PatchworkMD</Link>
-        <span>In development</span>
+        <a href="https://patchworkmd.dev">Made by PatchworkMD</a>
       </footer>
     </>
   );
