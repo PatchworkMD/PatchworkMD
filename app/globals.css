@@ -1285,3 +1285,5 @@ footer small {
     transform: none !important;
   }
 }
+
+.product-wordmark{display:inline-flex;align-items:center;gap:12px!important;color:var(--ink)!important;font:inherit!important}.project-name>img{margin-bottom:12px;border-radius:7px}.product-wordmark img{border-radius:4px}
