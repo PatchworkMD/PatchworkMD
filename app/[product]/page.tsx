@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound, permanentRedirect } from 'next/navigation';
 type ProductInfo = {
   name: string;
@@ -334,6 +335,24 @@ export default async function Product({
             <p className="eyebrow">
               {p.name} · {p.status}
             </p>
+            {slug === 'unicycle' && (
+              <Image
+                src="/unicycle-icon.png"
+                alt="UNICYCLE spoke logo"
+                width={88}
+                height={88}
+                unoptimized
+              />
+            )}
+            {slug === 'dreamer' && (
+              <Image
+                src="/dreamer-icon.png"
+                alt="Dreamer logo"
+                width={88}
+                height={88}
+                unoptimized
+              />
+            )}
             <h1>{p.tagline}</h1>
             <p className="bio">{p.intro}</p>
             {p.repo && (
