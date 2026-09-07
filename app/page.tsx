@@ -134,6 +134,7 @@ export default function Home() {
                 <article key={name} className="project">
                   <div className="project-number">0{i + 2}</div>
                   <div className="project-name">
+                    {name === "Dreamer" && <Image src="/dreamer-icon.png" alt="" width={40} height={40} unoptimized />}
                     <h3>
                       <Link
                         href={
@@ -218,7 +219,7 @@ export default function Home() {
               Type B <span>Concept ↗</span>
             </Link>
             <Link href="/unicycle">
-              UNICYCLE <span>Locally tested plugin candidate ↗</span>
+              <span className="product-wordmark"><Image src="/unicycle-icon.png" alt="" width={32} height={32} unoptimized /> UNICYCLE</span> <span>Locally tested plugin candidate ↗</span>
             </Link>
           </div>
         </section>
