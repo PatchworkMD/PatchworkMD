@@ -1,32 +1,33 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import FilmStudy from '../components/FilmStudy';
 const projects = [
   [
     'OpenNGP',
     'Campaign software',
     'In development',
-    'Local-first fundraising and organizing software, with separate records for each campaign workspace.',
+    'Fundraising and organizing software with separate campaign workspaces.',
     'Brings donor profiles, pledges, contributions, and call outcomes into one workflow. Public distribution is not available yet.',
   ],
   [
     '2D0',
     'Mac & iPhone',
     'In development',
-    'A checklist app for quick capture, straightforward lists, and getting tasks finished.',
+    'Capture tasks and keep lists on Mac and iPhone.',
     'Local-first storage and a whiteboard-inspired interface. Mac and iPhone releases are in preparation.',
   ],
   [
     'Dreamer',
     'Agent tools',
     'In development',
-    'Resume agent work from checked evidence and review proposed preferences before saving them.',
+    'Review what an agent finished and carry context into the next session.',
     'The store listing is a draft and has not been submitted for review. Dreamer is not available in the store yet.',
   ],
   [
     'Orbit',
     'macOS',
     'Release candidate',
-    'Your coding tools, at home on your Mac.',
+    'A Mac app for coding-agent sessions and approvals.',
     'Native coding-agent sessions and approvals. Public distribution is not available yet.',
   ],
 ] as const;
@@ -63,30 +64,26 @@ export default function Home() {
           <div className="cover-masthead">
             <h1 className="cover-title">PatchworkMD</h1>
             <span>
-              Independent software
-              <br />
-              Selected work / 2026
+              Independent software / Selected work / 2026
             </span>
           </div>
           <div className="cover-copy">
             <p className="bio">
-              Native apps.
+              Mac apps.
               <br />
-              Local tools.
-              <br />
-              <span>Made with intent.</span>
+              <span>Web tools.</span>
             </p>
             <p className="cover-note">
               I build software for the Mac, campaign teams, and people working
-              with AI. Some projects are ready to try. Others are still taking
-              shape.
+              with AI. Browse the public previews and projects in development.
             </p>
             <a className="portfolio-cta" href="#featured-work">
-              Explore the work <span aria-hidden="true">↓</span>
+              View projects <span aria-hidden="true">↓</span>
             </a>
           </div>
           <figure className="cover-image">
             <div className="image-frame">
+              <span className="frame-index" aria-hidden="true">PW—01 / STUDIO STUDY</span>
               <Image
                 unoptimized
                 width={1536}
@@ -95,13 +92,14 @@ export default function Home() {
                 src="/brand/studio.jpg"
                 alt="Atmospheric illustration of a creative software workspace"
               />
+              <FilmStudy />
             </div>
-            <figcaption>Studio study · Illustration</figcaption>
+            <figcaption>Studio study / Illustration<span>01 — 2026</span></figcaption>
           </figure>
         </section>
         <section className="featured" id="featured-work">
           <div className="section-kicker">
-            <span>Available to explore</span>
+            <span>01 / Public preview</span>
             <span>Local AI / Web app</span>
           </div>
           <a
@@ -153,13 +151,14 @@ export default function Home() {
         </section>
         <section id="projects" className="work">
           <div className="section-kicker">
-            <h2>In the workshop</h2>
+            <h2>Projects in development</h2>
             <span>Current projects</span>
           </div>
           <div className="project-index">
-            {projects.map(([name, platform, status, description, detail]) => (
+            {projects.map(([name, platform, status, description, detail], index) => (
               <article key={name} className="project">
                 <div className="project-name">
+                  <span className="project-number">0{index + 2}</span>
                   {name === 'Dreamer' && (
                     <Image
                       src="/dreamer-icon.png"
@@ -201,10 +200,11 @@ export default function Home() {
           </div>
           <div className="skills-content">
             <div className="skills-intro">
-              <p>I like software that earns its place.</p>
+              <p>Behind
+                the work.</p>
               <p>
-                Native when it makes the experience better. Local when it gives
-                people more control. AI when it helps get the work done.
+                I work across Mac apps, web interfaces, and campaign software.
+                These projects come from the tools I use and the work I do.
               </p>
             </div>
             <dl className="skill-list">
@@ -276,7 +276,7 @@ export default function Home() {
         <section className="contact">
           <p className="eyebrow">Correspondence</p>
           <div>
-            <h2>Let’s make something useful.</h2>
+            <h2>Say hello.</h2>
             <a href="mailto:hello@patchworkmd.dev">hello@patchworkmd.dev ↗</a>
           </div>
         </section>
@@ -286,12 +286,7 @@ export default function Home() {
           <Mark /> PatchworkMD
         </span>
         <a href="https://github.com/PatchworkMD">Public repositories ↗</a>
-        <a
-          className="support-link"
-          href="mailto:support@patchworkmd.dev?subject=Support%20PatchworkMD"
-        >
-          Buy me a coffee ↗
-        </a>
+        <Link href="/privacy">Privacy &amp; site information</Link>
         <a href="https://patchworkmd.dev">Made by PatchworkMD</a>
       </footer>
     </>
