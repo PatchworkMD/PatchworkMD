@@ -58,19 +58,32 @@ export default function Home() {
           <a href="mailto:hello@patchworkmd.dev">Contact ↗</a>
         </nav>
       </header>
-      <main id="main">
+      <main id="main" className="portfolio-candidate">
         <section className="cover">
-          <div className="cover-copy">
-            <p className="eyebrow">Independent software · 2026</p>
+          <div className="cover-masthead">
             <h1 className="cover-title">PatchworkMD</h1>
-            <p className="bio">
-              Native apps. Local tools.
+            <span>
+              Independent software
               <br />
-              Work in progress.
+              Selected work / 2026
+            </span>
+          </div>
+          <div className="cover-copy">
+            <p className="bio">
+              Native apps.
+              <br />
+              Local tools.
+              <br />
+              <span>Made with intent.</span>
             </p>
             <p className="cover-note">
-              Independent software, built one project at a time.
+              I build software for the Mac, campaign teams, and people working
+              with AI. Some projects are ready to try. Others are still taking
+              shape.
             </p>
+            <a className="portfolio-cta" href="#featured-work">
+              Explore the work <span aria-hidden="true">↓</span>
+            </a>
           </div>
           <figure className="cover-image">
             <div className="image-frame">
@@ -83,16 +96,32 @@ export default function Home() {
                 alt="Atmospheric illustration of a creative software workspace"
               />
             </div>
-            <figcaption>
-              Atmosphere / illustration · PatchworkMD studio
-            </figcaption>
+            <figcaption>Studio study · Illustration</figcaption>
           </figure>
         </section>
-        <section className="featured">
+        <section className="featured" id="featured-work">
           <div className="section-kicker">
-            <span>01</span>
-            <span>Featured work</span>
+            <span>Available to explore</span>
+            <span>Local AI / Web app</span>
           </div>
+          <a
+            className="product-preview"
+            href="https://localmodelmatch.com"
+            aria-label="Open the LocalModelMatch live preview"
+          >
+            <Image
+              src="/brand/localmodelmatch-preview.png"
+              alt="LocalModelMatch interface showing computer setup and model discovery"
+              width={1440}
+              height={1000}
+              unoptimized
+            />
+            <span>Open live preview ↗</span>
+          </a>
+          <p className="preview-caption">
+            LocalModelMatch · Live interface captured September 7, 2026 ·
+            Example setup
+          </p>
           <div className="featured-grid">
             <div>
               <p className="availability">Public preview · Local AI</p>
@@ -124,49 +153,50 @@ export default function Home() {
         </section>
         <section id="projects" className="work">
           <div className="section-kicker">
-            <span>02</span>
-            <h2>Selected work</h2>
+            <h2>In the workshop</h2>
             <span>Current projects</span>
           </div>
           <div className="project-index">
-            {projects.map(
-              ([name, platform, status, description, detail], i) => (
-                <article key={name} className="project">
-                  <div className="project-number">0{i + 2}</div>
-                  <div className="project-name">
-                    {name === "Dreamer" && <Image src="/dreamer-icon.png" alt="" width={40} height={40} unoptimized />}
-                    <h3>
-                      <Link
-                        href={
-                          name === '2D0' ? '/2d0' : '/' + name.toLowerCase()
-                        }
-                      >
-                        {name}
-                      </Link>
-                    </h3>
-                    <p>{platform}</p>
-                  </div>
-                  <div className="project-body">
-                    <p className="description">{description}</p>
-                    <details>
-                      <summary>
-                        <span>{status}</span>
-                        <span className="detail-label">
-                          Details <span className="plus">+</span>
-                        </span>
-                      </summary>
-                      <p className="detail">{detail}</p>
-                    </details>
-                  </div>
-                </article>
-              ),
-            )}
+            {projects.map(([name, platform, status, description, detail]) => (
+              <article key={name} className="project">
+                <div className="project-name">
+                  {name === 'Dreamer' && (
+                    <Image
+                      src="/dreamer-icon.png"
+                      alt=""
+                      width={40}
+                      height={40}
+                      unoptimized
+                    />
+                  )}
+                  <h3>
+                    <Link
+                      href={name === '2D0' ? '/2d0' : '/' + name.toLowerCase()}
+                    >
+                      {name}
+                    </Link>
+                  </h3>
+                  <p>{platform}</p>
+                </div>
+                <div className="project-body">
+                  <p className="description">{description}</p>
+                  <details>
+                    <summary>
+                      <span>{status}</span>
+                      <span className="detail-label">
+                        Details <span className="plus">+</span>
+                      </span>
+                    </summary>
+                    <p className="detail">{detail}</p>
+                  </details>
+                </div>
+              </article>
+            ))}
           </div>
         </section>
         <section className="skills" id="skills">
           <div className="section-kicker">
-            <span>03</span>
-            <h2>Approach</h2>
+            <h2>How I work</h2>
             <span>The work behind the projects</span>
           </div>
           <div className="skills-content">
@@ -210,7 +240,17 @@ export default function Home() {
           </div>
           <div className="more-projects">
             <Link href="/appdesignresearch/">
-              <span className="product-wordmark"><Image src="/app-design-research-icon.svg" alt="" width={32} height={32} unoptimized /> App Design Research</span> <span>View the example &amp; install ↗</span>
+              <span className="product-wordmark">
+                <Image
+                  src="/app-design-research-icon.svg"
+                  alt=""
+                  width={32}
+                  height={32}
+                  unoptimized
+                />{' '}
+                App Design Research
+              </span>{' '}
+              <span>View the example &amp; install ↗</span>
             </Link>
             <Link href="/airplayify/">
               Airplayify Jam <span>Experimental macOS alpha ↗</span>
@@ -219,7 +259,17 @@ export default function Home() {
               Type B <span>Concept ↗</span>
             </Link>
             <Link href="/unicycle">
-              <span className="product-wordmark"><Image src="/unicycle-icon.png" alt="" width={32} height={32} unoptimized /> UNICYCLE</span> <span>Locally tested plugin candidate ↗</span>
+              <span className="product-wordmark">
+                <Image
+                  src="/unicycle-icon.png"
+                  alt=""
+                  width={32}
+                  height={32}
+                  unoptimized
+                />{' '}
+                UNICYCLE
+              </span>{' '}
+              <span>Locally tested plugin candidate ↗</span>
             </Link>
           </div>
         </section>
@@ -236,6 +286,12 @@ export default function Home() {
           <Mark /> PatchworkMD
         </span>
         <a href="https://github.com/PatchworkMD">Public repositories ↗</a>
+        <a
+          className="support-link"
+          href="mailto:support@patchworkmd.dev?subject=Support%20PatchworkMD"
+        >
+          Buy me a coffee ↗
+        </a>
         <a href="https://patchworkmd.dev">Made by PatchworkMD</a>
       </footer>
     </>

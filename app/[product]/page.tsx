@@ -415,6 +415,15 @@ export default async function Product({
           <div>
             <p>For project questions, feedback and support.</p>
             <a href="mailto:hello@patchworkmd.dev">hello@patchworkmd.dev</a>
+            <p className="support-note">
+              If this project is useful, you can support the work:
+            </p>
+            <a
+              className="support-link"
+              href="mailto:support@patchworkmd.dev?subject=Support%20this%20project"
+            >
+              Buy me a coffee ↗
+            </a>
           </div>
         </section>
       </main>
