@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import FilmStudy from '../components/FilmStudy';
+import FlashMark from '../components/FlashMark';
+import FlashBackground from '../components/FlashBackground';
+const appLogos: Record<string,string> = { '2D0':'/2do-current-icon.png', Orbit:'/orbit-icon.png', Dreamer:'/dreamer-nightcap.png' };
 const projects = [
   [
     'OpenNGP',
@@ -44,13 +46,14 @@ function Mark() {
 export default function Home() {
   return (
     <>
+      <FlashBackground />
       <a className="skip" href="#main">
         Skip to content
       </a>
       <header>
         <Link className="wordmark" href="/">
           <Mark />
-          <span>PatchworkMD</span>
+          <span>patchwork.md</span>
         </Link>
         <nav aria-label="Main navigation">
           <a href="#projects">Projects</a>
@@ -61,41 +64,12 @@ export default function Home() {
       </header>
       <main id="main" className="portfolio-candidate">
         <section className="cover">
-          <div className="cover-masthead">
-            <h1 className="cover-title">PatchworkMD</h1>
-            <span>
-              Independent software / Selected work / 2026
-            </span>
+          <h1 className="visually-hidden">patchwork.md</h1>
+          <FlashMark />
+          <div className="flash-intro">
+            <p>Independent software for Mac, the web, and campaign teams.</p>
+            <a className="portfolio-cta" href="#projects">Projects <span aria-hidden="true">↓</span></a>
           </div>
-          <div className="cover-copy">
-            <p className="bio">
-              Mac apps.
-              <br />
-              <span>Web tools.</span>
-            </p>
-            <p className="cover-note">
-              I build software for the Mac, campaign teams, and people working
-              with AI. Browse the public previews and projects in development.
-            </p>
-            <a className="portfolio-cta" href="#featured-work">
-              View projects <span aria-hidden="true">↓</span>
-            </a>
-          </div>
-          <figure className="cover-image">
-            <div className="image-frame">
-              <span className="frame-index" aria-hidden="true">PW—01 / STUDIO STUDY</span>
-              <Image
-                unoptimized
-                width={1536}
-                height={1024}
-                fetchPriority="high"
-                src="/brand/studio.jpg"
-                alt="Atmospheric illustration of a creative software workspace"
-              />
-              <FilmStudy />
-            </div>
-            <figcaption>Studio study / Illustration<span>01 — 2026</span></figcaption>
-          </figure>
         </section>
         <section className="featured" id="featured-work">
           <div className="section-kicker">
@@ -159,9 +133,9 @@ export default function Home() {
               <article key={name} className="project">
                 <div className="project-name">
                   <span className="project-number">0{index + 2}</span>
-                  {name === 'Dreamer' && (
+                  {appLogos[name] && (
                     <Image
-                      src="/dreamer-icon.png"
+                      src={appLogos[name]} className="app-logo"
                       alt=""
                       width={40}
                       height={40}
