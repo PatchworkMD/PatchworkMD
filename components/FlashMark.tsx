@@ -1,4 +1,6 @@
 "use client";
+/* SVG and canvas provide the live artwork; replacing them with img would remove animation. */
+/* oxlint-disable jsx-a11y/prefer-tag-over-role */
 import { useEffect, useRef, useState } from 'react';
 
 // Original procedural rose: layered petals rendered as shaded ASCII characters.
@@ -24,6 +26,8 @@ export default function FlashMark() {
     color*=.82+.18*grain;gl_FragColor=vec4(color,a);}`);
     const program=gl.createProgram()!;gl.attachShader(program,vs);gl.attachShader(program,fs);gl.linkProgram(program);
     if(!gl.getProgramParameter(program,gl.LINK_STATUS)){gl.deleteProgram(program);gl.deleteShader(vs);gl.deleteShader(fs);return;}
+    // WebGL useProgram is a native graphics method, not a React hook.
+    // oxlint-disable-next-line react/react-compiler
     gl.useProgram(program);const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
     const location=gl.getAttribLocation(program,'p');gl.enableVertexAttribArray(location);gl.vertexAttribPointer(location,2,gl.FLOAT,false,0,0);
     const texture=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,texture);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
