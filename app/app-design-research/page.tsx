@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from 'next/link';
-const title = 'App Design Research — Find the friction. Fix the flow.';
-const description = 'Evidence-backed design reviews of screenshots, interface text, and app code you supply. Explore the example and install version 0.1.1.';
+const title = 'App Design Research | PatchworkMD';
+const description = 'Turn app references into clear design decisions, practical reviews, and a plan your coding agent can use.';
 export const metadata = {
   title, description,
   alternates: { canonical: 'https://patchworkmd.dev/app-design-research' },
@@ -47,12 +47,12 @@ export default function Page() {
           <div className="intro-copy">
             <div className="adr-identity"><Image src="/app-design-research-icon.svg" alt="" width={40} height={40} unoptimized /><p className="eyebrow">App Design Research<span>Version 0.1.1</span></p></div>
             <h1>
-              Find the friction.
+              Build better apps.
               <br />
-              Fix the flow.
+              Start with better research.
             </h1>
             <p className="bio">
-              A focused second look at the interface you are building.
+              Turn app references into clear design decisions, practical reviews, and a plan your coding agent can use.
             </p>
             <p className="intro-note">
               Bring screenshots, text or code to Codex. Ask for a critique you
