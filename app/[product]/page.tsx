@@ -57,20 +57,20 @@ const products: Record<string, ProductInfo> = {
   orbit: {
     name: 'Orbit',
     status: 'Release candidate',
-    tagline: 'Your coding tools, at home on your Mac.',
+    tagline: 'Coding sessions and approvals.',
     intro:
       'A native macOS companion for coding-agent sessions, questions and approvals.',
     benefits: [
       [
-        'Stay close to your tools',
+        'Native Mac interface',
         'A SwiftUI and AppKit interface brings coding-session context into a native Mac surface.',
       ],
       [
-        'Keep decisions visible',
+        'Questions and approvals',
         'Follow questions and approval requests as part of your workflow.',
       ],
       [
-        'Start with your Mac',
+        'Mac requirements',
         'Designed for macOS 14 and later. Universal packaging has been tested; physical Intel testing remains open.',
       ],
     ],
@@ -102,7 +102,7 @@ const products: Record<string, ProductInfo> = {
   '2d0': {
     name: '2D0',
     status: 'Private beta preparation',
-    tagline: 'Make your list feel like yours.',
+    tagline: 'A whiteboard for your tasks.',
     intro:
       'A customizable task app with a whiteboard-marker character, quick capture and small celebrations for progress.',
     benefits: [
@@ -115,7 +115,7 @@ const products: Record<string, ProductInfo> = {
         'Choose a writing tool, color and mood. Sound and haptics are optional.',
       ],
       [
-        'Keep the basics close',
+        'On-device task storage',
         'Local task storage and a widget snapshot are part of the current development work.',
       ],
     ],
@@ -147,7 +147,7 @@ const products: Record<string, ProductInfo> = {
   dreamer: {
     name: 'Dreamer',
     status: 'In development',
-    tagline: 'Pick up the work with its context intact.',
+    tagline: 'Continue an agent’s work.',
     intro:
       'Agent workflow tools for resuming from checked evidence and reviewing proposed preferences before saving them.',
     benefits: [
@@ -223,7 +223,7 @@ const products: Record<string, ProductInfo> = {
   'type-b': {
     name: 'Type B',
     status: 'Concept',
-    tagline: 'A quieter way to work with your assistant.',
+    tagline: 'An iMessage assistant concept.',
     intro:
       'An early concept exploring native Mac setup, connections and memory controls, with everyday interaction through iMessage.',
     benefits: [
@@ -260,7 +260,7 @@ const products: Record<string, ProductInfo> = {
   unicycle: {
     name: 'UNICYCLE',
     status: 'Locally tested candidate · 0.1.0',
-    tagline: 'Keep agent coordination accountable.',
+    tagline: 'Track requests between agents.',
     intro:
       'A Codex workflow plugin for tracking requests, handoffs and acknowledgements across agent work.',
     benefits: [
@@ -337,7 +337,7 @@ export default async function Product({
           PatchworkMD
         </Link>
         <nav aria-label="Product navigation">
-          <a href="#start">Get started</a>
+          <a href="#start">Availability</a>
           <a href="#faq">FAQ</a>
         </nav>
       </header>
@@ -389,7 +389,7 @@ export default async function Product({
         </section>
         <section className="skills" id="start">
           <div className="section-title">
-            <h2>Get started</h2>
+            <h2>Availability</h2>
             <span>{p.status}</span>
           </div>
           <p className="detail">{p.setup}</p>
@@ -415,15 +415,6 @@ export default async function Product({
           <div>
             <p>For project questions, feedback and support.</p>
             <a href="mailto:hello@patchworkmd.dev">hello@patchworkmd.dev</a>
-            <p className="support-note">
-              If this project is useful, you can support the work:
-            </p>
-            <a
-              className="support-link"
-              href="mailto:support@patchworkmd.dev?subject=Support%20this%20project"
-            >
-              Buy me a coffee ↗
-            </a>
           </div>
         </section>
       </main>
