@@ -347,6 +347,9 @@ export default async function Product({
             <p className="eyebrow">
               {p.name} · {p.status}
             </p>
+            {(slug === '2d0' || slug === 'orbit') && (
+              <Image src={slug === '2d0' ? '/2do-current-icon.png' : '/orbit-icon.png'} alt={`${p.name} app icon`} width={88} height={88} className="app-logo" unoptimized />
+            )}
             {slug === 'unicycle' && (
               <Image
                 src="/unicycle-icon.png"
@@ -358,7 +361,7 @@ export default async function Product({
             )}
             {slug === 'dreamer' && (
               <Image
-                src="/dreamer-icon.png"
+                src="/dreamer-nightcap.png"
                 alt="Dreamer logo"
                 width={88}
                 height={88}

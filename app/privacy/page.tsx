@@ -2,7 +2,7 @@ import Link from 'next/link';
 export const metadata = { title: 'Privacy & site information | PatchworkMD' };
 export default function Privacy() {
   return <>
-    <header><Link className="wordmark" href="/">PatchworkMD</Link><nav aria-label="Main navigation"><Link href="/">Projects</Link><a href="mailto:hello@patchworkmd.dev">Contact ↗</a></nav></header>
+    <header><Link className="wordmark" href="/">patchwork.md</Link><nav aria-label="Main navigation"><Link href="/">Projects</Link><a href="mailto:hello@patchworkmd.dev">Contact ↗</a></nav></header>
     <main id="main" className="site-information">
       <section className="intro"><div><p className="eyebrow">This website</p><h1>Privacy &amp;<br />site information</h1><p className="bio">PatchworkMD is an independent software portfolio.</p></div></section>
       <section><h2>Browsing</h2><p>This site does not provide accounts, uploads, comments, payment forms, or other visitor submission forms. The site code does not add advertising trackers or analytics, or save visitor information in browser storage.</p><p>ChatGPT Sites hosts this website. OpenAI may process technical information to deliver, secure, and operate the site. See <a href="https://openai.com/policies/privacy-policy/">OpenAI’s privacy policy</a> for its practices.</p></section>

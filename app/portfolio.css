@@ -149,3 +149,105 @@ footer a { min-height: 44px; display: inline-flex; align-items: center; }
   html { scroll-behavior: auto; }
   .portfolio-cta:hover span, .project:hover h3 { transform: none; }
 }
+
+/* Tattoo-flash composition. Original lettering and procedural character art. */
+.portfolio-candidate .cover {display:block;padding:0 0 40px;}
+.visually-hidden {position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}
+.flash-art {position:relative;min-height:560px;isolation:isolate;}
+.flash-lettering {position:relative;width:100%;height:auto;overflow:visible;z-index:1;pointer-events:none;}
+.flash-lettering text {font-family:Georgia,'Times New Roman',serif;font-weight:900;font-size:108px;letter-spacing:-5px;fill:var(--bg);stroke:var(--ink);stroke-width:2.5px;paint-order:stroke fill;filter:drop-shadow(3px 5px 0 #9a3e22);}
+.flash-lettering .flash-md {font-size:66px;letter-spacing:7px;fill:var(--ink);stroke:none;filter:none;}
+.flash-rule {fill:none;stroke:var(--ink);stroke-width:4;}
+.ascii-rose {display:block;width:440px;max-width:100%;height:330px;margin:-180px auto 0;position:relative;z-index:2;}
+.flash-controls {display:flex;gap:20px;justify-content:center;position:relative;z-index:3;}
+.flash-controls button {background:transparent;border:0;border-bottom:1px solid var(--ink);color:var(--ink);min-height:44px;padding:8px 12px;font:12px var(--font-geist-mono),monospace;}
+.flash-controls button:active {transform:translateY(1px);}
+.flash-intro {display:flex;align-items:center;justify-content:space-between;gap:24px;border-top:2px solid var(--ink);padding-top:22px;}
+.flash-intro p {font-size:18px;max-width:40ch;}
+.flash-intro .portfolio-cta {margin:0;padding:8px 0;}
+@media(max-width:767px){.flash-art{min-height:380px;}.flash-lettering{margin-top:35px;}.ascii-rose{margin:-40px auto 0;height:230px;width:300px;}.flash-intro{display:block;}.flash-intro .portfolio-cta{margin-top:16px;}.flash-lettering text{stroke-width:2px;}.flash-lettering .flash-md{font-size:58px;}}
+
+@media(min-width:768px){.flash-art{min-height:0;}.flash-lettering{display:block;max-height:390px;}.ascii-rose{margin:-120px auto 0;height:260px;}.flash-intro{margin-top:12px;}header{min-height:72px;}}
+
+:root{--bg:#e4ddc8;--surface:#eee7d6;--ink:#20241f;--muted:#53594c;--accent:#9e291f;--line:#aaa48e;}
+.lettering-stage{position:relative;}
+.ink-shader{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;}
+.flash-lettering text{fill:#9e291f;stroke:#20241f;stroke-width:5px;filter:drop-shadow(3px 4px 0 #b58a38);}
+.ascii-rose{filter:contrast(1.25);}
+@media(max-width:767px){.flash-lettering{margin-top:0;}.lettering-stage{padding-top:0;margin-top:35px;}}
+
+/* A fixed, interactive flash sheet behind the entire portfolio. */
+.flash-background{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.28;}
+body:has(.flash-background) header,body:has(.flash-background) main,body:has(.flash-background) footer{position:relative;z-index:1;}
+body:has(.flash-background) header,body:has(.flash-background) footer{background:rgb(228 221 200 / .90);}
+body:has(.flash-background) .portfolio-candidate>section:not(.cover){background:rgb(228 221 200 / .94);color:var(--ink);padding-inline:24px;}
+body:has(.flash-background) .flash-intro{background:rgb(228 221 200 / .94);padding:20px;}
+.background-pause{position:fixed;right:16px;bottom:16px;z-index:5;border:1px solid #20241f;background:#e4ddc8;color:#20241f;padding:12px 16px;min-height:44px;font:12px monospace;}
+
+:root{--bg:#e6e1d5;--surface:#f0ebe1;--ink:#242724;--muted:#565953;--accent:#8e302a;--line:#b3b0a5;}
+.flash-lettering text{fill:#242724;filter:drop-shadow(2px 3px 0 #8e302a);}
+body:has(.flash-background) header,body:has(.flash-background) footer,body:has(.flash-background) .flash-intro{background:rgb(230 225 213 / .92);}
+body:has(.flash-background) .portfolio-candidate>section:not(.cover){background:rgb(230 225 213 / .94);}
+.background-pause{background:#e6e1d5;}
+
+/* Keep the SVG and its shader texture in the same 1000:390 coordinate space. */
+.lettering-stage{width:100%;aspect-ratio:1000 / 390;}
+.lettering-stage .flash-lettering{display:block;width:100%;height:100%;max-height:none;margin:0;}
+.lettering-stage .ink-shader{width:100%;height:100%;}
+body:has(.flash-background) .featured :is(h2,h3,p,span,a){color:var(--ink);}
+body:has(.flash-background) .featured :is(.preview-caption,.eyebrow){color:var(--muted);}
+body:has(.flash-background) .featured a:focus-visible{outline-color:var(--accent);}
+.flash-art{background:radial-gradient(ellipse at center,rgba(230,225,213,.98) 0%,rgba(230,225,213,.96) 42%,rgba(230,225,213,.65) 65%,transparent 85%);}
+.flash-controls{width:fit-content;margin-inline:auto;background:var(--bg);padding:0 16px;}
+
+body:has(.flash-background) main.portfolio-candidate section.featured :is(.section-kicker span,.eyebrow,.text-link){color:var(--ink)!important;}
+
+body:has(.flash-background) main.portfolio-candidate section.featured span{color:var(--ink)!important;}
+
+/* Recompose the opening as a moving flash sheet, not a centered rose display. */
+body:has(.flash-background){--bg:#dce3df;--surface:#eaf0eb;--accent:#326875;--ink:#252c2d;--muted:#4a595a;background-color:var(--bg);}
+.flash-background{opacity:.48;}
+.portfolio-candidate .cover{min-height:560px;display:flex;flex-direction:column;justify-content:center;padding-block:28px 44px;}
+.flash-art{min-height:0;background:none;width:min(840px,100%);margin:0 auto;}
+.lettering-stage{background:rgb(220 227 223 / .93);border:3px solid var(--ink);padding:16px;box-shadow:8px 8px 0 rgb(37 44 45 / .16);}
+.lettering-stage .ink-shader{inset:16px;width:calc(100% - 32px);height:calc(100% - 32px);}
+.flash-art .ascii-rose{display:none;}
+.flash-art .flash-controls{margin-top:20px;background:var(--bg);}
+.flash-controls button:first-child{display:none;}
+.flash-intro{width:min(840px,100%);margin:28px auto 0;border-top:0;}
+body:has(.flash-background) .flash-intro{background:rgb(220 227 223 / .96);}
+body:has(.flash-background) header,body:has(.flash-background) footer{background:rgb(220 227 223 / .94);}
+body:has(.flash-background) .portfolio-candidate>section:not(.cover){background:rgb(234 240 235 / .97);margin-block:32px;padding:32px;}
+.background-pause{background:#dce3df;}
+@media(max-width:767px){.portfolio-candidate .cover{min-height:390px;padding-block:20px;}.lettering-stage{margin-top:0;padding:8px;}.lettering-stage .ink-shader{inset:8px;width:calc(100% - 16px);height:calc(100% - 16px);}.flash-intro{margin-top:20px;}body:has(.flash-background) .portfolio-candidate>section:not(.cover){padding:20px;margin-inline:0;}}
+
+.lettering-stage{padding:0;}.lettering-stage .ink-shader{inset:0;width:100%;height:100%;}
+
+body:has(.flash-background){--bg:#ecece5;--surface:#f6f5ef;--ink:#192a35;--accent:#287f8b;--muted:#4b5d65;}
+.flash-background{opacity:.65;}
+.lettering-stage{background:rgb(246 245 239 / .95);}
+body:has(.flash-background) .flash-intro,body:has(.flash-background) header,body:has(.flash-background) footer{background:rgb(236 236 229 / .95);}
+body:has(.flash-background) .portfolio-candidate>section:not(.cover){background:rgb(246 245 239 / .97);}
+.background-pause{background:#f6f5ef;color:#192a35;}
+
+/* Large flash motifs hold their proportions in a uniform drawing coordinate system. */
+.flash-background{opacity:.62;}
+.lettering-stage{border:0;box-shadow:none;background:rgb(246 245 239 / .92);}
+.flash-art{width:min(760px,100%);}
+body:has(.flash-background) .portfolio-candidate .cover{min-height:620px;}
+body:has(.flash-background) .product-preview img{width:100%;height:auto;object-fit:contain;}
+@media(max-width:767px){body:has(.flash-background) .portfolio-candidate .cover{min-height:420px;}.flash-background{opacity:.42;}}
+
+.project-name img,.app-logo{object-fit:contain;flex-shrink:0;aspect-ratio:1;filter:none;}
+.project-name img{width:48px!important;height:48px!important;max-width:48px;}
+.intro-copy>.app-logo{width:88px;height:88px;margin-bottom:20px;}
+
+/* Display lettering and split layouts scale with their available column. */
+.flash-lettering text{font-weight:400;font-style:italic;font-size:112px;letter-spacing:-3px;stroke-width:1.2px;filter:drop-shadow(1px 2px 0 #ac4736);}
+.portfolio-candidate .skills-intro{container-type:inline-size;display:flex;flex-direction:column;justify-content:space-between;gap:40px;}
+.portfolio-candidate .skills-intro>p:first-child{font-size:clamp(60px,18cqw,128px);line-height:.94;max-width:7ch;letter-spacing:-.065em;}
+.portfolio-candidate .skills-intro>p+p{font-size:clamp(18px,4.8cqw,26px);line-height:1.45;max-width:27ch;margin-top:0;}
+.portfolio-candidate .skills-content{gap:clamp(32px,6vw,88px);padding-bottom:32px;}
+body:has(.flash-background) .product-preview img{aspect-ratio:auto;height:auto;}
+.portfolio-candidate .featured-grid h2{font-size:clamp(36px,5.2vw,76px);line-height:1.04;overflow-wrap:anywhere;}
+@media(max-width:767px){.portfolio-candidate .skills-intro{gap:24px;}.portfolio-candidate .skills-intro>p:first-child{font-size:clamp(56px,19cqw,100px);}.portfolio-candidate .skills-intro>p+p{font-size:19px;}.flash-art{min-height:0;}}
