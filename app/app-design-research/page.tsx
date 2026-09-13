@@ -1,13 +1,9 @@
+import { pageMetadata } from '../../lib/seo';
 import Image from "next/image";
 import Link from 'next/link';
 const title = 'App Design Research | PatchworkMD';
 const description = 'Review screenshots, interface text, and app code in Codex.';
-export const metadata = {
-  title, description,
-  alternates: { canonical: 'https://patchworkmd.dev/app-design-research' },
-  openGraph: { title, description, url: 'https://patchworkmd.dev/app-design-research', type: 'website' },
-  twitter: { card: 'summary', title, description },
-};
+export const metadata = pageMetadata(title, description, '/app-design-research');
 const faq = [
   [
     'What can I review?',

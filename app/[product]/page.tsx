@@ -1,3 +1,4 @@
+import { pageMetadata } from '../../lib/seo';
 import Link from 'next/link';
 import Image from 'next/image';
 import { notFound, permanentRedirect } from 'next/navigation';
@@ -312,14 +313,7 @@ export async function generateMetadata({
   if (!p) return { title: 'Not found', robots: { index: false } };
   const title = p.name + ' — ' + p.tagline;
   const description = p.intro + ' ' + p.status + '.';
-  const url = 'https://patchworkmd.dev/' + slug;
-  return {
-    title,
-    description,
-    alternates: { canonical: url },
-    openGraph: { title, description, url, type: 'website' },
-    twitter: { card: 'summary', title, description },
-  };
+  return pageMetadata(title, description, '/' + slug);
 }
 export default async function Product({
   params,

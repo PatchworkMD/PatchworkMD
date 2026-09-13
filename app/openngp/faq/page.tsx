@@ -1,12 +1,8 @@
+import { pageMetadata } from '../../../lib/seo';
 import Link from 'next/link';
 const title = 'OpenNGP FAQ — Workspaces, imports, and development status';
 const description = 'Answers about OpenNGP campaign workspaces, reviewed imports, access controls, and current release limits.';
-export const metadata = {
-  title, description,
-  alternates: { canonical: 'https://patchworkmd.dev/openngp/faq' },
-  openGraph: { title, description, url: 'https://patchworkmd.dev/openngp/faq', type: 'website' },
-  twitter: { card: 'summary', title, description },
-};
+export const metadata = pageMetadata(title, description, '/openngp/faq');
 const questions = [
   [
     'Who is OpenNGP for?',

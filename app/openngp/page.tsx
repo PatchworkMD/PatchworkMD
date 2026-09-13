@@ -1,12 +1,8 @@
+import { pageMetadata } from '../../lib/seo';
 import Link from 'next/link';
 const title = 'OpenNGP — Campaign records, organized by workspace';
 const description = 'Local-first fundraising and organizing software with separate campaign workspaces. Explore current workflows and development status.';
-export const metadata = {
-  title, description,
-  alternates: { canonical: 'https://patchworkmd.dev/openngp' },
-  openGraph: { title, description, url: 'https://patchworkmd.dev/openngp', type: 'website' },
-  twitter: { card: 'summary', title, description },
-};
+export const metadata = pageMetadata(title, description, '/openngp');
 export default function OpenNGPPage() {
   return (
     <>
