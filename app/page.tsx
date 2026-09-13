@@ -1,3 +1,5 @@
+import { pageMetadata } from '../lib/seo';
+export const metadata = pageMetadata('patchwork.md | Mac apps, web tools & campaign software', 'Independent software from patchwork.md. Explore Orbit, 2D0, Dreamer, LocalModelMatch, and OpenNGP, with demos and current release details.');
 import Link from 'next/link';
 import Image from 'next/image';
 import FlashMark from '../components/FlashMark';
@@ -46,6 +48,7 @@ function Mark() {
 export default function Home() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebSite', name: 'patchwork.md', alternateName: 'PatchworkMD', url: 'https://patchworkmd.dev/', description: 'Independent Mac apps, web tools, and campaign software.' }) }} />
       <FlashBackground />
       <a className="skip" href="#main">
         Skip to content

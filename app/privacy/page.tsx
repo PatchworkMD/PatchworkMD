@@ -1,5 +1,6 @@
+import { pageMetadata } from '../../lib/seo';
 import Link from 'next/link';
-export const metadata = { title: 'Privacy & site information | PatchworkMD' };
+export const metadata = pageMetadata('Privacy & site information | patchwork.md', 'How patchwork.md handles website visits, hosting, and contact information.', '/privacy');
 export default function Privacy() {
   return <>
     <header><Link className="wordmark" href="/">patchwork.md</Link><nav aria-label="Main navigation"><Link href="/">Projects</Link><a href="mailto:hello@patchworkmd.dev">Contact ↗</a></nav></header>
