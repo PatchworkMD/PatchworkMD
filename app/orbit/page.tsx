@@ -66,7 +66,7 @@ export default function OrbitPage() {
             <p className="orbit-lede">
               A native macOS companion that keeps coding-agent sessions, questions and approvals close.
             </p>
-            <a className="orbit-primary-link" href="#film">
+            <a className="orbit-cta" href="#film">
               Watch Orbit <span aria-hidden="true">↓</span>
             </a>
           </div>
@@ -100,7 +100,11 @@ export default function OrbitPage() {
           </div>
         </section>
 
-        <section className="orbit-mark-section" aria-hidden="true">
+        <section className="orbit-mark-section" aria-labelledby="mark-heading">
+          <div className="orbit-section-heading">
+            <p className="eyebrow">Signature</p>
+            <h2 id="mark-heading">Drag your cursor through it.</h2>
+          </div>
           <OrbitAsciiArt />
         </section>
 
