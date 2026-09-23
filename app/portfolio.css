@@ -101,6 +101,12 @@ footer a { min-height: 44px; display: inline-flex; align-items: center; }
 .site-information h2 { margin-bottom: 16px; font-size: 24px; }
 .site-information p + p { margin-top: 16px; }
 .site-information p a { text-decoration: underline; text-underline-offset: 4px; }
+.product-preview-figure { margin: 0 0 58px; min-width: 0; overflow: hidden; }
+.product-preview-figure img { display: block; width: 100%; max-width: 100%; height: auto; border: 1px solid var(--line); }
+.product-preview-figure figcaption { margin-top: 10px; color: var(--muted); font: 11px var(--font-geist-mono), monospace; }
+.product-motion-figure { margin: 40px 0 0; max-width: 720px; min-width: 0; overflow: hidden; }
+.product-motion-video { display: block; width: 100%; max-width: 100%; height: auto; max-height: 720px; object-fit: cover; background: var(--surface); border: 1px solid var(--line); }
+.product-motion-figure figcaption { margin-top: 10px; color: var(--muted); font: 11px var(--font-geist-mono), monospace; }
 @media (min-width: 1600px) { .portfolio-candidate .cover-title { font-size: 178px; } }
 @media (max-width: 900px) {
   .portfolio-candidate .cover { gap: 30px; grid-template-columns: .9fr 1.1fr; }
@@ -251,3 +257,49 @@ body:has(.flash-background) .product-preview img{width:100%;height:auto;object-f
 body:has(.flash-background) .product-preview img{aspect-ratio:auto;height:auto;}
 .portfolio-candidate .featured-grid h2{font-size:clamp(36px,5.2vw,76px);line-height:1.04;overflow-wrap:anywhere;}
 @media(max-width:767px){.portfolio-candidate .skills-intro{gap:24px;}.portfolio-candidate .skills-intro>p:first-child{font-size:clamp(56px,19cqw,100px);}.portfolio-candidate .skills-intro>p+p{font-size:19px;}.flash-art{min-height:0;}}
+
+/* Orbit gets a clear campaign handoff without implying a public download. */
+.orbit-spotlight {
+  border-block: 2px solid var(--ink);
+  padding-block: 34px 42px;
+  margin-top: 32px;
+}
+.orbit-spotlight-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(220px, .75fr);
+  gap: clamp(32px, 8vw, 120px);
+  align-items: start;
+}
+.orbit-spotlight h2 {
+  max-width: 13ch;
+  margin-top: 12px;
+  font-size: clamp(36px, 5vw, 76px);
+  line-height: 1.04;
+  letter-spacing: -.055em;
+}
+.orbit-spotlight .feature-detail { max-width: 48ch; margin-top: 22px; }
+.orbit-spotlight .text-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 20px;
+  font-size: 16px;
+}
+.orbit-status { border-left: 1px solid var(--line); padding: 8px 0 8px 24px; }
+.orbit-status-label {
+  display: block;
+  color: var(--muted);
+  font: 11px var(--font-geist-mono), monospace;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.orbit-status strong { display: block; margin-top: 14px; font-size: 20px; font-weight: 500; }
+.orbit-status p { max-width: 28ch; margin-top: 10px; color: var(--muted); font-size: 14px; line-height: 1.65; }
+.orbit-campaign-note { max-width: 48ch; padding-left: 16px; border-left: 2px solid var(--accent); }
+.footer-brand { display: inline-flex; align-items: center; gap: 9px; }
+@media (max-width: 640px) {
+  .orbit-spotlight { padding-block: 28px 34px; }
+  .orbit-spotlight-grid { grid-template-columns: 1fr; gap: 28px; }
+  .orbit-spotlight h2 { max-width: 12ch; font-size: clamp(38px, 12vw, 60px); }
+  .orbit-status { border-left: 0; border-top: 1px solid var(--line); padding: 20px 0 0; }
+}

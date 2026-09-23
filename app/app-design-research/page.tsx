@@ -1,6 +1,6 @@
 import { pageMetadata } from '../../lib/seo';
 import Image from "next/image";
-import Link from 'next/link';
+import { SiteFooter, SiteHeader } from '../../components/SiteChrome';
 const title = 'App Design Research | PatchworkMD';
 const description = 'Review screenshots, interface text, and app code in Codex.';
 export const metadata = pageMetadata(title, description, '/app-design-research');
@@ -29,16 +29,8 @@ const faq = [
 export default function Page() {
   return (
     <>
-      <header>
-        <Link className="wordmark" href="/">
-          PatchworkMD
-        </Link>
-        <nav>
-          <a href="#install">Install</a>
-          <a href="#faq">FAQ</a>
-        </nav>
-      </header>
-      <main>
+      <SiteHeader product install />
+      <main id="main">
         <section className="intro adr-intro">
           <div className="intro-copy">
             <div className="adr-identity"><Image src="/app-design-research-icon.svg" alt="" width={40} height={40} unoptimized /><p className="eyebrow">App Design Research<span>Version 0.1.1</span></p></div>
@@ -173,10 +165,7 @@ export default function Page() {
           </div>
         </section>
       </main>
-      <footer>
-        <Link href="/">All projects</Link>
-        <a href="https://patchworkmd.dev">Made by PatchworkMD</a>
-      </footer>
+      <SiteFooter />
     </>
   );
 }

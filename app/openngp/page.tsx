@@ -1,21 +1,14 @@
 import { pageMetadata } from '../../lib/seo';
 import Link from 'next/link';
+import { SiteFooter, SiteHeader } from '../../components/SiteChrome';
 const title = 'OpenNGP — Campaign records, organized by workspace';
 const description = 'Local-first fundraising and organizing software with separate campaign workspaces. Explore current workflows and development status.';
 export const metadata = pageMetadata(title, description, '/openngp');
 export default function OpenNGPPage() {
   return (
     <>
-      <header>
-        <Link className="wordmark" href="/">
-          PatchworkMD
-        </Link>
-        <nav aria-label="Product navigation">
-          <Link href="/openngp/faq">FAQ</Link>
-          <Link href="/">All projects</Link>
-        </nav>
-      </header>
-      <main>
+      <SiteHeader product openngp />
+      <main id="main">
         <section className="intro">
           <div className="intro-copy">
             <p className="eyebrow">In development</p>
@@ -69,10 +62,7 @@ export default function OpenNGPPage() {
           </div>
         </section>
       </main>
-      <footer>
-        <Link href="/">Back to PatchworkMD</Link>
-        <a href="https://patchworkmd.dev">Made by PatchworkMD</a>
-      </footer>
+      <SiteFooter />
     </>
   );
 }

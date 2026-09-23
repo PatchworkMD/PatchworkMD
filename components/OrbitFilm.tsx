@@ -40,6 +40,7 @@ export default function OrbitFilm() {
           onCanPlay={() => setState('ready')}
           onPlay={() => setState('ready')}
           onError={() => setState('error')}
+          aria-label="Orbit product film"
           aria-describedby="orbit-film-status"
         >
           <source src="/orbit/orbit-film.mp4" type="video/mp4" onError={() => setState('error')} />
