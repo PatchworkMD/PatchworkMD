@@ -1,7 +1,7 @@
 import { pageMetadata } from '../../lib/seo';
-import Link from 'next/link';
 import Image from 'next/image';
 import { notFound, permanentRedirect } from 'next/navigation';
+import { SiteFooter, SiteHeader } from '../../components/SiteChrome';
 type ProductInfo = {
   name: string;
   status: string;
@@ -13,6 +13,7 @@ type ProductInfo = {
   url?: string;
   cta?: string;
   repo?: string;
+  previewImage?: string;
 };
 const products: Record<string, ProductInfo> = {
   airplayify: {
@@ -76,19 +77,19 @@ const products: Record<string, ProductInfo> = {
       ],
     ],
     setup:
-      'A public signed installer is not available yet. Installation instructions will be added after Developer ID signing, notarization and provider acceptance checks.',
+      'A public signed installer is not available yet. Orbit has a local release candidate; signing, notarization and public distribution checks remain open.',
     faq: [
       [
         'Can I download it?',
-        'Not yet. The current package is a local, ad-hoc-signed release candidate. No public download is offered.',
+        'Not yet. Orbit has a local release candidate. Signing, notarization and public distribution checks remain open, so no public download is offered.',
       ],
       [
         'Which tools work?',
-        'Integrations are in development. An implementation entry does not mean every provider has passed a real end-to-end check.',
+        'Provider support is still being tested. Check availability before relying on an integration.',
       ],
       [
         'What permissions does it need?',
-        'Permissions depend on the features you enable, including terminal automation for returning to a session.',
+        'Permissions depend on the features you enable, including terminal automation for enabled workflows.',
       ],
       [
         'What is the license?',
@@ -101,27 +102,33 @@ const products: Record<string, ProductInfo> = {
     ],
   },
   '2d0': {
-    name: '2D0',
-    status: 'Private beta preparation',
+    name: '2DO',
+    status: 'iOS beta · build 2 approved',
     tagline: 'A whiteboard for your tasks.',
     intro:
       'A customizable task app with a whiteboard-marker character, quick capture and small celebrations for progress.',
+    repo: 'https://github.com/PatchworkMD/2do-macos',
+    previewImage: '/social/2d0-v1.png',
     benefits: [
       [
         'Capture and return',
-        'Write down a task, complete it, undo it, and return to your list.',
+        'Write down a task, complete it, undo it, and return to your list. The Mac app also has a Quick Capture panel.',
       ],
       [
         'Set your style',
-        'Choose a writing tool, color and mood. Sound and haptics are optional.',
+        'Choose a writing tool, ink color, mood and buddy personality. Sound and haptics are optional.',
       ],
       [
         'On-device task storage',
-        'Local task storage and a widget snapshot are part of the current development work.',
+        'Task data stays on the device. The app can mirror to configured local files and writes a local widget snapshot.',
+      ],
+      [
+        'Completion feels physical',
+        'Marker streaks, a short reward animation, haptics and optional sounds make finishing the task the payoff.',
       ],
     ],
     setup:
-      'The iOS 1.0 (2) TestFlight build is waiting for review. Public installation and open beta invitations are not available here.',
+      'Apple approved iOS 1.0 build 2 for beta testing. The newer illustrated local candidate is not uploaded. Public installation and open beta invitations are not available here; email hello@patchworkmd.dev for current beta access.',
     faq: [
       [
         'Is it released?',
@@ -142,6 +149,10 @@ const products: Record<string, ProductInfo> = {
       [
         'Where do I send feedback?',
         'Use hello@patchworkmd.dev. Include a short description and remove private task content from screenshots.',
+      ],
+      [
+        'Can I download a Mac build here?',
+        'No. The Mac build is a private local candidate. The public repository contains the source and local build instructions.',
       ],
     ],
   },
@@ -326,17 +337,9 @@ export default async function Product({
   if (!p) notFound();
   return (
     <>
-      <header>
-        <Link className="wordmark" href="/">
-          PatchworkMD
-        </Link>
-        <nav aria-label="Product navigation">
-          <a href="#start">Availability</a>
-          <a href="#faq">FAQ</a>
-        </nav>
-      </header>
+      <SiteHeader product />
       <main id="main">
-        <section className="intro">
+        <section className={`intro product-intro product-${slug}`}>
           <div className="intro-copy">
             <p className="eyebrow">
               {p.name} · {p.status}
@@ -364,6 +367,11 @@ export default async function Product({
             )}
             <h1>{p.tagline}</h1>
             <p className="bio">{p.intro}</p>
+            {slug === 'orbit' && (
+              <p className="intro-note orbit-campaign-note">
+                This page presents the current release candidate. It is not a public download or a promise of provider support.
+              </p>
+            )}
             {p.repo && (
               <a className="product-cta" href={p.repo}>
                 View source on GitHub →
@@ -374,8 +382,43 @@ export default async function Product({
                 {p.cta} →
               </a>
             )}
+            {slug === '2d0' && (
+              <a className="product-cta" href="mailto:hello@patchworkmd.dev?subject=2DO%20beta%20access">
+                Ask about beta access →
+              </a>
+            )}
           </div>
         </section>
+        {p.previewImage && (
+          <figure className="product-preview-figure">
+            <Image
+              src={p.previewImage}
+              alt="2DO product preview with a whiteboard-inspired task message"
+              width={1200}
+              height={630}
+              unoptimized
+            />
+            <figcaption>2DO · public product preview · current availability listed below</figcaption>
+          </figure>
+        )}
+        {slug === '2d0' && (
+          <figure className="product-motion-figure">
+            <video
+              className="product-motion-video"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              poster="/social/2d0-v1.png"
+              aria-label="2DO product film showing the whiteboard app on a real iPhone"
+            >
+              <source src="/2do-iphone-motion.mp4" type="video/mp4" />
+              Your browser does not support the 2DO product film.
+            </video>
+            <figcaption>2DO · iPhone motion study · 5-second silent product film</figcaption>
+          </figure>
+        )}
         <section aria-label="Product overview">
           {p.benefits.map(([a, b]) => (
             <article className="project" key={a}>
@@ -415,10 +458,7 @@ export default async function Product({
           </div>
         </section>
       </main>
-      <footer>
-        <Link href="/">All projects</Link>
-        <a href="https://patchworkmd.dev">Made by PatchworkMD</a>
-      </footer>
+      <SiteFooter />
     </>
   );
 }

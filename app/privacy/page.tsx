@@ -1,9 +1,9 @@
 import { pageMetadata } from '../../lib/seo';
-import Link from 'next/link';
+import { SiteFooter, SiteHeader } from '../../components/SiteChrome';
 export const metadata = pageMetadata('Privacy & site information | patchwork.md', 'How patchwork.md handles website visits, hosting, and contact information.', '/privacy');
 export default function Privacy() {
   return <>
-    <header><Link className="wordmark" href="/">patchwork.md</Link><nav aria-label="Main navigation"><Link href="/">Projects</Link><a href="mailto:hello@patchworkmd.dev">Contact ↗</a></nav></header>
+    <SiteHeader />
     <main id="main" className="site-information">
       <section className="intro"><div><p className="eyebrow">This website</p><h1>Privacy &amp;<br />site information</h1><p className="bio">PatchworkMD is an independent software portfolio.</p></div></section>
       <section><h2>Browsing</h2><p>This site does not provide accounts, uploads, comments, payment forms, or other visitor submission forms. The site code does not add advertising trackers or analytics, or save visitor information in browser storage.</p><p>ChatGPT Sites hosts this website. OpenAI may process technical information to deliver, secure, and operate the site. See <a href="https://openai.com/policies/privacy-policy/">OpenAI’s privacy policy</a> for its practices.</p></section>
@@ -12,6 +12,6 @@ export default function Privacy() {
       <section><h2>Images and release status</h2><p>The studio image and App Design Research artwork are illustrations. Product screenshots are identified as such. Development and preview labels describe availability; a project listing does not mean an app is publicly released.</p></section>
       <section><h2>Questions or concerns</h2><p>For privacy questions, incorrect information, or concerns about content on this website, email <a href="mailto:hello@patchworkmd.dev">hello@patchworkmd.dev</a>.</p></section>
     </main>
-    <footer><Link href="/">All projects</Link><span>Made by PatchworkMD</span></footer>
+    <SiteFooter />
   </>;
 }

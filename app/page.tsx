@@ -1,10 +1,11 @@
 import { pageMetadata } from '../lib/seo';
-export const metadata = pageMetadata('patchwork.md | Mac apps, web tools & campaign software', 'Independent software from patchwork.md. Explore Orbit, 2D0, Dreamer, LocalModelMatch, and OpenNGP, with demos and current release details.');
+export const metadata = pageMetadata('patchwork.md | Mac apps, web tools & campaign software', 'Independent software from PatchworkMD. Explore Orbit, 2DO, Dreamer, LocalModelMatch, and OpenNGP, with demos and current release details.');
 import Link from 'next/link';
 import Image from 'next/image';
 import FlashMark from '../components/FlashMark';
 import FlashBackground from '../components/FlashBackground';
-const appLogos: Record<string,string> = { '2D0':'/2do-current-icon.png', Orbit:'/orbit-icon.png', Dreamer:'/dreamer-nightcap.png' };
+import { SiteFooter, SiteHeader } from '../components/SiteChrome';
+const appLogos: Record<string,string> = { '2DO':'/2do-current-icon.png', Orbit:'/orbit-icon.png', Dreamer:'/dreamer-nightcap.png' };
 const projects = [
   [
     'OpenNGP',
@@ -14,7 +15,7 @@ const projects = [
     'Brings donor profiles, pledges, contributions, and call outcomes into one workflow. Public distribution is not available yet.',
   ],
   [
-    '2D0',
+    '2DO',
     'Mac & iPhone',
     'In development',
     'Capture tasks and keep lists on Mac and iPhone.',
@@ -35,36 +36,12 @@ const projects = [
     'Native coding-agent sessions and approvals. Public distribution is not available yet.',
   ],
 ] as const;
-function Mark() {
-  return (
-    <span className="brand-mark" aria-hidden="true">
-      <span />
-      <span />
-      <span />
-      <span />
-    </span>
-  );
-}
 export default function Home() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebSite', name: 'patchwork.md', alternateName: 'PatchworkMD', url: 'https://patchworkmd.dev/', description: 'Independent Mac apps, web tools, and campaign software.' }) }} />
       <FlashBackground />
-      <a className="skip" href="#main">
-        Skip to content
-      </a>
-      <header>
-        <Link className="wordmark" href="/">
-          <Mark />
-          <span>patchwork.md</span>
-        </Link>
-        <nav aria-label="Main navigation">
-          <a href="#projects">Projects</a>
-          <a href="#skills">Approach</a>
-          <a href="https://github.com/PatchworkMD">GitHub ↗</a>
-          <a href="mailto:hello@patchworkmd.dev">Contact ↗</a>
-        </nav>
-      </header>
+      <SiteHeader />
       <main id="main" className="portfolio-candidate">
         <section className="cover">
           <h1 className="visually-hidden">patchwork.md</h1>
@@ -126,6 +103,32 @@ export default function Home() {
             </div>
           </div>
         </section>
+        <section className="orbit-spotlight" id="orbit-spotlight" aria-labelledby="orbit-title">
+          <div className="section-kicker">
+            <span>02 / Mac app</span>
+            <span>Release candidate</span>
+          </div>
+          <div className="orbit-spotlight-grid">
+            <div>
+              <p className="availability">Orbit · Native macOS</p>
+              <h2 id="orbit-title">Coding sessions, with the next handoff in view.</h2>
+              <p className="feature-detail">
+                Orbit brings coding-agent sessions, questions, and approvals into a native Mac surface.
+              </p>
+              <Link className="text-link" href="/orbit">
+                View the Orbit campaign ↗
+              </Link>
+            </div>
+            <aside className="orbit-status" aria-label="Orbit availability">
+              <span className="orbit-status-label">Current status</span>
+              <strong>Release candidate</strong>
+              <p>Local candidate only. A public signed installer is not available yet.</p>
+              <Link className="text-link" href="/orbit#start">
+                Check Orbit availability ↗
+              </Link>
+            </aside>
+          </div>
+        </section>
         <section id="projects" className="work">
           <div className="section-kicker">
             <h2>Projects in development</h2>
@@ -147,7 +150,7 @@ export default function Home() {
                   )}
                   <h3>
                     <Link
-                      href={name === '2D0' ? '/2d0' : '/' + name.toLowerCase()}
+                      href={name === '2DO' ? '/2d0' : '/' + name.toLowerCase()}
                     >
                       {name}
                     </Link>
@@ -189,7 +192,7 @@ export default function Home() {
                 <dt>Native applications</dt>
                 <dd>
                   SwiftUI and AppKit interfaces for the Mac, with iPhone work
-                  alongside them.<span>Orbit · 2D0</span>
+                  alongside them.<span>Orbit · 2DO</span>
                 </dd>
               </div>
               <div>
@@ -216,7 +219,7 @@ export default function Home() {
             <h2>More from PatchworkMD</h2>
           </div>
           <div className="more-projects">
-            <Link href="/appdesignresearch/">
+            <Link href="/app-design-research">
               <span className="product-wordmark">
                 <Image
                   src="/app-design-research-icon.svg"
@@ -229,7 +232,7 @@ export default function Home() {
               </span>{' '}
               <span>View the example &amp; install ↗</span>
             </Link>
-            <Link href="/airplayify/">
+            <Link href="/airplayify">
               Airplayify Jam <span>Experimental macOS alpha ↗</span>
             </Link>
             <Link href="/type-b">
@@ -258,14 +261,7 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <footer>
-        <span>
-          <Mark /> PatchworkMD
-        </span>
-        <a href="https://github.com/PatchworkMD">Public repositories ↗</a>
-        <Link href="/privacy">Privacy &amp; site information</Link>
-        <a href="https://patchworkmd.dev">Made by PatchworkMD</a>
-      </footer>
+      <SiteFooter />
     </>
   );
 }

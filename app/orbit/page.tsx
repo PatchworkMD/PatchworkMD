@@ -23,7 +23,7 @@ export const metadata: Metadata = pageMetadata(
 const questions = [
   [
     'Can I download Orbit?',
-    'Not yet. The current package is a signed local release candidate. Notarization and public distribution remain pending, so this page does not offer a public installer.',
+    'Not yet. Orbit has a local release candidate. Signing, notarization and public distribution checks remain open, so this page does not offer a public installer.',
   ],
   [
     'Which tools work?',
@@ -179,7 +179,7 @@ export default function OrbitPage() {
           </div>
           <div className="orbit-availability-copy">
             <p>
-              A public signed installer is not available yet. The current package is a signed local release candidate; notarization and public distribution checks remain open.
+              A public signed installer is not available yet. Orbit has a local release candidate; signing, notarization and public distribution checks remain open.
             </p>
             <p>Orbit is designed for macOS 14 and later. Installation instructions will follow the remaining release checks.</p>
           </div>
