@@ -107,7 +107,6 @@ const products: Record<string, ProductInfo> = {
     tagline: 'A whiteboard for your tasks.',
     intro:
       'A customizable task app with a whiteboard-marker character, quick capture and small celebrations for progress.',
-    repo: 'https://github.com/PatchworkMD/2do-macos',
     previewImage: '/social/2d0-v1.png',
     benefits: [
       [
@@ -152,7 +151,7 @@ const products: Record<string, ProductInfo> = {
       ],
       [
         'Can I download a Mac build here?',
-        'No. The Mac build is a private local candidate. The public repository contains the source and local build instructions.',
+        'No. The Mac build is a private local candidate, and no public build is offered here.',
       ],
     ],
   },
