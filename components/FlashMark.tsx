@@ -109,7 +109,7 @@ export default function FlashMark() {
     <div className="lettering-stage"><svg ref={lettering} className="flash-lettering" viewBox="0 0 1000 390" role="img" aria-label="patchwork.md">
       <defs><path id="word-arc" d="M70 190 Q500 20 930 190" /></defs>
       <text textAnchor="middle"><textPath href="#word-arc" startOffset="50%">patchwork.md</textPath></text>
-      
+
       <g className="flash-ornament" fill="none" stroke="#192a35" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
         <path d="M150 268 C215 225 290 238 350 263 C380 278 416 281 442 269 M850 268 C785 225 710 238 650 263 C620 278 584 281 558 269" />
         <path d="M185 254 Q165 229 143 239 Q150 260 185 254 M815 254 Q835 229 857 239 Q850 260 815 254" fill="#287f8b" />
