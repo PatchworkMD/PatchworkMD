@@ -1,0 +1,26 @@
+WEBVTT
+
+1
+00:00:00.180 --> 00:00:05.000
+PATCHWORK.MD / ORBIT
+Your coding agents, in view.
+
+2
+00:00:05.230 --> 00:00:13.050
+SESSION / CONTEXT
+Stay with the work.
+
+3
+00:00:13.280 --> 00:00:23.100
+QUESTION / CONTEXT
+Read the question. Consider the choices.
+
+4
+00:00:23.330 --> 00:00:32.150
+APPROVAL / DECISION
+Review the request. Choose Allow or Deny.
+
+5
+00:00:32.380 --> 00:00:38.400
+ORBIT / RELEASE CANDIDATE
+A native macOS companion for coding-agent sessions, questions and approvals.

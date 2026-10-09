@@ -1,0 +1,198 @@
+.orbit-page {
+  --ink: #f4f6fb;
+  --muted: #9ba6bc;
+  --line: rgba(255, 255, 255, .14);
+  --accent: #6bdcff;
+  --orbit-mint: #7af0b8;
+  --orbit-amber: #ffc75c;
+  color: #f4f6fb;
+  background: #05070c;
+  padding: 0 clamp(22px, 4vw, 64px) 20px;
+  margin: 0 auto;
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+}
+.orbit-page .eyebrow, .orbit-page .orbit-lede, .orbit-hero-meta dt, .orbit-index,
+.orbit-film-caption, .orbit-film-status, .orbit-section-heading > p:last-child,
+.orbit-principle-grid p, .orbit-availability-copy p + p, .orbit-faq-entry p,
+.orbit-contact p { color: #9ba6bc; }
+.orbit-hero, .orbit-mark-section, .orbit-film-section, .orbit-showcase, .orbit-principles, .orbit-availability,
+.orbit-faq, .orbit-contact { border-color: rgba(255, 255, 255, .14) !important; }
+.orbit-hero-meta { border-left-color: rgba(255, 255, 255, .14); }
+.orbit-principle-grid article { border-top-color: rgba(255, 255, 255, .5); }
+.orbit-hero-preview img { border-color: rgba(255, 255, 255, .18); }
+.orbit-transcript, .orbit-faq-entry { border-color: rgba(255, 255, 255, .14) !important; }
+.orbit-transcript-copy strong { color: #f4f6fb; }
+.orbit-transcript summary, .orbit-faq-entry summary, .orbit-film-caption a { color: #f4f6fb; }
+.orbit-principle-grid article { border-top-color: rgba(255, 255, 255, .5); }
+.orbit-contact { border-color: rgba(255, 255, 255, .5) !important; }
+
+.orbit-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(220px, .75fr);
+  gap: clamp(38px, 9vw, 136px);
+  align-items: end;
+  padding: clamp(58px, 10vw, 132px) 0 clamp(64px, 9vw, 116px);
+  border-bottom: 2px solid var(--ink);
+}
+
+.orbit-hero-copy { max-width: 720px; }
+.orbit-hero .eyebrow { margin-bottom: 20px; color: var(--muted); }
+.orbit-title-lockup { display: flex; align-items: flex-start; gap: 20px; }
+.orbit-icon { width: 72px; height: 72px; flex: 0 0 auto; border-radius: 15px; }
+.orbit-hero h1 {
+  max-width: 11ch;
+  font-size: clamp(48px, 7.1vw, 106px);
+  line-height: .96;
+  letter-spacing: -.075em;
+  font-weight: 550;
+}
+.orbit-lede { max-width: 32ch; margin-top: 34px; font-size: clamp(22px, 2.6vw, 34px); line-height: 1.18; letter-spacing: -.035em; }
+.orbit-campaign-note { max-width: 46ch; margin-top: 26px; padding-left: 16px; border-left: 2px solid var(--accent); color: var(--muted); font-size: 15px; line-height: 1.65; }
+.orbit-cta { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; margin-top: 32px; padding: 12px 26px; border-radius: 999px; background: var(--accent); color: #05070c; font-size: 15px; font-weight: 600; box-shadow: 0 0 0 1px rgba(255, 255, 255, .18), 0 12px 30px -12px rgba(107, 220, 255, .55); transition: transform .2s var(--ease), box-shadow .2s var(--ease); }
+.orbit-cta span { transition: transform .25s var(--ease); }
+.orbit-cta:hover { transform: translateY(-1px); box-shadow: 0 0 0 1px rgba(255, 255, 255, .28), 0 16px 34px -12px rgba(107, 220, 255, .7); }
+.orbit-cta:hover span { transform: translateY(3px); }
+.orbit-hero-aside { display: grid; gap: 26px; align-self: end; }
+.orbit-hero-preview { margin: 0; }
+.orbit-hero-preview img { display: block; width: 100%; height: auto; border: 1px solid var(--ink); }
+.orbit-hero-preview figcaption { padding-top: 8px; color: var(--muted); font: 10px var(--font-geist-mono), monospace; letter-spacing: .03em; }
+.orbit-hero-meta { border-left: 1px solid var(--line); padding: 12px 0 12px 26px; }
+.orbit-hero-meta dl { margin: 0; }
+.orbit-hero-meta dl > div + div { margin-top: 26px; }
+.orbit-hero-meta dt, .orbit-index { color: var(--muted); font: 11px var(--font-geist-mono), monospace; letter-spacing: .08em; text-transform: uppercase; }
+.orbit-hero-meta dd { max-width: 25ch; margin: 7px 0 0; font-size: 16px; line-height: 1.5; }
+
+.orbit-film-section, .orbit-showcase, .orbit-principles, .orbit-availability, .orbit-faq { padding-top: clamp(64px, 9vw, 118px); }
+.orbit-section-heading { max-width: 620px; }
+.orbit-section-heading-wide { max-width: none; }
+.orbit-section-heading .eyebrow { margin-bottom: 14px; color: var(--muted); }
+.orbit-section-heading h2 { max-width: 14ch; font-size: clamp(36px, 5vw, 72px); line-height: 1.01; letter-spacing: -.06em; font-weight: 500; }
+.orbit-section-heading > p:last-child { max-width: 48ch; margin-top: 24px; color: var(--muted); font-size: 17px; line-height: 1.65; }
+
+.orbit-film { margin: 46px 0 0; }
+.orbit-film-frame { overflow: hidden; background: #0a0f16; border: 1px solid rgba(255, 255, 255, .16); }
+.orbit-film video { display: block; width: 100%; aspect-ratio: 16 / 9; background: #0a0f16; object-fit: contain; }
+.orbit-film-caption { display: flex; justify-content: space-between; gap: 22px; padding-top: 10px; color: var(--muted); font: 11px var(--font-geist-mono), monospace; letter-spacing: .03em; }
+.orbit-film-caption a { min-height: 44px; color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
+.orbit-film-caption a:hover { color: var(--accent); }
+.orbit-film-status { min-height: 24px; margin-top: 8px; color: var(--muted); font-size: 13px; }
+.orbit-transcript { margin-top: 10px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.orbit-transcript summary, .orbit-faq-entry summary { min-height: 56px; margin: 0; color: var(--ink); font-size: 14px; }
+.orbit-transcript summary::-webkit-details-marker, .orbit-faq-entry summary::-webkit-details-marker { display: none; }
+.orbit-transcript summary, .orbit-faq-entry summary { list-style: none; }
+.orbit-plus { color: var(--accent); font: 24px var(--font-geist-mono), monospace; transition: transform .2s var(--ease); }
+details[open] .orbit-plus { transform: rotate(45deg); }
+.orbit-transcript-copy { max-width: 66ch; padding: 4px 32px 26px 0; color: var(--muted); font-size: 15px; line-height: 1.7; }
+.orbit-transcript-copy p + p { margin-top: 12px; }
+.orbit-transcript-copy strong { color: var(--ink); font-weight: 550; }
+
+.orbit-principles { border-top: 1px solid var(--line); }
+.orbit-principle-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(22px, 5vw, 76px); margin-top: 48px; }
+.orbit-principle-grid article { padding-top: 15px; border-top: 1px solid var(--ink); }
+.orbit-principle-grid h3 { margin-top: 26px; font-size: clamp(22px, 2.4vw, 31px); line-height: 1.15; letter-spacing: -.04em; }
+.orbit-principle-grid p { max-width: 30ch; margin-top: 14px; color: var(--muted); font-size: 15px; line-height: 1.65; }
+
+.orbit-availability { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, .9fr); gap: clamp(28px, 8vw, 120px); border-top: 1px solid var(--line); }
+.orbit-availability-copy { padding-top: 10px; }
+.orbit-availability-copy p { max-width: 46ch; font-size: 19px; line-height: 1.55; letter-spacing: -.02em; }
+.orbit-availability-copy p + p { margin-top: 22px; color: var(--muted); font-size: 15px; line-height: 1.7; letter-spacing: 0; }
+
+.orbit-faq { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 1fr); gap: clamp(28px, 8vw, 120px); border-top: 1px solid var(--line); }
+.orbit-faq-entry { border-top: 1px solid var(--line); }
+.orbit-faq-entry:last-child { border-bottom: 1px solid var(--line); }
+.orbit-faq-entry p { max-width: 54ch; padding: 0 32px 22px 0; color: var(--muted); font-size: 15px; line-height: 1.65; }
+
+.orbit-contact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, .9fr); gap: clamp(28px, 8vw, 120px); padding: clamp(70px, 10vw, 130px) 0 30px; border-top: 2px solid var(--ink); }
+.orbit-contact h2 { max-width: 9ch; font-size: clamp(48px, 7vw, 104px); line-height: .95; letter-spacing: -.075em; font-weight: 500; }
+.orbit-contact p { color: var(--muted); font-size: 15px; }
+.orbit-contact a { display: inline-flex; min-height: 44px; align-items: center; margin-top: 14px; font-size: 19px; text-decoration: underline; text-underline-offset: 5px; }
+.orbit-contact a:hover { color: var(--accent); }
+
+@media (max-width: 760px) {
+  .orbit-hero { grid-template-columns: 1fr; gap: 38px; padding-top: 48px; }
+  .orbit-title-lockup { gap: 14px; }
+  .orbit-icon { width: 54px; height: 54px; border-radius: 12px; }
+  .orbit-hero h1 { font-size: clamp(44px, 12vw, 70px); }
+  .orbit-lede { margin-top: 26px; font-size: 23px; }
+  .orbit-hero-meta { border-left: 0; border-top: 1px solid var(--line); padding: 22px 0 0; }
+  .orbit-hero-meta dl { display: grid; grid-template-columns: 1fr 1fr; gap: 22px 18px; }
+  .orbit-hero-meta dl > div + div { margin-top: 0; }
+  .orbit-hero-meta dd { font-size: 14px; }
+  .orbit-film { margin-top: 34px; }
+  .orbit-principle-grid, .orbit-availability, .orbit-faq, .orbit-contact { grid-template-columns: 1fr; }
+  .orbit-principle-grid { gap: 26px; margin-top: 34px; }
+  .orbit-principle-grid article { padding-top: 12px; }
+  .orbit-principle-grid h3 { margin-top: 18px; }
+  .orbit-availability, .orbit-faq { gap: 28px; }
+  .orbit-contact { gap: 22px; }
+}
+
+@media (max-width: 460px) {
+  .orbit-title-lockup { display: block; }
+  .orbit-icon { margin-bottom: 16px; }
+  .orbit-hero-meta dl { display: block; }
+  .orbit-hero-meta dl > div + div { margin-top: 20px; }
+  .orbit-film-caption { display: block; line-height: 1.6; }
+  .orbit-film-caption span { display: block; }
+  .orbit-film-caption a { display: inline-flex; margin-top: 8px; align-items: center; }
+}
+
+.orbit-starfield { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.orbit-star { position: absolute; width: 2px; height: 2px; background: #eef4ff; border-radius: 1px; opacity: .35; animation: orbit-twinkle 4s ease-in-out infinite; }
+.orbit-star--cyan { background: var(--accent); }
+.orbit-star--amber { background: var(--orbit-amber); }
+.orbit-star--mint { background: var(--orbit-mint); }
+@keyframes orbit-twinkle {
+  0%, 100% { opacity: .15; transform: scale(.75); }
+  50% { opacity: .9; transform: scale(1.4); }
+}
+.orbit-ufo { position: absolute; top: 13%; left: 0; width: 34px; height: 16px; opacity: 0; animation: orbit-ufo-flyby 34s linear infinite; animation-delay: 5s; }
+.orbit-ufo-dome { position: absolute; left: 11px; top: 0; width: 12px; height: 9px; border-radius: 50% 50% 2px 2px / 65% 65% 0 0; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+.orbit-ufo-hull { position: absolute; left: 1px; right: 1px; top: 8px; height: 7px; border-radius: 5px; background: var(--orbit-mint); box-shadow: 0 0 10px var(--orbit-mint); }
+@keyframes orbit-ufo-flyby {
+  0%, 82% { transform: translateX(-12vw); opacity: 0; }
+  88% { opacity: .85; }
+  96% { transform: translateX(112vw); opacity: .85; }
+  100% { transform: translateX(122vw); opacity: 0; }
+}
+
+.orbit-page > * { position: relative; z-index: 1; }
+
+.orbit-mark-section { padding-top: clamp(64px, 9vw, 118px); border-top: 1px solid; }
+.orbit-mark { position: relative; min-height: 360px; isolation: isolate; margin-top: 40px; }
+.orbit-lettering-stage { position: relative; width: 100%; aspect-ratio: 1000 / 390; }
+.orbit-lettering { position: relative; display: block; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+.orbit-lettering text { font-family: Georgia, 'Times New Roman', serif; font-weight: 700; font-size: 120px; letter-spacing: -4px; fill: #eef4ff; opacity: .92; }
+.orbit-ink-shader { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
+.orbit-ascii-rocket { display: block; width: 300px; max-width: 100%; height: 280px; margin: -150px auto 0; position: relative; z-index: 3; filter: contrast(1.18); }
+.orbit-mark-controls { display: flex; gap: 20px; justify-content: center; position: relative; z-index: 4; margin-top: 6px; }
+.orbit-mark-controls button { background: transparent; border: 0; border-bottom: 1px solid rgba(255, 255, 255, .35); color: #9ba6bc; min-height: 44px; padding: 8px 12px; font: 12px var(--font-geist-mono), monospace; cursor: pointer; }
+.orbit-mark-controls button:hover { color: var(--accent); border-color: var(--accent); }
+.orbit-mark-controls button:active { transform: translateY(1px); }
+
+@media (max-width: 760px) {
+  .orbit-mark { min-height: 260px; }
+  .orbit-ascii-rocket { margin-top: -95px; height: 210px; }
+  .orbit-lettering text { font-size: 96px; }
+}
+
+.orbit-showcase { border-top: 1px solid rgba(255, 255, 255, .14); }
+.orbit-showcase-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; margin-top: 44px; }
+.orbit-showcase-grid figure { margin: 0; }
+.orbit-showcase-grid img { display: block; width: 100%; height: auto; border-radius: 14px; border: 1px solid rgba(255, 255, 255, .16); }
+.orbit-showcase-grid figcaption { margin-top: 10px; color: #9ba6bc; font: 11px var(--font-geist-mono), monospace; letter-spacing: .03em; }
+
+@media (max-width: 760px) {
+  .orbit-showcase-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 460px) {
+  .orbit-showcase-grid { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbit-cta span, .orbit-plus { transition: none; }
+  .orbit-star, .orbit-ufo { animation: none; opacity: .35; }
+  .orbit-ufo { display: none; }
+}

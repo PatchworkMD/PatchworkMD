@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /2d0/privacy
+Sitemap: https://patchworkmd.dev/sitemap.xml
