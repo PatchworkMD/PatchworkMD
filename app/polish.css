@@ -1,4 +1,3 @@
-/* Tighten the maker mark's supporting line and give the next step a clear place. */
 .portfolio-candidate .flash-intro {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
