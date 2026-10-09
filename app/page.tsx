@@ -47,7 +47,7 @@ export default function Home() {
           <h1 className="visually-hidden">patchwork.md</h1>
           <FlashMark />
           <div className="flash-intro">
-            <p>Independent software for Mac, the web, and campaign teams.</p>
+            <p>Independent tools for Mac, the web, and campaign work.</p>
             <a className="portfolio-cta" href="#projects">Projects <span aria-hidden="true">↓</span></a>
           </div>
         </section>
