@@ -303,3 +303,24 @@ body:has(.flash-background) .product-preview img{aspect-ratio:auto;height:auto;}
   .orbit-spotlight h2 { max-width: 12ch; font-size: clamp(38px, 12vw, 60px); }
   .orbit-status { border-left: 0; border-top: 1px solid var(--line); padding: 20px 0 0; }
 }
+
+.intro-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; margin-top: 24px; }
+.intro-actions .text-link { min-height: 44px; display: inline-flex; align-items: center; gap: 10px; }
+.intro-call-button, .portfolio-candidate .contact a.intro-call-button {
+  display: inline-flex; align-items: center; justify-content: space-between; gap: 20px;
+  min-height: 48px; padding: 14px 20px; border: 1px solid var(--ink);
+  background: var(--ink); color: var(--surface); font-size: 16px; line-height: 1.4;
+  text-decoration: none; max-width: 100%;
+}
+.intro-call-button:visited { color: var(--surface); }
+.intro-call-button:hover, .portfolio-candidate .contact a.intro-call-button:hover { background: var(--surface); color: var(--ink); }
+.intro-call-copy { max-width: 40ch; margin-top: 28px; font-size: 20px; line-height: 1.6; }
+.intro-call-steps { margin: 24px 0 0; padding-left: 22px; line-height: 1.7; }
+.intro-call-steps li + li { margin-top: 8px; }
+.intro-call-note { margin-top: 20px; color: var(--muted); font-size: 14px; }
+.portfolio-candidate .contact .intro-call-note a { margin: 0; font-size: inherit; overflow-wrap: anywhere; }
+@media (max-width: 640px) {
+  .intro-actions { align-items: stretch; flex-direction: column; gap: 12px; }
+  .intro-call-copy { font-size: 18px; }
+  .portfolio-candidate .contact.intro-call { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+}

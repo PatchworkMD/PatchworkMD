@@ -1,6 +1,7 @@
 import { pageMetadata } from '../lib/seo';
 export const metadata = pageMetadata('patchwork.md | Mac apps, web tools & campaign software', 'Independent software from PatchworkMD. Explore Orbit, 2DO, Dreamer, LocalModelMatch, and OpenNGP, with demos and current release details.');
 import Link from 'next/link';
+import IntroCallLink from '../components/IntroCallLink';
 import Image from 'next/image';
 import FlashMark from '../components/FlashMark';
 import FlashBackground from '../components/FlashBackground';
@@ -48,7 +49,10 @@ export default function Home() {
           <FlashMark />
           <div className="flash-intro">
             <p>Independent software for Mac, the web, and campaign teams.</p>
-            <a className="portfolio-cta" href="#projects">Projects <span aria-hidden="true">↓</span></a>
+            <div className="intro-actions">
+              <IntroCallLink className="intro-call-button" />
+              <a className="text-link" href="#projects">Explore the projects <span aria-hidden="true">↓</span></a>
+            </div>
           </div>
         </section>
         <section className="featured" id="featured-work">
@@ -253,11 +257,18 @@ export default function Home() {
             </Link>
           </div>
         </section>
-        <section className="contact">
-          <p className="eyebrow">Correspondence</p>
+        <section className="contact intro-call" id="intro-call" aria-labelledby="intro-call-title">
+          <p className="eyebrow">Have something in mind?</p>
           <div>
-            <h2>Say hello.</h2>
-            <a href="mailto:hello@patchworkmd.dev">hello@patchworkmd.dev ↗</a>
+            <h2 id="intro-call-title">Let’s talk<br />through it.</h2>
+            <p className="intro-call-copy">A Mac app, a web tool, or a campaign workflow that needs a better way forward. Bring the problem, even if the brief isn’t finished.</p>
+            <ol className="intro-call-steps">
+              <li>Tell me what you’re trying to make easier.</li>
+              <li>We’ll talk through the scope and whether it’s a fit.</li>
+              <li>Leave with a clear next step.</li>
+            </ol>
+            <IntroCallLink className="intro-call-button" />
+            <p className="intro-call-note">Prefer email? <a href="mailto:hello@patchworkmd.dev">hello@patchworkmd.dev</a></p>
           </div>
         </section>
       </main>
