@@ -2,6 +2,11 @@
 
 Status: internal operating draft. No referral offer is published and no reward has been promised.
 
+## Patchy launch gate
+Austin’s grill 02:30 instruction: Patchy takes real leads only after the site and Cal.com booking are live. Keep real-lead intake disabled until the production site is reachable and its booking CTAs open the confirmed live event, with booking confirmation, rescheduling, and cancellation verified. A draft PR, preview, or email fallback does not satisfy this gate. Record the production URL, event URL, verification date, and release owner in the private operating record before enabling intake. Do not store lead data here.
+
+The event-creation bot creates the Cal.com event using Austin sign-in and hands back its URL and settings. Event creation alone does not enable Patchy.
+
 ## Intake
 Use the existing hello@patchworkmd.dev mailbox. Ask the referrer to get permission before making a warm introduction. Keep personal details and the tracker in an existing private workspace, outside this public source repository. Do not request campaign, donor, medical, payment, or credential data.
 
@@ -22,7 +27,7 @@ Stages: received → permission confirmed → introduced → call booked → qua
 ## Launch decisions
 | Decision | Recommended option | Approved? |
 | --- | --- | --- |
-| Launch a manual referral pilot? | Yes, using the existing mailbox and a private tracker | Pending Austin |
+| Launch a manual referral pilot? | Only after the production site and Cal.com booking are live and verified; use the existing mailbox and a private tracker | Gated |
 | Advertise a reward now? | No, until written terms are approved | Pending Austin |
 | Eligibility and exclusions | Define qualifying introductions, duplicates, existing leads, and any restricted relationships before launch | Pending Austin |
 | Reward and trigger | Austin selects amount/type, qualifying outcome, timing, limits, and cancellation treatment | Pending Austin |

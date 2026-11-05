@@ -1,6 +1,6 @@
 # PatchworkMD push — November 5, 2026
 
-Goal: turn the existing portfolio into a clear path to intro calls, then prepare referral operations. Keep the established visual direction and all product routes.
+Goal: turn the existing portfolio into a clear path to intro calls, then prepare referral operations. Keep the established motion-rich visual direction and all product routes. Respect `prefers-reduced-motion`, including preference changes while the page is open.
 
 ## Gaps against done
 - No intro-call CTA or booking destination.
@@ -16,7 +16,8 @@ Goal: turn the existing portfolio into a clear path to intro calls, then prepare
 5. Build, lint, typecheck, capture 390px/320px evidence, commit, and open a PR.
 
 ## Gates
-- Austin supplies the exact Cal.com event URL. Recommend direct hosted scheduling, avoiding an iframe and third-party scripts.
+- The event-creation bot creates the Cal.com event using Austin sign-in and supplies the confirmed event URL. Use direct hosted scheduling, avoiding an iframe and third-party scripts.
+- Patchy must not accept real leads until the production site and Cal.com booking are both live and verified. An email fallback or preview does not clear this gate.
 - Austin approves referral eligibility, reward, trigger, and operating owner before launch. Recommend a manual pilot with no advertised reward until terms are settled.
 - Production deployment and merging remain outside this push.
 
