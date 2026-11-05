@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=22.13.0"
+    "node": ">=22.15.0"
   },
   "scripts": {
     "dev": "vinext dev",
     "build": "vinext build",
     "start": "wrangler dev --config dist/server/wrangler.json",
     "lint": "oxlint",
+    "test": "node --experimental-strip-types --test scripts/*.test.mjs",
     "format": "oxfmt"
   },
   "dependencies": {

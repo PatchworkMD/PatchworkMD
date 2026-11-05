@@ -35,3 +35,7 @@ I move between SwiftUI and AppKit, React and TypeScript, Python and FastAPI, and
 ---
 
 **PatchworkMD** · [patchworkmd.dev](https://patchworkmd.dev)
+
+## Development
+
+Use Node 22.15.0 or newer, then run `npm ci` and `npm test`. The test loader requires `node:module.registerHooks`.
