@@ -1,38 +1,31 @@
 # PatchworkMD status — November 5, 2026
 
-Branch: `push/20261105-intro-calls`. Not ship-ready; release gates remain.
+Delivery is split into two independent PRs against `main`:
+- [#4 — Intro calls, referral preparation, and motion polish](https://github.com/PatchworkMD/PatchworkMD/pull/4), branch `push/20261105-intro-calls`.
+- [#5 — All 20 existing lint errors](https://github.com/PatchworkMD/PatchworkMD/pull/5), branch `push/20261105-lint`.
 
 ## Done
-- Read the binding Austin decisions and project brief; preserved clean baseline and product routes.
-- Added intro-call CTAs in the hero and contact section, plus a navigation handoff.
-- Shared Cal.com configuration validates a direct HTTPS event URL; the empty default honestly requests a call by email.
-- Added scheduling privacy information, setup/release instructions, and three passing Node test cases including invalid destinations.
-- Prepared referral intake, private tracker fields, weekly review, and launch decisions without publishing an offer.
-- Production build and TypeScript check pass. Changed-file lint and whitespace checks pass.
+- Added shared, validated Cal.com configuration and intro-call CTAs in the hero/contact section. The empty configuration honestly opens an email request.
+- Prepared scheduling privacy information, event handoff/release instructions, and a consent-based referral operating draft. No incentive is published.
+- Added masthead entrance, scroll-driven reveals, and a booking-arrow interaction, all limited to `prefers-reduced-motion: no-preference`.
+- Background drawing stops scheduling frames when paused, hidden, or reduced-motion is requested, and resumes on preference/visibility/resize/control changes.
+- Tightened the 320px contact heading and moved the mobile background control to the top row so it cannot cover contact links.
+- PR #5 fixes all 20 reproduced lint errors without weakening rules: native semantics, explicit labels/link content, chart key conversion, external-store mobile/carousel state, subscription cleanup, and WebGL method binding.
 
-## Verification limits
-- Full `npm run lint` reports 20 errors in unchanged template components and hooks, including accessibility rules, effect state updates, and chart template expressions. This chunk does not resolve them.
-- Desktop/390px/320px visual and console checks are incomplete: Playwright Chromium cannot launch because system libraries including `libnspr4.so` are missing. Package lists are absent, so an isolated apt download could not resolve them. No screenshots or preview deployment are claimed.
-- Build emits the existing Vite JSON import compatibility warning and vinext route-classification notice.
-- Node dependencies installed from the lockfile using a temporary npm CLI because npm is absent from PATH. No project dependency was added.
+## Verification
+- PR #5: full lint, TypeScript, production build, five component-rendering checks, and whitespace checks pass. The test loader uses Node 22.15+ module hooks; verification used 22.23.2.
+- PR #4: production build, TypeScript, three booking tests, changed-file lint, and whitespace checks pass. The 20 inherited full-lint errors are resolved separately in PR #5; they remain on #4 until the independent cleanup is integrated by the release owner.
+- Production browser checks run locally at desktop 1440px, 390px, and 320px, covering homepage, Orbit, and privacy layouts, booking hit targets, keyboard focus, console/page/HTTP errors, pause behavior, and reduced motion on load and after a preference change. Final results and screenshots are under ignored `outputs/browser-check/`; see the PR for the final readback.
+- Initial screenshot review prompted the mobile heading/control fixes. The final browser check explicitly tests branding/contact-link overlap.
+- T3 preview repeatedly reported its browser was still unpacking. Local Playwright was used after these failures, with browser libraries extracted under ignored `outputs/`; no system installation or paid service was used. `/opt/tools/bin/gh` is authenticated as PatchworkMD.
+- Existing non-fatal Vite JSON-import and vinext route-classification notices remain.
 
-## Austin clarification — grill 02:30
-- The site should remain motion-rich and respect `prefers-reduced-motion`. Existing canvas and shader motion check the preference; CSS disables animations and transitions for reduced motion. Browser verification is still outstanding.
-- Patchy takes real leads only after the production site and Cal.com booking are live and verified. Keep real-lead intake disabled until then.
-- An event-creation bot will create the Cal.com event using Austin sign-in and return the exact URL. This repository task does not create the event or request credentials.
-
-## In progress / next
-- Complete browser verification and a visual taste pass in an environment with browser system libraries.
-- Resolve repository-wide lint separately before calling the site ship-ready.
-- Orbit product and broader SEO remain behind the site/booking and referral priorities; sibling repositories were not modified.
-
-## Gates for Austin
-| Decision | Yes/no needed | Recommended option |
+## Gates for Austin / event-creation bot
+| Gate | Yes/no needed | Recommended option |
 | --- | --- | --- |
-| Event-creation bot returns confirmed Cal.com event URL and settings? | Yes, bot handoff | Create with Austin sign-in; fill `lib/booking-config.json` after verification |
-| Enable Patchy real-lead intake? | Yes, after live verification | Keep disabled until production site and working Cal.com booking are live; approve referral owner and terms separately |
-| Advertise referral rewards now? | Yes | No, until eligibility, reward, trigger, limits, and timing are approved |
-| Merge or deploy production? | Yes, later | No until browser checks, lint, and booking confirmation are complete |
+| Cal.com event created and exact event URL returned? | Yes, bot handoff | Event-creation bot uses Austin sign-in; verify event settings, then populate `lib/booking-config.json` |
+| Production site and working Cal.com booking live? | Yes, release owner | Keep Patchy real-lead intake disabled until both are live and booking/confirmation/rescheduling/cancellation are verified |
+| Advertise referral rewards? | Yes | No until eligibility, reward, trigger, limits, timing, and owner are approved |
+| Merge or deploy production? | Separate authorization | Neither performed in this push |
 
-## Delivery
-GitHub CLI has no authenticated account and the shell push failed for missing credentials. The connected GitHub integration is authenticated as PatchworkMD and is being used to publish the verified file tree and open a PR. Results are recorded in the final handoff. No production deployment or merge has been performed.
+Orbit product and broader SEO remain after the site/booking and referral priorities. Sibling repositories were not modified.

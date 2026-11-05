@@ -16,3 +16,8 @@ A direct hosted link avoids iframe scrolling on small screens, extra client Java
 
 ## Manual conversion review
 For each received inquiry, record date, source if volunteered, fit, whether a call was booked, and the next action in the private referral tracker. Review weekly. Do not add visitor tracking or claim conversion improvement without evidence.
+
+## Runnable browser check
+Run a local production build and server, then use `SITE_CHECK_URL=http://localhost:3020 node scripts/browser-check.mjs` with Playwright Core available. If it is supplied by the host, set `PLAYWRIGHT_MODULE` to its `index.mjs` and `BROWSER_EXECUTABLE` to the installed Chromium binary. The check writes screenshots and `results.json` to ignored `outputs/browser-check/`.
+
+The check covers desktop 1440px, 390px, and 320px; homepage, Orbit, and privacy overflow; booking targets and keyboard focus; background motion, pause, initial and dynamically changed reduced-motion settings; and console, page, and HTTP errors. It opens no booking and makes no external submission.
