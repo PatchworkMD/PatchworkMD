@@ -32,6 +32,13 @@ const blocked = [
   'git -c push.default=current push --force',
   'git --no-pager push origin --delete feature',
   'git push --mirror origin',
+  'git push --repo=origin HEAD:refs/heads/main',
+  'git push --repo origin HEAD:main',
+  'git push -fu origin feature',
+  'git push -uf origin feature',
+  'git push -ud origin feature',
+  'git push --push-option=ci.skip origin main',
+  'git push -o ci.skip origin main',
   'env GIT_TRACE=1 git push origin main',
   'cd repo && git push origin main',
   'npm test; git push origin main',
@@ -54,6 +61,10 @@ const allowed = [
   'git push -u origin push/20261105-quality',
   'git push origin push/20261105-main-fix',
   'git push origin HEAD:refs/heads/feature',
+  'git push --repo=origin HEAD:refs/heads/feature',
+  'git push -u origin feature',
+  'git push -o ci.skip origin feature',
+  'git push --push-option=ci.skip origin feature',
   'git status',
   'git merge-base HEAD origin/main',
   'git branch -d merged-feature',
@@ -79,6 +90,13 @@ test('a bare push is judged by the branch checked out in the working directory',
   assert.equal(exitCode('git push', repoOn('main')), 2);
   assert.equal(exitCode('git push -u origin', repoOn('main')), 2);
   assert.equal(exitCode('git push', repoOn('feature')), 0);
+});
+
+test('git -C decides which checkout a bare push comes from', () => {
+  const main = repoOn('main');
+  const feature = repoOn('feature');
+  assert.equal(exitCode(`git -C ${main} push`, feature), 2);
+  assert.equal(exitCode(`git -C ${feature} push`, main), 0);
 });
 
 test('unreadable hook input fails closed', () => {
