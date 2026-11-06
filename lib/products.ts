@@ -394,6 +394,12 @@ export function resolveProduct(slug: string): Resolution {
   return { kind: 'page', product: { ...product, page: product.page } };
 }
 
+export function stageOf(slug: string): Stage {
+  const stage = products.find((product) => product.slug === slug)?.index?.stage;
+  if (!stage) throw new Error(`No Stage recorded for ${slug}`);
+  return stage;
+}
+
 export function indexedProducts() {
   return products.flatMap(({ index, ...product }) =>
     index ? [{ ...product, index }] : [],

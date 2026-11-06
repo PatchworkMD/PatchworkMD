@@ -5,6 +5,8 @@ import { SiteFooter, SiteHeader } from '../../components/SiteChrome';
 import OrbitFilm from '../../components/OrbitFilm';
 import OrbitStarfield from '../../components/OrbitStarfield';
 import OrbitAsciiArt from '../../components/OrbitAsciiArt';
+import { stageOf } from '../../lib/products';
+import MotionToggle from '../../components/MotionToggle';
 import './orbit.css';
 
 const showcase = [
@@ -63,11 +65,12 @@ export default function OrbitPage() {
   return (
     <>
       <SiteHeader product />
+      <MotionToggle className="background-pause" />
       <main id="main" className="orbit-page">
         <OrbitStarfield />
         <section className="orbit-hero" aria-labelledby="orbit-title">
           <div className="orbit-hero-copy">
-            <p className="eyebrow">Orbit · Release candidate</p>
+            <p className="eyebrow">Orbit · {stageOf('orbit')}</p>
             <div className="orbit-title-lockup">
               <Image
                 src="/orbit-icon.png"
@@ -104,8 +107,8 @@ export default function OrbitPage() {
             >
               <dl>
                 <div>
-                  <dt>Status</dt>
-                  <dd>Release candidate</dd>
+                  <dt>Stage</dt>
+                  <dd>{stageOf('orbit')}</dd>
                 </div>
                 <div>
                   <dt>Platform</dt>
@@ -166,8 +169,9 @@ export default function OrbitPage() {
                 Deny.
               </p>
               <p>
-                <strong>Close.</strong> Orbit. Release candidate. A native macOS
-                companion for coding-agent sessions, questions and approvals.
+                <strong>Close.</strong> Orbit. {stageOf('orbit')}. A native
+                macOS companion for coding-agent sessions, questions and
+                approvals.
               </p>
               <p>
                 <strong>Demonstration note.</strong> The native UI uses
