@@ -18,7 +18,12 @@ function Mark() {
   );
 }
 
-export function SiteHeader({ product = false, faq = false, openngp = false, install = false }: SiteHeaderProps) {
+export function SiteHeader({
+  product = false,
+  faq = false,
+  openngp = false,
+  install = false,
+}: SiteHeaderProps) {
   return (
     <>
       <a className="skip" href="#main">
@@ -37,7 +42,9 @@ export function SiteHeader({ product = false, faq = false, openngp = false, inst
               ) : faq ? (
                 <Link href="/openngp">OpenNGP</Link>
               ) : (
-                <a href={install ? '#install' : '#start'}>{install ? 'Install' : 'Availability'}</a>
+                <a href={install ? '#install' : '#start'}>
+                  {install ? 'Install' : 'Availability'}
+                </a>
               )}
               {!openngp && !faq && <a href="#faq">FAQ</a>}
               {faq && <Link href="/openngp/faq">FAQ</Link>}
@@ -49,7 +56,7 @@ export function SiteHeader({ product = false, faq = false, openngp = false, inst
               <Link href="/#skills">Approach</Link>
               <Link href="/orbit">Orbit</Link>
               <a href="https://github.com/PatchworkMD">GitHub ↗</a>
-              <a href="mailto:hello@patchworkmd.dev">Contact ↗</a>
+              <Link href="/#intro-call">Let’s talk ↗</Link>
             </>
           )}
         </nav>

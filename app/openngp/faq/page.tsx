@@ -1,7 +1,8 @@
 import { pageMetadata } from '../../../lib/seo';
 import { SiteFooter, SiteHeader } from '../../../components/SiteChrome';
 const title = 'OpenNGP FAQ — Workspaces, imports, and development status';
-const description = 'Answers about OpenNGP campaign workspaces, reviewed imports, access controls, and current release limits.';
+const description =
+  'Answers about OpenNGP campaign workspaces, reviewed imports, access controls, and current release limits.';
 export const metadata = pageMetadata(title, description, '/openngp/faq');
 const questions = [
   [
@@ -87,7 +88,7 @@ export default function FAQ() {
           {questions.map(([question, answer]) => (
             <details key={question} className="faq-entry">
               <summary>
-                <h2>{question}</h2>
+                <span className="faq-question">{question}</span>
                 <span className="plus" aria-hidden="true">
                   +
                 </span>
