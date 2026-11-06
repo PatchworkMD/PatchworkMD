@@ -14,7 +14,7 @@ Independent software for Mac, the web, and campaign teams.
 | [Orbit](https://patchworkmd.dev/orbit)         | A Mac app for coding-agent sessions and approvals.                     | Release candidate |
 | [OpenNGP](https://patchworkmd.dev/openngp)     | Fundraising and organizing software with separate campaign workspaces. | In development    |
 | [Dreamer](https://patchworkmd.dev/dreamer)     | Agent handoffs, reviewable work, and useful context between sessions.  | In development    |
-| [2D0](https://patchworkmd.dev/2d0)             | Capture tasks and keep lists on Mac and iPhone.                        | In development    |
+| [2DO](https://patchworkmd.dev/2d0)             | Capture tasks and keep lists on Mac and iPhone.                        | In development    |
 
 ## The throughline
 
