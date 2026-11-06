@@ -3,7 +3,11 @@ import { mkdir } from 'node:fs/promises';
 import { after, before, describe, test } from 'node:test';
 import { chromium } from 'playwright-core';
 import { availabilityOf, stageOf } from '../lib/products.ts';
-import { startSite, waitForSite } from './site-server.mjs';
+import {
+  assertNothingServing,
+  startSite,
+  waitForSite,
+} from './site-server.mjs';
 
 const port = process.env.SITE_CHECK_PORT ?? '3030';
 const base = process.env.SITE_CHECK_URL ?? `http://127.0.0.1:${port}`;
@@ -17,6 +21,7 @@ before(
   async () => {
     await mkdir(output, { recursive: true });
     if (!process.env.SITE_CHECK_URL) {
+      await assertNothingServing(base);
       site = startSite(
         'npx',
         process.env.SITE_CHECK_RUNTIME === 'worker'
@@ -134,6 +139,43 @@ const instrumentGraphics = (failStage) => {
     return fillText.apply(this, args);
   };
 };
+
+// Waits for the film's committed UI state (data-film-state, set by React) and
+// the video element to agree. On timeout it reports both, which separates a
+// render that is still pending from UI state that disagrees with the media.
+async function filmSettles(page, state, { media }) {
+  const read = () =>
+    page.evaluate(() => {
+      const video = document.querySelector('video');
+      return {
+        ui: document.querySelector('.product-motion-figure').dataset.filmState,
+        media: video.error ? 'error' : video.paused ? 'paused' : 'playing',
+      };
+    });
+  try {
+    await page.waitForFunction(
+      ([state, media]) => {
+        const video = document.querySelector('video');
+        const actual = video.error
+          ? 'error'
+          : video.paused
+            ? 'paused'
+            : 'playing';
+        return (
+          document.querySelector('.product-motion-figure').dataset.filmState ===
+            state && actual === media
+        );
+      },
+      [state, media],
+      { timeout: 20000 },
+    );
+  } catch {
+    const seen = await read();
+    assert.fail(
+      `film UI "${seen.ui}" with media "${seen.media}"; expected UI "${state}" with media "${media}"`,
+    );
+  }
+}
 
 const overflows = (page) =>
   page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
@@ -535,7 +577,8 @@ describe('2DO product film', () => {
     await page.goto(`${base}/2d0`, { waitUntil: 'networkidle' });
     const status = page.locator('output.film-status');
     const retry = page.locator('.film-toggle');
-    await status.filter({ hasText: 'could not load' }).waitFor();
+    await filmSettles(page, 'failed', { media: 'error' });
+    assert.match(await status.textContent(), /could not load/);
     assert.equal(await retry.textContent(), 'Try the film again');
     assert.ok(await page.locator('video').getAttribute('poster'));
     await page
@@ -544,7 +587,7 @@ describe('2DO product film', () => {
 
     await retry.focus();
     await page.keyboard.press('Enter');
-    await page.waitForTimeout(800);
+    await filmSettles(page, 'failed', { media: 'error' });
     assert.match(
       await status.textContent(),
       /could not load/,
@@ -555,9 +598,36 @@ describe('2DO product film', () => {
     available = true;
     await retry.focus();
     await page.keyboard.press('Enter');
-    await page.waitForFunction(() => !document.querySelector('video').paused);
+    await filmSettles(page, 'playing', { media: 'playing' });
     assert.equal(await status.textContent(), '');
     assert.equal(await retry.textContent(), 'Pause film');
+    await page.close();
+  });
+
+  test('pausing the site while the film is still loading is not reported as a failure', async () => {
+    const page = await browser.newPage({ reducedMotion: 'no-preference' });
+    let release;
+    const held = new Promise((resolve) => {
+      release = resolve;
+    });
+    await page.route('**/*.mp4', async (route) => {
+      await held;
+      await route.continue();
+    });
+    await page.goto(`${base}/2d0`, { waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(() =>
+      Object.keys(document.querySelector('.background-pause')).some((key) =>
+        key.startsWith('__reactProps'),
+      ),
+    );
+    await page.locator('.background-pause').click();
+    release();
+    await page.waitForFunction(
+      () => document.querySelector('video').readyState >= 1,
+    );
+    await filmSettles(page, 'paused', { media: 'paused' });
+    assert.equal(await page.locator('output.film-status').textContent(), '');
+    assert.equal(await page.locator('.film-toggle').textContent(), 'Play film');
     await page.close();
   });
 });
