@@ -15,7 +15,7 @@
     "typecheck": "tsc --noEmit",
     "format:check": "oxfmt --check",
     "verify": "npm run format:check && npm run lint && npm run typecheck && npm test",
-    "prepare": "git config core.hooksPath .githooks || true"
+    "prepare": "git config core.hooksPath .githooks || echo 'prepare: could not set core.hooksPath; run: git config core.hooksPath .githooks' >&2"
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",

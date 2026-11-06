@@ -17,7 +17,8 @@ Read `CONTEXT.md`, `GLOSSARY.md`, and `docs/adr/` first. `STATUS.md` holds the c
 
 ## Rules
 
-- Feature branches and PRs only. Never merge, deploy, force-push, or push `main`; `.claude/hooks/block-dangerous-git.sh` blocks these.
+- Feature branches and PRs only. Never merge, deploy, force-push, or push `main`.
+- `.claude/hooks/block-dangerous-git.sh` enforces this for Claude Code's Bash tool only: it blocks force and forced-refspec pushes, pushes to `main`/`master`, local and PR merges, hard resets, forced cleans, forced branch deletes, and discarding the working tree. It does not cover Codex, other agents, or GitHub connector tools; those rely on these rules. `scripts/guardrails.test.mjs` lists the exact cases.
 - No AI attribution in commits or PRs.
 - No prospect, Lead, or Referral data in the repository, fixtures, or logs.
 - Keep every moving element pausable and honour `prefers-reduced-motion`.
