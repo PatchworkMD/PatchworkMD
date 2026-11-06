@@ -1,3 +1,14 @@
+# PatchworkMD quality push — November 6, 2026
+
+Goal: raise the repository to at least 7/10 on Austin's quality rubric without changing product claims. Detailed plan: `.humanlayer/tasks/quality-hillclimb/01-plan-quality-hillclimb.md` (local, ignored).
+
+1. One verify command, enforced by a pre-commit hook and CI.
+2. Product context, glossary, ADRs, and the agent guide.
+3. One Product catalogue behind a tested route seam.
+4. Remove type escapes; pausable 2DO film; FAQ semantics.
+
+Gates: UI kit removal, 2DO slug rename, merge order (see STATUS.md).
+
 # PatchworkMD push — November 5, 2026
 
 Goal: turn the existing portfolio into a clear path to intro calls, then prepare referral operations. Keep the established motion-rich visual direction and all product routes. Respect `prefers-reduced-motion`, including preference changes while the page is open.

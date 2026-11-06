@@ -1,4 +1,28 @@
-# PatchworkMD status — November 5, 2026
+# PatchworkMD status — November 6, 2026
+
+## Quality push (branch `push/20261105-quality`)
+
+This branch merges #4 and #5 (they conflicted only in README and STATUS), then raises the repository against Austin's quality rubric (`~/.codex/quality-eval/RUBRIC-20261106.md`). Merging this PR also merges #4 and #5.
+
+Done:
+
+- `npm run verify` (format check, lint, typecheck, tests) runs in a pre-commit hook and in GitHub Actions; CI also builds.
+- A project Claude hook blocks force-pushes, pushes to `main`, PR merges from the CLI, hard resets, forced cleans, and forced branch deletes. Feature-branch pushes still work.
+- `CONTEXT.md`, `GLOSSARY.md`, ADRs 0001–0002, `AGENTS.md` with `## Agent skills`, `docs/agents/`.
+- `lib/products.ts` is the single Product catalogue. The homepage index and Product pages read it; `resolveProduct` is the route seam. The shadowed Orbit data in the dynamic route is gone.
+- The 2DO film has a Play/Pause control and does not start under reduced motion. FAQ questions are plain text in `<summary>`. No non-null assertions or casts remain outside `components/ui/`.
+
+Verification (Node 22.23.2): tests 16 / pass 16 / fail 0 / skip 0; lint, typecheck, format check, and production build pass. Browser checks at 1440px, 390px, and 320px pass with zero console, page, or HTTP errors: the existing `scripts/browser-check.mjs` and a 2DO film check (autoplay only without reduced motion, keyboard toggle, 44px target, no overflow). Measured text contrast is at least 4.78:1.
+
+Gates for Austin:
+
+| Gate                                                                   | Recommended option                                                            |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Remove the unused `components/ui/` kit (60 files, no page imports it)? | Yes: archive it to a branch, then remove it from `main`                       |
+| Rename the 2DO slug from `/2d0` to `/2do`?                             | Yes, with a permanent redirect from `/2d0`                                    |
+| Merge order                                                            | Review this PR; if approved, merge it alone, then close #4 and #5 as included |
+
+## Earlier push — November 5, 2026
 
 Delivery is split into two independent PRs against `main`:
 
