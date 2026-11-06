@@ -1,6 +1,7 @@
 # Tattoo color and motif direction
 
 Visual estimates, not color-calibrated samples:
+
 - Heavy charcoal-black outlines: #252C2D
 - Faded petrol blue / turquoise fill: #438C99
 - Muted blue-gray shading: #647C7B

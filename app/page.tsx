@@ -1,12 +1,19 @@
 import { pageMetadata } from '../lib/seo';
-export const metadata = pageMetadata('patchwork.md | Mac apps, web tools & campaign software', 'Independent software from PatchworkMD. Explore Orbit, 2DO, Dreamer, LocalModelMatch, and OpenNGP, with demos and current release details.');
+export const metadata = pageMetadata(
+  'patchwork.md | Mac apps, web tools & campaign software',
+  'Independent software from PatchworkMD. Explore Orbit, 2DO, Dreamer, LocalModelMatch, and OpenNGP, with demos and current release details.',
+);
 import Link from 'next/link';
 import IntroCallLink from '../components/IntroCallLink';
 import Image from 'next/image';
 import FlashMark from '../components/FlashMark';
 import FlashBackground from '../components/FlashBackground';
 import { SiteFooter, SiteHeader } from '../components/SiteChrome';
-const appLogos: Record<string,string> = { '2DO':'/2do-current-icon.png', Orbit:'/orbit-icon.png', Dreamer:'/dreamer-nightcap.png' };
+const appLogos: Record<string, string> = {
+  '2DO': '/2do-current-icon.png',
+  Orbit: '/orbit-icon.png',
+  Dreamer: '/dreamer-nightcap.png',
+};
 const projects = [
   [
     'OpenNGP',
@@ -40,7 +47,20 @@ const projects = [
 export default function Home() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebSite', name: 'patchwork.md', alternateName: 'PatchworkMD', url: 'https://patchworkmd.dev/', description: 'Independent Mac apps, web tools, and campaign software.' }) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: 'patchwork.md',
+            alternateName: 'PatchworkMD',
+            url: 'https://patchworkmd.dev/',
+            description:
+              'Independent Mac apps, web tools, and campaign software.',
+          }),
+        }}
+      />
       <FlashBackground />
       <SiteHeader />
       <main id="main" className="portfolio-candidate">
@@ -51,7 +71,9 @@ export default function Home() {
             <p>Independent software for Mac, the web, and campaign teams.</p>
             <div className="intro-actions">
               <IntroCallLink className="intro-call-button" />
-              <a className="text-link" href="#projects">Explore the projects <span aria-hidden="true">↓</span></a>
+              <a className="text-link" href="#projects">
+                Explore the projects <span aria-hidden="true">↓</span>
+              </a>
             </div>
           </div>
         </section>
@@ -107,7 +129,11 @@ export default function Home() {
             </div>
           </div>
         </section>
-        <section className="orbit-spotlight" id="orbit-spotlight" aria-labelledby="orbit-title">
+        <section
+          className="orbit-spotlight"
+          id="orbit-spotlight"
+          aria-labelledby="orbit-title"
+        >
           <div className="section-kicker">
             <span>02 / Mac app</span>
             <span>Release candidate</span>
@@ -115,9 +141,12 @@ export default function Home() {
           <div className="orbit-spotlight-grid">
             <div>
               <p className="availability">Orbit · Native macOS</p>
-              <h2 id="orbit-title">Coding sessions, with the next handoff in view.</h2>
+              <h2 id="orbit-title">
+                Coding sessions, with the next handoff in view.
+              </h2>
               <p className="feature-detail">
-                Orbit brings coding-agent sessions, questions, and approvals into a native Mac surface.
+                Orbit brings coding-agent sessions, questions, and approvals
+                into a native Mac surface.
               </p>
               <Link className="text-link" href="/orbit">
                 View the Orbit campaign ↗
@@ -126,7 +155,10 @@ export default function Home() {
             <aside className="orbit-status" aria-label="Orbit availability">
               <span className="orbit-status-label">Current status</span>
               <strong>Release candidate</strong>
-              <p>Local candidate only. A public signed installer is not available yet.</p>
+              <p>
+                Local candidate only. A public signed installer is not available
+                yet.
+              </p>
               <Link className="text-link" href="/orbit#start">
                 Check Orbit availability ↗
               </Link>
@@ -139,42 +171,47 @@ export default function Home() {
             <span>Current projects</span>
           </div>
           <div className="project-index">
-            {projects.map(([name, platform, status, description, detail], index) => (
-              <article key={name} className="project">
-                <div className="project-name">
-                  <span className="project-number">0{index + 2}</span>
-                  {appLogos[name] && (
-                    <Image
-                      src={appLogos[name]} className="app-logo"
-                      alt=""
-                      width={40}
-                      height={40}
-                      unoptimized
-                    />
-                  )}
-                  <h3>
-                    <Link
-                      href={name === '2DO' ? '/2d0' : '/' + name.toLowerCase()}
-                    >
-                      {name}
-                    </Link>
-                  </h3>
-                  <p>{platform}</p>
-                </div>
-                <div className="project-body">
-                  <p className="description">{description}</p>
-                  <details>
-                    <summary>
-                      <span>{status}</span>
-                      <span className="detail-label">
-                        Details <span className="plus">+</span>
-                      </span>
-                    </summary>
-                    <p className="detail">{detail}</p>
-                  </details>
-                </div>
-              </article>
-            ))}
+            {projects.map(
+              ([name, platform, status, description, detail], index) => (
+                <article key={name} className="project">
+                  <div className="project-name">
+                    <span className="project-number">0{index + 2}</span>
+                    {appLogos[name] && (
+                      <Image
+                        src={appLogos[name]}
+                        className="app-logo"
+                        alt=""
+                        width={40}
+                        height={40}
+                        unoptimized
+                      />
+                    )}
+                    <h3>
+                      <Link
+                        href={
+                          name === '2DO' ? '/2d0' : '/' + name.toLowerCase()
+                        }
+                      >
+                        {name}
+                      </Link>
+                    </h3>
+                    <p>{platform}</p>
+                  </div>
+                  <div className="project-body">
+                    <p className="description">{description}</p>
+                    <details>
+                      <summary>
+                        <span>{status}</span>
+                        <span className="detail-label">
+                          Details <span className="plus">+</span>
+                        </span>
+                      </summary>
+                      <p className="detail">{detail}</p>
+                    </details>
+                  </div>
+                </article>
+              ),
+            )}
           </div>
         </section>
         <section className="skills" id="skills">
@@ -184,8 +221,7 @@ export default function Home() {
           </div>
           <div className="skills-content">
             <div className="skills-intro">
-              <p>Behind
-                the work.</p>
+              <p>Behind the work.</p>
               <p>
                 I work across Mac apps, web interfaces, and campaign software.
                 These projects come from the tools I use and the work I do.
@@ -257,18 +293,32 @@ export default function Home() {
             </Link>
           </div>
         </section>
-        <section className="contact intro-call" id="intro-call" aria-labelledby="intro-call-title">
+        <section
+          className="contact intro-call"
+          id="intro-call"
+          aria-labelledby="intro-call-title"
+        >
           <p className="eyebrow">Have something in mind?</p>
           <div>
-            <h2 id="intro-call-title">Let’s talk<br />through it.</h2>
-            <p className="intro-call-copy">A Mac app, a web tool, or a campaign workflow that needs a better way forward. Bring the problem, even if the brief isn’t finished.</p>
+            <h2 id="intro-call-title">
+              Let’s talk
+              <br />
+              through it.
+            </h2>
+            <p className="intro-call-copy">
+              A Mac app, a web tool, or a campaign workflow that needs a better
+              way forward. Bring the problem, even if the brief isn’t finished.
+            </p>
             <ol className="intro-call-steps">
               <li>Tell me what you’re trying to make easier.</li>
               <li>We’ll talk through the scope and whether it’s a fit.</li>
               <li>Leave with a clear next step.</li>
             </ol>
             <IntroCallLink className="intro-call-button" />
-            <p className="intro-call-note">Prefer email? <a href="mailto:hello@patchworkmd.dev">hello@patchworkmd.dev</a></p>
+            <p className="intro-call-note">
+              Prefer email?{' '}
+              <a href="mailto:hello@patchworkmd.dev">hello@patchworkmd.dev</a>
+            </p>
           </div>
         </section>
       </main>

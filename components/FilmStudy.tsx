@@ -38,7 +38,11 @@ export default function FilmStudy() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const gl = canvas.getContext('webgl', { alpha: false, antialias: false, powerPreference: 'low-power' });
+    const gl = canvas.getContext('webgl', {
+      alpha: false,
+      antialias: false,
+      powerPreference: 'low-power',
+    });
     if (!gl) return;
     let disposed = false;
     let frame = 0;
@@ -61,7 +65,7 @@ export default function FilmStudy() {
     const fragment = compile(gl.FRAGMENT_SHADER, fragmentSource);
     const program = gl.createProgram();
     if (!vertex || !fragment || !program) {
-      shaders.forEach(shader => gl.deleteShader(shader));
+      shaders.forEach((shader) => gl.deleteShader(shader));
       if (program) gl.deleteProgram(program);
       return;
     }
@@ -69,7 +73,7 @@ export default function FilmStudy() {
     gl.attachShader(program, fragment);
     gl.linkProgram(program);
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      shaders.forEach(shader => gl.deleteShader(shader));
+      shaders.forEach((shader) => gl.deleteShader(shader));
       gl.deleteProgram(program);
       return;
     }
@@ -78,7 +82,11 @@ export default function FilmStudy() {
     const buffer = gl.createBuffer();
     const texture = gl.createTexture();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
+      gl.STATIC_DRAW,
+    );
     const position = gl.getAttribLocation(program, 'position');
     gl.enableVertexAttribArray(position);
     gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
@@ -95,12 +103,19 @@ export default function FilmStudy() {
     };
     const tick = (now: number) => {
       if (disposed) return;
-      if (visible && !document.hidden && !motion.matches && !pausedRef.current && now - last >= 33) {
-        elapsed += Math.min((now - last) / 1000, .05);
+      if (
+        visible &&
+        !document.hidden &&
+        !motion.matches &&
+        !pausedRef.current &&
+        now - last >= 33
+      ) {
+        elapsed += Math.min((now - last) / 1000, 0.05);
         last = now;
         draw();
       }
-      if (visible && !document.hidden && !motion.matches && !pausedRef.current) frame = requestAnimationFrame(tick);
+      if (visible && !document.hidden && !motion.matches && !pausedRef.current)
+        frame = requestAnimationFrame(tick);
     };
     const resume = () => {
       cancelAnimationFrame(frame);
@@ -114,17 +129,28 @@ export default function FilmStudy() {
       canvas.height = Math.max(1, Math.round(rect.height * scale));
       draw();
     };
-    const onMotion = () => { setReduced(motion.matches); draw(); resume(); };
+    const onMotion = () => {
+      setReduced(motion.matches);
+      draw();
+      resume();
+    };
     const onPointer = (event: PointerEvent) => {
       if (motion.matches || pausedRef.current) return;
       const rect = canvas.getBoundingClientRect();
       pointer[0] = (event.clientX - rect.left) / rect.width;
       pointer[1] = 1 - (event.clientY - rect.top) / rect.height;
     };
-    const onLost = () => { loaded = false; cancelAnimationFrame(frame); setReady(false); };
+    const onLost = () => {
+      loaded = false;
+      cancelAnimationFrame(frame);
+      setReady(false);
+    };
     const observer = new ResizeObserver(resize);
     observer.observe(canvas);
-    const intersection = new IntersectionObserver(entries => { visible = entries[0].isIntersecting; resume(); });
+    const intersection = new IntersectionObserver((entries) => {
+      visible = entries[0].isIntersecting;
+      resume();
+    });
     intersection.observe(canvas);
     canvas.addEventListener('pointermove', onPointer);
     canvas.addEventListener('webglcontextlost', onLost);
@@ -137,7 +163,14 @@ export default function FilmStudy() {
       if (disposed) return;
       gl.bindTexture(gl.TEXTURE_2D, texture);
       gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, photograph);
+      gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.RGB,
+        gl.RGB,
+        gl.UNSIGNED_BYTE,
+        photograph,
+      );
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -162,16 +195,33 @@ export default function FilmStudy() {
       gl.deleteTexture(texture);
       gl.deleteBuffer(buffer);
       gl.deleteProgram(program);
-      shaders.forEach(shader => gl.deleteShader(shader));
+      shaders.forEach((shader) => gl.deleteShader(shader));
     };
   }, []);
 
-  return <>
-    <canvas ref={canvasRef} className="film-canvas" aria-hidden="true" data-ready={ready} />
-    {ready && !reduced && <button type="button" className="film-control" aria-pressed={paused} onClick={() => {
-      pausedRef.current = !pausedRef.current;
-      setPaused(pausedRef.current);
-      canvasRef.current?.dispatchEvent(new Event('film-motion-change'));
-    }}>{paused ? 'Play motion' : 'Pause motion'}<span aria-hidden="true">{paused ? '▷' : 'Ⅱ'}</span></button>}
-  </>;
+  return (
+    <>
+      <canvas
+        ref={canvasRef}
+        className="film-canvas"
+        aria-hidden="true"
+        data-ready={ready}
+      />
+      {ready && !reduced && (
+        <button
+          type="button"
+          className="film-control"
+          aria-pressed={paused}
+          onClick={() => {
+            pausedRef.current = !pausedRef.current;
+            setPaused(pausedRef.current);
+            canvasRef.current?.dispatchEvent(new Event('film-motion-change'));
+          }}
+        >
+          {paused ? 'Play motion' : 'Pause motion'}
+          <span aria-hidden="true">{paused ? '▷' : 'Ⅱ'}</span>
+        </button>
+      )}
+    </>
+  );
 }

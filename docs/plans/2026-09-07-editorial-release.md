@@ -1,5 +1,7 @@
 # PatchworkMD editorial release closeout
+
 All seven implementation-plan steps COMPLETED on 2026-09-07.
+
 1. Approved editorial homepage, CSS motion, icon and studio.jpg implemented.
 2. Product routes and aliases implemented and publicly verified.
 3. Verified public source/release links and website maker credits included; app releases remain with their owners.
@@ -22,6 +24,7 @@ Cross-app credits are source-level changes in 2D0, Dreamer, LocalModelMatch, Ope
 This closeout documentation was updated after deployed source; it is not part of v8's exact source SHA.
 
 ## Authorized presentation polish follow-up
+
 1. COMPLETED: product-specific metadata and verified logo mapping; preserve approved v8 design.
 2. COMPLETED: exact-source build/review, desktop/mobile/publication checks.
 3. COMPLETED: record website version and public GitHub owner readbacks; report unverified repo/logo targets.

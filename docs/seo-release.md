@@ -9,6 +9,7 @@ Checks: TypeScript, lint and production build pass. Playwright with JavaScript d
 Search Console property verification, sitemap submission, and indexing outcomes are not claimed. Existing Messages previews may remain cached.
 
 References:
+
 - https://developer.apple.com/videos/play/tech-talks/205/
 - https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls
 - https://developers.google.com/search/docs/appearance/title-link

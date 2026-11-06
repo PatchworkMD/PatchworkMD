@@ -344,7 +344,16 @@ export default async function Product({
               {p.name} · {p.status}
             </p>
             {(slug === '2d0' || slug === 'orbit') && (
-              <Image src={slug === '2d0' ? '/2do-current-icon.png' : '/orbit-icon.png'} alt={`${p.name} app icon`} width={88} height={88} className="app-logo" unoptimized />
+              <Image
+                src={
+                  slug === '2d0' ? '/2do-current-icon.png' : '/orbit-icon.png'
+                }
+                alt={`${p.name} app icon`}
+                width={88}
+                height={88}
+                className="app-logo"
+                unoptimized
+              />
             )}
             {slug === 'unicycle' && (
               <Image
@@ -368,7 +377,8 @@ export default async function Product({
             <p className="bio">{p.intro}</p>
             {slug === 'orbit' && (
               <p className="intro-note orbit-campaign-note">
-                This page presents the current release candidate. It is not a public download or a promise of provider support.
+                This page presents the current release candidate. It is not a
+                public download or a promise of provider support.
               </p>
             )}
             {p.repo && (
@@ -382,7 +392,10 @@ export default async function Product({
               </a>
             )}
             {slug === '2d0' && (
-              <a className="product-cta" href="mailto:hello@patchworkmd.dev?subject=2DO%20beta%20access">
+              <a
+                className="product-cta"
+                href="mailto:hello@patchworkmd.dev?subject=2DO%20beta%20access"
+              >
                 Ask about beta access →
               </a>
             )}
@@ -397,7 +410,9 @@ export default async function Product({
               height={630}
               unoptimized
             />
-            <figcaption>2DO · public product preview · current availability listed below</figcaption>
+            <figcaption>
+              2DO · public product preview · current availability listed below
+            </figcaption>
           </figure>
         )}
         {slug === '2d0' && (
@@ -415,7 +430,9 @@ export default async function Product({
               <source src="/2do-iphone-motion.mp4" type="video/mp4" />
               Your browser does not support the 2DO product film.
             </video>
-            <figcaption>2DO · iPhone motion study · 5-second silent product film</figcaption>
+            <figcaption>
+              2DO · iPhone motion study · 5-second silent product film
+            </figcaption>
           </figure>
         )}
         <section aria-label="Product overview">
