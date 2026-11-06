@@ -5,8 +5,11 @@ import type { ProductPage } from '../lib/products';
 
 type Film = NonNullable<ProductPage['film']>;
 
-const autoplayRefused = (error: unknown) =>
-  error instanceof DOMException && error.name === 'NotAllowedError';
+// The browser refused autoplay, or a later pause() or load() interrupted the
+// request. Neither means the film is broken.
+const playWasStopped = (error: unknown) =>
+  error instanceof DOMException &&
+  (error.name === 'NotAllowedError' || error.name === 'AbortError');
 
 export default function ProductFilm({
   film,
@@ -21,7 +24,7 @@ export default function ProductFilm({
 
   const play = (element: HTMLVideoElement) =>
     element.play().catch((error: unknown) => {
-      if (!autoplayRefused(error)) setFailed(true);
+      if (!playWasStopped(error)) setFailed(true);
     });
 
   useEffect(() => {
@@ -46,16 +49,20 @@ export default function ProductFilm({
   const toggle = () => {
     const element = video.current;
     if (!element) return;
-    if (!element.paused) return element.pause();
     if (failed) {
       setFailed(false);
       element.load();
+    } else if (!element.paused) {
+      return element.pause();
     }
     void play(element);
   };
 
   return (
-    <figure className="product-motion-figure">
+    <figure
+      className="product-motion-figure"
+      data-film-state={failed ? 'failed' : playing ? 'playing' : 'paused'}
+    >
       <video
         ref={video}
         className="product-motion-video"
@@ -68,14 +75,17 @@ export default function ProductFilm({
         aria-label={film.label}
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
-        onError={() => setFailed(true)}
+        onError={() => {
+          setFailed(true);
+          setPlaying(false);
+        }}
       >
         Your browser does not support the {name} product film.
       </video>
       <figcaption>
         <span>{film.caption}</span>
         <button type="button" className="film-toggle" onClick={toggle}>
-          {playing ? 'Pause film' : failed ? 'Try the film again' : 'Play film'}
+          {failed ? 'Try the film again' : playing ? 'Pause film' : 'Play film'}
         </button>
         <output className="film-status">
           {failed
