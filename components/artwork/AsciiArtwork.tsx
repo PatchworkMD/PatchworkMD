@@ -90,8 +90,7 @@ export default function AsciiArtwork({
 
     const shader = createInkShader(shaderCanvas, palette);
     const pointer = { x: -10, y: -10 };
-    const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-    const moving = () => !siteMotion.isPaused() && !reduced.matches;
+    const moving = siteMotion.allowsMotion;
 
     const drawAscii = () => {
       const w = canvas.clientWidth;
@@ -108,8 +107,7 @@ export default function AsciiArtwork({
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, w, h);
       const scale = Math.min(w / 380, h / 370);
-      const spread =
-        1 + (reduced.matches ? 0 : control.current.burst) * burst.spread;
+      const spread = 1 + (moving() ? control.current.burst : 0) * burst.spread;
       ctx.font = `${7.5 * scale}px monospace`;
       ctx.textAlign = 'center';
       for (const [x, y, r, g, b] of points) {
@@ -135,7 +133,6 @@ export default function AsciiArtwork({
     const loop = startArtworkLoop({
       element: root,
       frameMs: 33,
-      isMoving: moving,
       draw: (seconds) => {
         if (shader?.draw(seconds)) shaderCanvas.dataset.shader = 'ready';
         drawAscii();
@@ -178,11 +175,9 @@ export default function AsciiArtwork({
     };
     canvas.addEventListener('pointermove', move);
     canvas.addEventListener('pointerleave', leave);
-    const unsubscribe = siteMotion.subscribe(loop.wake);
     return () => {
       disposed = true;
       loop.stop();
-      unsubscribe();
       shader?.dispose();
       canvas.removeEventListener('pointermove', move);
       canvas.removeEventListener('pointerleave', leave);

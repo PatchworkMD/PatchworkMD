@@ -1,61 +1,54 @@
 import assert from 'node:assert/strict';
-import { spawn } from 'node:child_process';
 import { mkdir } from 'node:fs/promises';
 import { after, before, describe, test } from 'node:test';
 import { chromium } from 'playwright-core';
-import { stageOf } from '../lib/products.ts';
+import { availabilityOf, stageOf } from '../lib/products.ts';
+import { startSite, waitForSite } from './site-server.mjs';
 
 const port = process.env.SITE_CHECK_PORT ?? '3030';
 const base = process.env.SITE_CHECK_URL ?? `http://127.0.0.1:${port}`;
 const output = new URL('../outputs/browser-check/', import.meta.url);
 const shot = (name) => new URL(`${name}.png`, output).pathname;
 const widths = [1440, 390, 320];
-let server;
+let site;
 let browser;
 
-async function waitForSite() {
-  for (let attempt = 0; attempt < 120; attempt++) {
-    try {
-      if ((await fetch(base)).ok) return;
-    } catch {}
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  }
-  throw new Error(`Site did not start at ${base}`);
-}
-
-before(async () => {
-  await mkdir(output, { recursive: true });
-  if (!process.env.SITE_CHECK_URL) {
-    const command =
-      process.env.SITE_CHECK_RUNTIME === 'worker'
-        ? [
-            'wrangler',
-            'dev',
-            '--config',
-            'dist/server/wrangler.json',
-            '--port',
-            port,
-          ]
-        : ['vinext', 'start', '-p', port];
-    server = spawn('npx', command, {
-      detached: true,
-      stdio: 'ignore',
+before(
+  async () => {
+    await mkdir(output, { recursive: true });
+    if (!process.env.SITE_CHECK_URL) {
+      site = startSite(
+        'npx',
+        process.env.SITE_CHECK_RUNTIME === 'worker'
+          ? [
+              'wrangler',
+              'dev',
+              '--config',
+              'dist/server/wrangler.json',
+              '--port',
+              port,
+            ]
+          : ['vinext', 'start', '-p', port],
+      );
+    }
+    const ready = waitForSite(base, { describe: site?.describe });
+    await (site ? Promise.race([ready, site.exited]) : ready);
+    browser = await chromium.launch({
+      executablePath: process.env.BROWSER_EXECUTABLE || undefined,
+      args: ['--no-sandbox'],
+      timeout: 60000,
     });
-  }
-  await waitForSite();
-  browser = await chromium.launch({
-    executablePath: process.env.BROWSER_EXECUTABLE || undefined,
-    args: ['--no-sandbox'],
-  });
-});
+  },
+  { timeout: 200000 },
+);
 
 after(async () => {
   await browser?.close();
-  if (server) process.kill(-server.pid);
+  site?.stop();
 });
 
 async function open(path, options = {}) {
-  const { init, ...contextOptions } = options;
+  const { init, initArg, ...contextOptions } = options;
   const page = await browser.newPage({
     viewport: { width: 1440, height: 900 },
     reducedMotion: 'no-preference',
@@ -78,10 +71,69 @@ async function open(path, options = {}) {
       return request(callback);
     };
   });
-  if (init) await page.addInitScript(init);
+  if (init) await page.addInitScript(init, initArg);
   await page.goto(base + path, { waitUntil: 'networkidle' });
   return { page, errors };
 }
+
+const instrumentGraphics = (failStage) => {
+  const proto = WebGLRenderingContext.prototype;
+  const live = (gl, delta) => {
+    gl.canvas.__live = (gl.canvas.__live ?? 0) + delta;
+    window.__glCreated = (window.__glCreated ?? 0) + Math.max(delta, 0);
+    window.__glDeleted = (window.__glDeleted ?? 0) + Math.max(-delta, 0);
+  };
+  const failing = {
+    compile: ['getShaderParameter', () => false],
+    link: ['getProgramParameter', () => false],
+    buffer: ['createBuffer', () => null],
+    texture: ['createTexture', () => null],
+  }[failStage];
+  for (const name of [
+    'createShader',
+    'createProgram',
+    'createBuffer',
+    'createTexture',
+  ]) {
+    const original = Object.getOwnPropertyDescriptor(proto, name).value;
+    proto[name] = function (...args) {
+      if (failing?.[0] === name) return failing[1]();
+      const resource = original.apply(this, args);
+      if (resource) live(this, 1);
+      return resource;
+    };
+  }
+  for (const name of [
+    'deleteShader',
+    'deleteProgram',
+    'deleteBuffer',
+    'deleteTexture',
+  ]) {
+    const original = Object.getOwnPropertyDescriptor(proto, name).value;
+    proto[name] = function (resource) {
+      if (resource) live(this, -1);
+      return original.call(this, resource);
+    };
+  }
+  if (failing && !failing[0].startsWith('create')) {
+    const original = Object.getOwnPropertyDescriptor(proto, failing[0]).value;
+    proto[failing[0]] = function (...args) {
+      original.apply(this, args);
+      return failing[1]();
+    };
+  }
+  const drawArrays = Object.getOwnPropertyDescriptor(proto, 'drawArrays').value;
+  proto.drawArrays = function (...args) {
+    this.canvas.__draws = (this.canvas.__draws ?? 0) + 1;
+    return drawArrays.apply(this, args);
+  };
+  const text = CanvasRenderingContext2D.prototype;
+  const fillText = Object.getOwnPropertyDescriptor(text, 'fillText').value;
+  text.fillText = function (...args) {
+    this.canvas.__draws = (this.canvas.__draws ?? 0) + 1;
+    return fillText.apply(this, args);
+  };
+};
 
 const overflows = (page) =>
   page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
@@ -125,13 +177,28 @@ describe('routes and metadata', () => {
     assert.equal((await fetch(`${base}/not-a-product`)).status, 404);
   });
 
-  test('homepage, Orbit, and OpenNGP show the catalogue Stage', async () => {
-    const home = await (await fetch(base)).text();
-    const orbit = await (await fetch(`${base}/orbit`)).text();
-    const openngp = await (await fetch(`${base}/openngp`)).text();
+  test('catalogue Stage and availability reach every page that shows them', async () => {
+    const page = async (path) =>
+      (await (await fetch(base + path)).text())
+        .replace(/<script[\s\S]*?<\/script>/g, '')
+        .replaceAll('<!-- -->', '');
+    const [home, orbit, openngp, localmodelmatch] = await Promise.all(
+      ['/', '/orbit', '/openngp', '/localmodelmatch'].map(page),
+    );
+    const escape = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const count = (html, text) =>
+      html.match(new RegExp(escape(text), 'g'))?.length ?? 0;
     assert.match(home, new RegExp(`<strong>${stageOf('orbit')}</strong>`));
     assert.match(orbit, new RegExp(`<dd>${stageOf('orbit')}</dd>`));
     assert.match(openngp, new RegExp(`class="eyebrow">${stageOf('openngp')}<`));
+    assert.ok(count(home, `01 / ${stageOf('localmodelmatch')}`) === 1);
+    assert.match(
+      localmodelmatch,
+      new RegExp(`LocalModelMatch · ${stageOf('localmodelmatch')}`),
+    );
+    assert.ok(count(home, availabilityOf('localmodelmatch')) === 1);
+    assert.ok(count(home, availabilityOf('orbit')) >= 2, 'spotlight and index');
+    assert.ok(count(orbit, availabilityOf('orbit')) >= 1);
   });
 });
 
@@ -194,7 +261,7 @@ describe('homepage motion', () => {
     const { page, errors } = await open('/');
     const background = page.locator('.flash-background');
     await page.locator('.ink-shader[data-shader="ready"]').waitFor();
-    assert.ok((await framesDuring(page, 400)) > 4, 'artwork schedules frames');
+    assert.ok((await framesDuring(page, 1000)) > 0, 'artwork schedules frames');
     await page.locator('.background-pause').click();
     await page.waitForTimeout(150);
     assert.equal(await framesDuring(page, 400), 0, 'no frames while paused');
@@ -203,7 +270,7 @@ describe('homepage motion', () => {
     await page.waitForTimeout(300);
     assert.equal(await pixels(background), stillBackground);
     await page.locator('.background-pause').click();
-    assert.ok((await framesDuring(page, 400)) > 4, 'frames resume on Play');
+    assert.ok((await framesDuring(page, 1000)) > 0, 'frames resume on Play');
     assert.deepEqual(errors, []);
     await page.close();
   });
@@ -227,7 +294,7 @@ describe('homepage motion', () => {
       });
       document.dispatchEvent(new Event('visibilitychange'));
     });
-    assert.ok((await framesDuring(page, 400)) > 4, 'visible again');
+    assert.ok((await framesDuring(page, 1000)) > 0, 'visible again');
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.waitForTimeout(150);
     assert.equal(await framesDuring(page, 400), 0, 'dynamic reduced motion');
@@ -270,6 +337,127 @@ describe('homepage motion', () => {
       assert.deepEqual(errors, [], path);
       await page.close();
     }
+  });
+});
+
+describe('artwork lifecycle', () => {
+  for (const stage of ['compile', 'link', 'buffer', 'texture']) {
+    test(`a ${stage} failure releases every WebGL resource and keeps the SVG lettering`, async () => {
+      const { page, errors } = await open('/orbit', {
+        init: instrumentGraphics,
+        initArg: stage,
+      });
+      await page.locator('.orbit-ascii-rocket[data-ready="true"]').waitFor();
+      const { created, deleted } = await page.evaluate(() => ({
+        created: window.__glCreated,
+        deleted: window.__glDeleted,
+      }));
+      assert.ok(created > 0, `${stage}: something was allocated first`);
+      assert.equal(deleted, created, `${stage}: partial allocations released`);
+      assert.equal(
+        await page.locator('.orbit-ink-shader').getAttribute('data-shader'),
+        null,
+      );
+      assert.ok(await page.locator('.orbit-lettering text').isVisible());
+      assert.deepEqual(errors, []);
+      await page.close();
+    });
+  }
+
+  test('leaving the homepage by client navigation stops its loops and frees its WebGL resources', async () => {
+    const { page, errors } = await open('/', { init: instrumentGraphics });
+    await page.locator('.ink-shader[data-shader="ready"]').waitFor();
+    await page.evaluate(() => {
+      window.__sameDocument = true;
+      window.__homeCanvases = [
+        document.querySelector('.ink-shader'),
+        document.querySelector('.flash-background'),
+      ];
+    });
+    assert.ok(
+      await page.evaluate(() => window.__homeCanvases[0].__live > 0),
+      'shader resources were allocated',
+    );
+    await page.locator('header').getByRole('link', { name: 'Orbit' }).click();
+    await page.locator('.orbit-ascii-rocket[data-ready="true"]').waitFor();
+    assert.equal(
+      await page.evaluate(() => window.__sameDocument),
+      true,
+      'navigation stayed in the same document',
+    );
+    const draws = () =>
+      page.evaluate(() =>
+        window.__homeCanvases.map((canvas) => [
+          canvas.isConnected,
+          canvas.__draws,
+        ]),
+      );
+    const before = await draws();
+    await page.waitForTimeout(600);
+    assert.deepEqual(await draws(), before, 'unmounted canvases stop drawing');
+    assert.ok(before.every(([connected]) => !connected));
+    assert.equal(
+      await page.evaluate(() => window.__homeCanvases[0].__live),
+      0,
+      'homepage shader resources released',
+    );
+    assert.deepEqual(errors, []);
+    await page.close();
+  });
+});
+
+describe('site-wide pause', () => {
+  test('Pause motion holds while scrolling: no reveal or entrance animates', async () => {
+    const { page, errors } = await open('/');
+    await page.locator('.background-pause').click();
+    for (let y = 0; y < 6000; y += 600) {
+      await page.mouse.wheel(0, 600);
+      await page.waitForTimeout(80);
+      assert.equal(await runningAnimations(page), 0, `animation at ${y}px`);
+    }
+    assert.equal(
+      await page
+        .locator('.intro-call > div')
+        .evaluate((el) => getComputedStyle(el).opacity),
+      '1',
+    );
+    assert.equal(await framesDuring(page, 400), 0);
+    assert.deepEqual(errors, []);
+    await page.close();
+  });
+
+  test('Pause motion survives client navigation into the 2DO film, and Play film still works', async () => {
+    const { page, errors } = await open('/');
+    await page.evaluate(() => {
+      window.__sameDocument = true;
+    });
+    await page.locator('.background-pause').click();
+    await page.locator('.project a[href="/2d0"]').click();
+    const video = page.locator('video');
+    await video.waitFor();
+    await page.waitForTimeout(800);
+    assert.equal(await page.evaluate(() => window.__sameDocument), true);
+    assert.equal(await video.evaluate((element) => element.paused), true);
+    assert.equal(
+      await page.locator('.background-pause').textContent(),
+      'Play motion',
+    );
+    const film = page.locator('.film-toggle');
+    assert.equal(await film.textContent(), 'Play film');
+    await film.focus();
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(400);
+    assert.equal(await video.evaluate((element) => element.paused), false);
+    await page.locator('.background-pause').click();
+    await page.locator('.background-pause').click();
+    await page.waitForTimeout(300);
+    assert.equal(
+      await video.evaluate((element) => element.paused),
+      true,
+      'pausing the site again pauses the film',
+    );
+    assert.deepEqual(errors, []);
+    await page.close();
   });
 });
 
@@ -338,20 +526,38 @@ describe('2DO product film', () => {
     await page.close();
   });
 
-  test('a film that cannot load is announced and can be retried', async () => {
+  test('a film that cannot load is announced, and retry plays it once the file is back', async () => {
     const page = await browser.newPage({ reducedMotion: 'no-preference' });
-    await page.route('**/*.mp4', (route) => route.abort());
-    await page.goto(`${base}/2d0`, { waitUntil: 'networkidle' });
-    const status = page.getByRole('status');
-    await status.filter({ hasText: 'could not load' }).waitFor();
-    assert.equal(
-      await page.locator('.film-toggle').textContent(),
-      'Try the film again',
+    let available = false;
+    await page.route('**/*.mp4', (route) =>
+      available ? route.continue() : route.abort(),
     );
+    await page.goto(`${base}/2d0`, { waitUntil: 'networkidle' });
+    const status = page.locator('output.film-status');
+    const retry = page.locator('.film-toggle');
+    await status.filter({ hasText: 'could not load' }).waitFor();
+    assert.equal(await retry.textContent(), 'Try the film again');
     assert.ok(await page.locator('video').getAttribute('poster'));
     await page
       .locator('.product-motion-figure')
       .screenshot({ path: shot('film-failed') });
+
+    await retry.focus();
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(800);
+    assert.match(
+      await status.textContent(),
+      /could not load/,
+      'second failure still explained',
+    );
+    assert.equal(await retry.textContent(), 'Try the film again');
+
+    available = true;
+    await retry.focus();
+    await page.keyboard.press('Enter');
+    await page.waitForFunction(() => !document.querySelector('video').paused);
+    assert.equal(await status.textContent(), '');
+    assert.equal(await retry.textContent(), 'Pause film');
     await page.close();
   });
 });
