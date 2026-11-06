@@ -162,7 +162,7 @@ export default function Page() {
           {faq.map(([a, b]) => (
             <details className="faq-entry" key={a}>
               <summary>
-                <h2>{a}</h2>
+                <span className="faq-question">{a}</span>
                 <span className="plus" aria-hidden="true">
                   +
                 </span>

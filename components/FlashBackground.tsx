@@ -46,7 +46,8 @@ function makeFlash(): Dot[][] {
     const c = document.createElement('canvas');
     c.width = 320;
     c.height = 340;
-    const g = c.getContext('2d')!;
+    const g = c.getContext('2d');
+    if (!g) return [];
     g.lineWidth = 7;
     g.lineCap = 'round';
     g.lineJoin = 'round';

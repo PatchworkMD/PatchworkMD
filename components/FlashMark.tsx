@@ -14,13 +14,16 @@ export default function FlashMark() {
     const el = shader.current,
       svg = lettering.current;
     if (!el || !svg) return;
+    const clone = svg.cloneNode(true);
+    if (!(clone instanceof SVGSVGElement)) return;
     const gl = el.getContext('webgl', {
       alpha: true,
       premultipliedAlpha: false,
     });
     if (!gl) return;
     const compile = (type: number, source: string) => {
-      const sh = gl.createShader(type)!;
+      const sh = gl.createShader(type);
+      if (!sh) return null;
       gl.shaderSource(sh, source);
       gl.compileShader(sh);
       return sh;
@@ -39,7 +42,8 @@ export default function FlashMark() {
     float grain=fract(sin(dot(floor(gl_FragCoord.xy),vec2(12.9898,78.233)))*43758.5453);
     color*=.82+.18*grain;gl_FragColor=vec4(color,a);}`,
     );
-    const program = gl.createProgram()!;
+    const program = gl.createProgram();
+    if (!vs || !fs || !program) return;
     gl.attachShader(program, vs);
     gl.attachShader(program, fs);
     gl.linkProgram(program);
@@ -67,7 +71,6 @@ export default function FlashMark() {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    const clone = svg.cloneNode(true) as SVGSVGElement;
     clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
     clone.setAttribute('width', '1000');
     clone.setAttribute('height', '390');

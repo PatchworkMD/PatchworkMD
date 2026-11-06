@@ -3,6 +3,7 @@ import { resolveProduct } from '../../lib/products';
 import Image from 'next/image';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { SiteFooter, SiteHeader } from '../../components/SiteChrome';
+import ProductFilm from '../../components/ProductFilm';
 
 type Params = { params: Promise<{ product: string }> };
 
@@ -70,24 +71,7 @@ export default async function Product({ params }: Params) {
             <figcaption>{page.preview.caption}</figcaption>
           </figure>
         )}
-        {page.film && (
-          <figure className="product-motion-figure">
-            <video
-              className="product-motion-video"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              poster={page.film.poster}
-              aria-label={page.film.label}
-            >
-              <source src={page.film.src} type="video/mp4" />
-              Your browser does not support the {name} product film.
-            </video>
-            <figcaption>{page.film.caption}</figcaption>
-          </figure>
-        )}
+        {page.film && <ProductFilm film={page.film} name={name} />}
         <section aria-label="Product overview">
           {page.benefits.map(([a, b]) => (
             <article className="project" key={a}>
@@ -110,7 +94,7 @@ export default async function Product({ params }: Params) {
           {page.faq.map(([a, b]) => (
             <details className="faq-entry" key={a}>
               <summary>
-                <h2>{a}</h2>
+                <span className="faq-question">{a}</span>
                 <span className="plus" aria-hidden="true">
                   +
                 </span>

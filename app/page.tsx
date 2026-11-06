@@ -162,7 +162,10 @@ export default function Home() {
                     <summary>
                       <span>{index.stage}</span>
                       <span className="detail-label">
-                        Details <span className="plus">+</span>
+                        Details{' '}
+                        <span className="plus" aria-hidden="true">
+                          +
+                        </span>
                       </span>
                     </summary>
                     <p className="detail">{index.detail}</p>

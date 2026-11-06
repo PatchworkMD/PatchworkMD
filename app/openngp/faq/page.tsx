@@ -88,7 +88,7 @@ export default function FAQ() {
           {questions.map(([question, answer]) => (
             <details key={question} className="faq-entry">
               <summary>
-                <h2>{question}</h2>
+                <span className="faq-question">{question}</span>
                 <span className="plus" aria-hidden="true">
                   +
                 </span>

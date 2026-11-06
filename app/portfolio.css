@@ -493,6 +493,11 @@ footer a {
   border: 1px solid var(--line);
 }
 .product-motion-figure figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
   margin-top: 10px;
   color: var(--muted);
   font:
@@ -876,6 +881,23 @@ body:has(.flash-background) .flash-intro {
   background: rgb(228 221 200 / 0.94);
   padding: 20px;
 }
+.film-toggle {
+  border: 1px solid #20241f;
+  background: transparent;
+  color: #20241f;
+  padding: 12px 16px;
+  min-width: 15ch;
+  min-height: 44px;
+  font: 12px monospace;
+  cursor: pointer;
+}
+.film-toggle:hover {
+  background: #e4ddc8;
+}
+.film-toggle:focus-visible {
+  outline-offset: -6px;
+}
+
 .background-pause {
   position: fixed;
   right: 16px;

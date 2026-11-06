@@ -130,3 +130,23 @@ test('spinner exposes its supplied accessible name and mobile hook has a server 
   }
   assert.equal(html(MobileState), '<span>false</span>');
 });
+
+test('the product film waits for motion permission and offers a play control', async () => {
+  const { default: ProductFilm } =
+    await import('../components/ProductFilm.tsx');
+  const markup = html(ProductFilm, {
+    name: '2DO',
+    film: {
+      src: '/film.mp4',
+      poster: '/poster.png',
+      label: 'Product film',
+      caption: 'Silent film',
+    },
+  });
+  assert.doesNotMatch(markup, /autoplay/i);
+  assert.match(markup, /<video[^>]*aria-label="Product film"/);
+  assert.match(
+    markup,
+    /<button type="button" class="film-toggle">Play film<\/button>/,
+  );
+});
