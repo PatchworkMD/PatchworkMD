@@ -2,7 +2,11 @@ import assert from 'node:assert/strict';
 import { createServer as createHttpServer } from 'node:http';
 import { createServer } from 'node:net';
 import { test } from 'node:test';
-import { startSite, waitForSite } from './site-server.mjs';
+import {
+  assertNothingServing,
+  startSite,
+  waitForSite,
+} from './site-server.mjs';
 
 const listen = (server) =>
   new Promise((resolve) =>
@@ -43,4 +47,13 @@ test('a server that exits before it is ready reports its output', async () => {
   ]);
   await assert.rejects(site.exited, /exited early \(3\)\.\nport in use/);
   site.stop();
+});
+
+test('an already running server is refused so a stale build is never tested', async () => {
+  const server = createHttpServer((_, response) => response.end('old build'));
+  const url = await listen(server);
+  await assert.rejects(assertNothingServing(url), /already serving/);
+  server.close();
+  await new Promise((resolve) => server.on('close', resolve));
+  await assertNothingServing(url);
 });

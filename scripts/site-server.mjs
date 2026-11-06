@@ -25,6 +25,17 @@ export async function waitForSite(
   );
 }
 
+export async function assertNothingServing(url) {
+  try {
+    await fetch(url, { signal: AbortSignal.timeout(1000) });
+  } catch {
+    return;
+  }
+  throw new Error(
+    `Something is already serving ${url}. Stop it, or set SITE_CHECK_URL to test that server on purpose.`,
+  );
+}
+
 export function startSite(command, args) {
   const child = spawn(command, args, {
     detached: true,
