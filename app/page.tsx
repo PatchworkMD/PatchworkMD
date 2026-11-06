@@ -9,41 +9,7 @@ import Image from 'next/image';
 import FlashMark from '../components/FlashMark';
 import FlashBackground from '../components/FlashBackground';
 import { SiteFooter, SiteHeader } from '../components/SiteChrome';
-const appLogos: Record<string, string> = {
-  '2DO': '/2do-current-icon.png',
-  Orbit: '/orbit-icon.png',
-  Dreamer: '/dreamer-nightcap.png',
-};
-const projects = [
-  [
-    'OpenNGP',
-    'Campaign software',
-    'In development',
-    'Fundraising and organizing software with separate campaign workspaces.',
-    'Brings donor profiles, pledges, contributions, and call outcomes into one workflow. Public distribution is not available yet.',
-  ],
-  [
-    '2DO',
-    'Mac & iPhone',
-    'In development',
-    'Capture tasks and keep lists on Mac and iPhone.',
-    'Local-first storage and a whiteboard-inspired interface. Mac and iPhone releases are in preparation.',
-  ],
-  [
-    'Dreamer',
-    'Agent tools',
-    'In development',
-    'Review what an agent finished and carry context into the next session.',
-    'The store listing is a draft and has not been submitted for review. Dreamer is not available in the store yet.',
-  ],
-  [
-    'Orbit',
-    'macOS',
-    'Release candidate',
-    'A Mac app for coding-agent sessions and approvals.',
-    'Native coding-agent sessions and approvals. Public distribution is not available yet.',
-  ],
-] as const;
+import { indexedProducts } from '../lib/products';
 export default function Home() {
   return (
     <>
@@ -171,47 +137,39 @@ export default function Home() {
             <span>Current projects</span>
           </div>
           <div className="project-index">
-            {projects.map(
-              ([name, platform, status, description, detail], index) => (
-                <article key={name} className="project">
-                  <div className="project-name">
-                    <span className="project-number">0{index + 2}</span>
-                    {appLogos[name] && (
-                      <Image
-                        src={appLogos[name]}
-                        className="app-logo"
-                        alt=""
-                        width={40}
-                        height={40}
-                        unoptimized
-                      />
-                    )}
-                    <h3>
-                      <Link
-                        href={
-                          name === '2DO' ? '/2d0' : '/' + name.toLowerCase()
-                        }
-                      >
-                        {name}
-                      </Link>
-                    </h3>
-                    <p>{platform}</p>
-                  </div>
-                  <div className="project-body">
-                    <p className="description">{description}</p>
-                    <details>
-                      <summary>
-                        <span>{status}</span>
-                        <span className="detail-label">
-                          Details <span className="plus">+</span>
-                        </span>
-                      </summary>
-                      <p className="detail">{detail}</p>
-                    </details>
-                  </div>
-                </article>
-              ),
-            )}
+            {indexedProducts().map(({ name, href, logo, index }, position) => (
+              <article key={name} className="project">
+                <div className="project-name">
+                  <span className="project-number">0{position + 2}</span>
+                  {logo && (
+                    <Image
+                      src={logo.src}
+                      className="app-logo"
+                      alt=""
+                      width={40}
+                      height={40}
+                      unoptimized
+                    />
+                  )}
+                  <h3>
+                    <Link href={href}>{name}</Link>
+                  </h3>
+                  <p>{index.platform}</p>
+                </div>
+                <div className="project-body">
+                  <p className="description">{index.summary}</p>
+                  <details>
+                    <summary>
+                      <span>{index.stage}</span>
+                      <span className="detail-label">
+                        Details <span className="plus">+</span>
+                      </span>
+                    </summary>
+                    <p className="detail">{index.detail}</p>
+                  </details>
+                </div>
+              </article>
+            ))}
           </div>
         </section>
         <section className="skills" id="skills">
