@@ -16,17 +16,13 @@ html {
 }
 body {
   margin: 0;
-  background: var(--bg);
   color: var(--ink);
-  font-family: var(--font-geist-sans), Arial, sans-serif;
   font-size: 16px;
   line-height: 1.65;
-  -webkit-font-smoothing: antialiased;
 }
 header,
 main,
 footer {
-  max-width: 940px;
   padding-inline: 42px;
   margin-inline: auto;
 }
@@ -61,14 +57,11 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 34px;
-  padding-bottom: 25px;
   gap: 24px;
 }
 .wordmark {
   font-size: 14px;
   font-weight: 600;
-  letter-spacing: -0.3px;
 }
 nav {
   display: flex;
@@ -87,20 +80,10 @@ nav a {
   padding-bottom: 76px;
 }
 .eyebrow {
-  font-size: 12px;
-  color: var(--muted);
   margin-bottom: 15px;
 }
-h1 {
-  font-size: 40px;
-  letter-spacing: -1.6px;
-  font-weight: 550;
-}
 .bio {
-  font-size: 22px;
   letter-spacing: -0.45px;
-  line-height: 1.55;
-  margin-top: 23px;
 }
 .intro-note {
   font-size: 14px;
@@ -113,37 +96,20 @@ h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 18px;
   border-bottom: 1px solid var(--ink);
 }
 .section-title h2 {
-  font-size: 13px;
   font-weight: 600;
 }
 .section-title > span {
-  font-size: 11px;
   color: var(--muted);
-}
-.project {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 35px;
-  padding: 31px 0 27px;
-  border-bottom: 1px solid var(--line);
 }
 h3 {
   font-size: 20px;
   letter-spacing: -0.5px;
   overflow-wrap: anywhere;
 }
-.project-name > p {
-  font-size: 11px;
-  color: var(--muted);
-  margin-top: 7px;
-}
 .description {
-  font-size: 15px;
-  line-height: 1.75;
   max-width: 480px;
 }
 .project-body {
@@ -188,16 +154,6 @@ summary:hover .detail-label {
   padding-top: 8px;
   max-width: 470px;
 }
-.contact {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 35px;
-  padding: 54px 0 65px;
-}
-.contact h2 {
-  font-size: 15px;
-  letter-spacing: -0.2px;
-}
 .contact p {
   font-size: 14px;
   color: var(--muted);
@@ -219,9 +175,6 @@ footer {
   gap: 25px;
   font-size: 11px;
   color: var(--muted);
-  padding-top: 22px;
-  padding-bottom: 28px;
-  border-top: 1px solid var(--line);
 }
 footer a {
   min-height: 44px;
@@ -282,29 +235,15 @@ footer a.support-link {
   }
 }
 @media (max-width: 640px) {
-  header,
-  main,
-  footer {
-    padding-inline: 24px;
-  }
   header {
     padding-top: 20px;
     align-items: flex-start;
     flex-wrap: wrap;
     gap: 8px;
   }
-  nav {
-    gap: 23px;
-  }
   .intro {
     padding-top: 42px;
     padding-bottom: 47px;
-  }
-  h1 {
-    font-size: 34px;
-  }
-  .bio {
-    font-size: 20px;
   }
   .desktop-break {
     display: none;
@@ -313,8 +252,6 @@ footer a.support-link {
     font-size: 13px;
   }
   .project {
-    grid-template-columns: 1fr;
-    gap: 14px;
     padding: 25px 0 21px;
   }
   .project-name {
@@ -326,7 +263,6 @@ footer a.support-link {
   .project-name > p {
     margin-top: 0;
     text-align: right;
-    flex-shrink: 0;
   }
   .description {
     font-size: 14px;
@@ -341,30 +277,12 @@ footer a.support-link {
   html {
     scroll-behavior: auto;
   }
-  *,
-  *::before,
-  *::after {
-    animation: none !important;
-    transition: none !important;
-  }
-}
-
-.skills {
-  padding-top: 48px;
 }
 .skills-content {
   display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 35px;
-  padding: 29px 0 37px;
-  border-bottom: 1px solid var(--line);
 }
 .skills-intro > p:first-child {
-  font-size: 17px;
-  letter-spacing: -0.3px;
-  color: var(--accent);
   line-height: 1.5;
-  max-width: 210px;
 }
 .skills-intro > p + p {
   font-size: 13px;
@@ -396,12 +314,8 @@ footer a.support-link {
   margin-top: 9px;
 }
 @media (max-width: 640px) {
-  .skills {
-    padding-top: 35px;
-  }
   .skills-content {
     grid-template-columns: 1fr;
-    gap: 29px;
   }
   .skills-intro > p:first-child,
   .skills-intro > p + p {
@@ -422,27 +336,13 @@ footer a.support-link {
   color: var(--muted);
   margin-top: 10px;
 }
-
-/* App-inspired editorial refinement */
-:root {
-  --surface: #fff;
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
-}
-header,
-main,
-footer {
-  max-width: 1040px;
-}
 header {
-  padding-top: 26px;
   padding-bottom: 20px;
-  border-bottom: 1px solid var(--line);
 }
 .wordmark {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  min-height: 44px;
 }
 .mini-mark {
   display: grid;
@@ -491,16 +391,6 @@ nav a:focus-visible::after {
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--accent);
-}
-h1 {
-  font-size: clamp(36px, 5vw, 54px);
-  letter-spacing: -2px;
-  line-height: 1.12;
-}
-.bio {
-  font-size: 21px;
-  max-width: 550px;
 }
 .patch-art {
   position: relative;
@@ -513,13 +403,8 @@ h1 {
   isolation: isolate;
 }
 .patch-art::before {
-  content: '';
-  position: absolute;
-  inset: -14px;
   border: 1px solid var(--line);
   border-radius: 42px;
-  transform: rotate(14deg);
-  z-index: -1;
 }
 .patch-art span {
   display: block;
@@ -601,6 +486,11 @@ h1 {
   animation-delay: 0.24s;
 }
 .patch-art::before {
+  content: '';
+  position: absolute;
+  inset: -14px;
+  transform: rotate(14deg);
+  z-index: -1;
   animation: patch-frame 3.2s var(--ease) backwards;
   transition: transform 0.8s var(--ease);
 }
@@ -652,23 +542,14 @@ h1 {
 }
 .project {
   position: relative;
-  grid-template-columns: 1fr 1.8fr;
-  gap: 40px;
-  padding: 34px 20px;
   margin-inline: -20px;
   transition:
     background 0.25s var(--ease),
     border-color 0.25s var(--ease);
-  border-radius: 12px 12px 0 0;
 }
 .project:first-child {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 18px;
   margin-top: 20px;
   margin-bottom: 8px;
-  padding: 34px 20px;
-  box-shadow: 0 5px 24px #253c2905;
 }
 .project:first-child h3 {
   font-size: 25px;
@@ -718,18 +599,11 @@ details[open] .detail {
   padding-top: 64px;
 }
 .skills-intro > p:first-child {
-  font-size: 22px;
   letter-spacing: -0.65px;
   max-width: 230px;
 }
 .skills-content {
-  grid-template-columns: 1fr 1.8fr;
-  gap: 40px;
   padding-block: 34px 42px;
-}
-.skill-list > div {
-  padding-left: 18px;
-  border-left: 2px solid var(--line);
 }
 .contact {
   padding-block: 58px;
@@ -750,7 +624,6 @@ details[open] .detail {
 }
 @media (max-width: 640px) {
   .intro {
-    grid-template-columns: 1fr;
     gap: 0;
     padding-block: 48px;
   }
@@ -796,6 +669,7 @@ details[open] .detail {
     max-width: 300px;
   }
   .project-name > p {
+    flex-shrink: 0;
     font-size: 9px;
   }
 }
@@ -886,15 +760,8 @@ details[open] .detail {
     gap: 6px;
   }
 }
-:root {
-  --bg: #f2ede3;
-  --ink: #282824;
-  --muted: #6d6a61;
-  --line: #cfc7b9;
-  --accent: #c65b35;
-  --surface: #f8f4ec;
-}
 body {
+  -webkit-font-smoothing: antialiased;
   background: var(--bg);
   font-family: var(--font-geist-sans), Arial, sans-serif;
 }
@@ -907,23 +774,11 @@ header {
   border-bottom: 1px solid var(--line);
   padding-top: 22px;
 }
-.brand-mark {
-  display: grid;
-  grid-template-columns: repeat(2, 6px);
-  gap: 3px;
-  position: relative;
-  width: 15px;
-  height: 15px;
-}
 .brand-mark span {
-  border: 1px solid var(--ink);
   display: block;
 }
-.brand-mark span:nth-child(4) {
-  background: var(--accent);
-  border-color: var(--accent);
-}
 .wordmark {
+  min-height: 44px;
   letter-spacing: 0.02em;
 }
 .cover {
@@ -979,9 +834,7 @@ h1 em {
 .image-frame img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
   display: block;
-  filter: saturate(0.78) contrast(0.94);
 }
 figcaption {
   font-size: 10px;
@@ -1021,7 +874,6 @@ figcaption {
   color: var(--accent);
 }
 .featured h2 {
-  font-size: 58px;
   letter-spacing: -0.06em;
   margin-top: 18px;
 }
@@ -1052,7 +904,6 @@ figcaption {
 }
 .project {
   display: grid;
-  grid-template-columns: 45px 1fr 1.65fr;
   gap: 20px;
   padding: 27px 0;
   border-bottom: 1px solid var(--line);
@@ -1154,7 +1005,6 @@ footer small {
     font-size: 48px;
   }
   .project {
-    grid-template-columns: 30px 1fr;
     gap: 12px;
   }
   .project-body {
@@ -1177,6 +1027,12 @@ footer small {
   }
 }
 :root {
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --bg: #f2ede3;
+  --ink: #282824;
+  --muted: #6d6a61;
+  --line: #cfc7b9;
+  --surface: #f8f4ec;
   --accent: #9b3f24;
 }
 .project {
@@ -1189,8 +1045,6 @@ footer small {
   display: grid;
   grid-template-columns: repeat(2, 7px);
   gap: 3px;
-  width: 17px;
-  height: 17px;
 }
 .brand-mark span {
   border: 0;
@@ -1209,10 +1063,6 @@ footer small {
   border-color: var(--accent);
 }
 @media (max-width: 640px) {
-  .work .project {
-    grid-template-columns: 30px 1fr;
-    gap: 12px;
-  }
   .work .project-body {
     grid-column: 2;
   }
@@ -1246,8 +1096,10 @@ footer small {
     display: block;
   }
 }
-
 .brand-mark {
+  position: relative;
+  width: 17px;
+  height: 17px;
   animation: viewfinder-in 1.4s var(--ease) both;
   transition: transform 0.35s var(--ease);
 }
@@ -1262,6 +1114,8 @@ footer small {
   animation: editorial-in 1.1s 0.15s var(--ease) backwards;
 }
 .image-frame img {
+  object-fit: cover;
+  filter: saturate(0.78) contrast(0.94);
   transition: transform 0.8s var(--ease);
 }
 @media (hover: hover) {
@@ -1294,6 +1148,7 @@ footer small {
     grid-template-columns: 1fr;
   }
   .work .project {
+    gap: 12px;
     grid-template-columns: 30px 1fr;
   }
   .intro {
