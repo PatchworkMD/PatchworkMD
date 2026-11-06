@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import { siteMotion } from '../lib/motion';
 import type { ProductPage } from '../lib/products';
 
 type Film = NonNullable<ProductPage['film']>;
@@ -26,13 +27,20 @@ export default function ProductFilm({
   useEffect(() => {
     const element = video.current;
     if (!element) return;
-    const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+    let heldByPolicy = true;
     const follow = () => {
-      if (reduced.matches) element.pause();
+      if (siteMotion.allowsMotion()) {
+        if (heldByPolicy) {
+          heldByPolicy = false;
+          void play(element);
+        }
+      } else if (!element.paused) {
+        heldByPolicy = true;
+        element.pause();
+      }
     };
-    if (!reduced.matches) void play(element);
-    reduced.addEventListener('change', follow);
-    return () => reduced.removeEventListener('change', follow);
+    follow();
+    return siteMotion.subscribe(follow);
   }, []);
 
   const toggle = () => {

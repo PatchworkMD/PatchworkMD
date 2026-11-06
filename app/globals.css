@@ -1586,3 +1586,13 @@ footer small {
 .portfolio-candidate .featured .section-kicker span {
   color: var(--surface);
 }
+
+/* Pause motion (lib/motion.ts) is the one site-wide motion policy for CSS:
+   continuous decoration freezes where it is; entrances and scroll reveals
+   settle to their final state. */
+:root[data-motion='paused'] *:not(.orbit-star, .orbit-ufo) {
+  animation: none;
+}
+:root[data-motion='paused'] :is(.orbit-star, .orbit-ufo) {
+  animation-play-state: paused;
+}
