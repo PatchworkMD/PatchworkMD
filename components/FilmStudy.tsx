@@ -28,7 +28,6 @@ void main() {
   gl_FragColor = vec4(color, 1.);
 }`;
 
-/** One decorative image. The HTML photograph remains the fallback. */
 export default function FilmStudy() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pausedRef = useRef(false);
@@ -74,7 +73,8 @@ export default function FilmStudy() {
       gl.deleteProgram(program);
       return;
     }
-    gl.useProgram(program);
+    const activateProgram = gl.useProgram.bind(gl);
+    activateProgram(program);
     const buffer = gl.createBuffer();
     const texture = gl.createTexture();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
