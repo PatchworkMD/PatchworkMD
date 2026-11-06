@@ -17,3 +17,14 @@ jobs:
       - run: npm ci
       - run: npm run verify
       - run: npm run build
+      - run: npx playwright-core install --with-deps chromium
+      - run: npm run check:browser
+        env:
+          SITE_CHECK_RUNTIME: worker
+          WRANGLER_SEND_METRICS: 'false'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-check-${{ github.sha }}
+          path: outputs/browser-check/
+          if-no-files-found: ignore

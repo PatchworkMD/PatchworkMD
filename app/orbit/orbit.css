@@ -136,14 +136,19 @@
 .orbit-cta span {
   transition: transform 0.25s var(--ease);
 }
-.orbit-cta:hover {
-  transform: translateY(-1px);
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.28),
-    0 16px 34px -12px rgba(107, 220, 255, 0.7);
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .orbit-cta:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.28),
+      0 16px 34px -12px rgba(107, 220, 255, 0.7);
+  }
+  .orbit-cta:hover span {
+    transform: translateY(3px);
+  }
 }
-.orbit-cta:hover span {
-  transform: translateY(3px);
+:root[data-motion='paused'] :is(.orbit-star, .orbit-ufo) {
+  animation-play-state: paused;
 }
 .orbit-hero-aside {
   display: grid;

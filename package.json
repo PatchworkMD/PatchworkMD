@@ -10,12 +10,14 @@
     "build": "vinext build",
     "start": "wrangler dev --config dist/server/wrangler.json",
     "lint": "oxlint",
-    "test": "node --experimental-strip-types --test scripts/*.test.mjs",
+    "test": "node --experimental-strip-types --test --test-concurrency=2 scripts/*.test.mjs",
     "format": "oxfmt",
     "typecheck": "tsc --noEmit",
     "format:check": "oxfmt --check",
     "verify": "npm run format:check && npm run lint && npm run typecheck && npm test",
-    "prepare": "git config core.hooksPath .githooks || true"
+    "check:browser": "node --experimental-strip-types --test --test-concurrency=1 scripts/browser-check.mjs",
+    "agents:preflight": "node scripts/agent-preflight.mjs",
+    "prepare": "git config core.hooksPath .githooks || echo 'prepare: could not set core.hooksPath; run: git config core.hooksPath .githooks' >&2"
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",
@@ -51,6 +53,7 @@
     "oxfmt": "0.61.0",
     "oxlint": "1.76.0",
     "oxlint-tsgolint": "7.0.2001",
+    "playwright-core": "1.60.0",
     "tailwindcss": "4.2.1",
     "typescript": "5.9.3",
     "vite": "8.2.2",

@@ -897,6 +897,13 @@ body:has(.flash-background) .flash-intro {
 .film-toggle:focus-visible {
   outline-offset: -6px;
 }
+.film-status:not(:empty) {
+  flex-basis: 100%;
+  color: var(--ink);
+  font:
+    13px/1.5 var(--font-geist-sans),
+    sans-serif;
+}
 
 .background-pause {
   position: fixed;
@@ -1385,8 +1392,13 @@ body:has(.flash-background) .product-preview img {
   .intro-call-button span {
     transition: transform 220ms var(--ease);
   }
-  .intro-call-button:is(:hover, :focus-visible) span {
+  .intro-call-button:focus-visible span {
     transform: translate(3px, -3px);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .intro-call-button:hover span {
+      transform: translate(3px, -3px);
+    }
   }
   @supports (animation-timeline: view()) {
     .orbit-spotlight-grid,

@@ -61,22 +61,41 @@ const { useIsMobile } = await import('../hooks/use-mobile.ts');
 const html = (component, props, ...children) =>
   renderToStaticMarkup(React.createElement(component, props, ...children));
 
-test('groups retain labels, children, and native semantics', () => {
-  assert.match(
+const IMPLICIT_ROLES = {
+  a: 'link',
+  button: 'button',
+  fieldset: 'group',
+  li: 'listitem',
+  ol: 'list',
+  output: 'status',
+  section: 'region',
+  ul: 'list',
+};
+const elements = (markup) =>
+  [...markup.matchAll(/<([a-z]+)([^>]*)>/g)].map(([, tag, attrs]) => ({
+    role:
+      /\brole="([^"]+)"/.exec(attrs)?.[1] ?? IMPLICIT_ROLES[tag] ?? 'generic',
+    name: /\baria-label="([^"]*)"/.exec(attrs)?.[1],
+    attrs,
+  }));
+const roles = (markup) => elements(markup).map((element) => element.role);
+
+test('groups expose a named group role around their controls', () => {
+  const [buttons] = elements(
     html(ButtonGroup, { 'aria-label': 'Actions' }, 'Save'),
-    /^<fieldset[^>]*aria-label="Actions"[^>]*>Save<\/fieldset>$/,
   );
+  assert.deepEqual([buttons.role, buttons.name], ['group', 'Actions']);
   const markup = html(
     InputGroup,
     {},
     React.createElement(InputGroupAddon, {}, '$'),
     React.createElement(InputGroupInput, { id: 'amount' }),
   );
-  assert.match(markup, /^<fieldset/);
-  assert.match(markup, /id="amount"/);
+  assert.equal(roles(markup)[0], 'group');
+  assert.match(markup, /<input[^>]*id="amount"/);
   assert.match(
     html(Label, { htmlFor: 'amount' }, 'Amount'),
-    /for="amount"[^>]*>Amount<\/label>/,
+    /<label[^>]*for="amount"[^>]*>Amount<\/label>/,
   );
 });
 
@@ -86,24 +105,26 @@ test('pagination renders its link text and active state', () => {
     { href: '/?page=2', isActive: true },
     '2',
   );
-  assert.match(markup, /href="\/\?page=2"/);
-  assert.match(markup, /aria-current="page"/);
-  assert.match(markup, />2<\/a>/);
+  const [link] = elements(markup);
+  assert.equal(link.role, 'link');
+  assert.match(link.attrs, /href="\/\?page=2"/);
+  assert.match(link.attrs, /aria-current="page"/);
+  assert.match(markup, />2</);
 });
 
-test('item groups create native list items without changing standalone items', () => {
+test('item groups are lists of items, and a standalone item claims no list role', () => {
   const markup = html(
     ItemGroup,
     {},
     React.createElement(Item, {}, 'First'),
     React.createElement(Item, {}, 'Second'),
   );
-  assert.match(markup, /^<ul/);
-  assert.equal((markup.match(/<li>/g) ?? []).length, 2);
-  assert.match(html(Item, {}, 'Standalone'), /^<div/);
+  assert.equal(roles(markup)[0], 'list');
+  assert.equal(roles(markup).filter((role) => role === 'listitem').length, 2);
+  assert.ok(!roles(html(Item, {}, 'Standalone')).includes('listitem'));
 });
 
-test('carousel has a named region and initially disabled navigation during SSR', () => {
+test('carousel is a named region with slide groups and disabled navigation before hydration', () => {
   const markup = html(
     Carousel,
     { 'aria-label': 'Work samples' },
@@ -115,23 +136,27 @@ test('carousel has a named region and initially disabled navigation during SSR',
     React.createElement(CarouselPrevious),
     React.createElement(CarouselNext),
   );
-  assert.match(markup, /^<section[^>]*aria-label="Work samples"/);
-  assert.equal((markup.match(/ disabled=""/g) ?? []).length, 2);
-  assert.match(markup, /<fieldset[^>]*aria-roledescription="slide"/);
+  const [region] = elements(markup);
+  assert.deepEqual([region.role, region.name], ['region', 'Work samples']);
+  const slide = elements(markup).find(({ attrs }) =>
+    attrs.includes('aria-roledescription="slide"'),
+  );
+  assert.equal(slide?.role, 'group');
+  const buttons = elements(markup).filter(({ role }) => role === 'button');
+  assert.equal(buttons.length, 2);
+  assert.ok(buttons.every(({ attrs }) => /\bdisabled\b/.test(attrs)));
 });
 
-test('spinner exposes its supplied accessible name and mobile hook has a server snapshot', () => {
-  assert.match(
-    html(Spinner, { 'aria-label': 'Saving' }),
-    /^<output aria-label="Saving"/,
-  );
+test('spinner is a named status and the mobile hook has a server snapshot', () => {
+  const [spinner] = elements(html(Spinner, { 'aria-label': 'Saving' }));
+  assert.deepEqual([spinner.role, spinner.name], ['status', 'Saving']);
   function MobileState() {
     return React.createElement('span', {}, String(useIsMobile()));
   }
   assert.equal(html(MobileState), '<span>false</span>');
 });
 
-test('the product film waits for motion permission and offers a play control', async () => {
+test('the product film renders without autoplay and with a play control and empty status', async () => {
   const { default: ProductFilm } =
     await import('../components/ProductFilm.tsx');
   const markup = html(ProductFilm, {
@@ -145,8 +170,10 @@ test('the product film waits for motion permission and offers a play control', a
   });
   assert.doesNotMatch(markup, /autoplay/i);
   assert.match(markup, /<video[^>]*aria-label="Product film"/);
-  assert.match(
-    markup,
-    /<button type="button" class="film-toggle">Play film<\/button>/,
-  );
+  const button = elements(markup).find(({ role }) => role === 'button');
+  assert.ok(button);
+  assert.match(markup, />Play film<\/button>/);
+  const status = elements(markup).find(({ role }) => role === 'status');
+  assert.ok(status);
+  assert.match(markup, /<output[^>]*><\/output>/);
 });

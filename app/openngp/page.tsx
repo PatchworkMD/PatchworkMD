@@ -1,4 +1,5 @@
 import { pageMetadata } from '../../lib/seo';
+import { stageOf } from '../../lib/products';
 import Link from 'next/link';
 import { SiteFooter, SiteHeader } from '../../components/SiteChrome';
 const title = 'OpenNGP — Campaign records, organized by workspace';
@@ -12,7 +13,7 @@ export default function OpenNGPPage() {
       <main id="main">
         <section className="intro">
           <div className="intro-copy">
-            <p className="eyebrow">In development</p>
+            <p className="eyebrow">{stageOf('openngp')}</p>
             <h1>OpenNGP</h1>
             <p className="bio">
               Campaign records, with a workspace for each team.

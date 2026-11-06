@@ -1,5 +1,7 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { siteMotion } from '../lib/motion';
+import { startArtworkLoop } from './artwork/loop';
 type Dot = { x: number; y: number; color: string; char: string };
 function makeFlash(): Dot[][] {
   const drawings = [
@@ -81,18 +83,12 @@ function makeFlash(): Dot[][] {
 }
 export default function FlashBackground() {
   const ref = useRef<HTMLCanvasElement>(null);
-  const state = useRef({ paused: false });
-  const [paused, setPaused] = useState(false);
   useEffect(() => {
     const canvas = ref.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     const motifs = makeFlash();
-    const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-    let frame = 0,
-      last = 0,
-      time = 0;
     const pointer = { x: -1000, y: -1000 };
     const move = (e: PointerEvent) => {
       pointer.x = e.clientX;
@@ -104,93 +100,63 @@ export default function FlashBackground() {
     };
     window.addEventListener('pointermove', move);
     document.addEventListener('pointerleave', leave);
-    const tick = (now: number) => {
-      const moving =
-        !document.hidden && !state.current.paused && !reduced.matches;
-      if (moving) frame = requestAnimationFrame(tick);
-      if (document.hidden || (moving && now - last < 40)) return;
-      const dt = Math.min((now - last) / 1000, 0.06);
-      last = now;
-      if (!state.current.paused && !reduced.matches) time += dt;
-      const w = innerWidth,
-        h = innerHeight,
-        dpr = Math.min(devicePixelRatio, 1.5);
-      if (
-        canvas.width !== Math.round(w * dpr) ||
-        canvas.height !== Math.round(h * dpr)
-      ) {
-        canvas.width = Math.round(w * dpr);
-        canvas.height = Math.round(h * dpr);
-      }
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.clearRect(0, 0, w, h);
-      const scale = Math.max(0.72, Math.min(1.35, w / 1050));
-      const cell = 365 * scale,
-        rowHeight = 355 * scale,
-        cols = Math.ceil(w / cell) + 2,
-        rows = Math.ceil(h / rowHeight) + 1;
-      ctx.font = `bold ${5.7 * scale}px monospace`;
-      for (let row = 0; row < rows; row++)
-        for (let col = 0; col < cols; col++) {
-          const index = (row * 3 + col) % motifs.length;
-          const x =
-              ((col * cell + time * 18 + row * cell * 0.43) % (cols * cell)) -
-              cell,
-            y = row * rowHeight - 90;
-          for (const dot of motifs[index]) {
-            let px = x + dot.x * scale,
-              py = y + dot.y * scale;
-            if (!reduced.matches && !state.current.paused) {
-              const dx = px - pointer.x,
-                dy = py - pointer.y,
-                d = Math.hypot(dx, dy);
-              if (d < 100 && d > 0) {
-                const f = (1 - d / 100) * 12;
-                px += (dx / d) * f;
-                py += (dy / d) * f;
-              }
-            }
-            ctx.fillStyle = dot.color;
-            ctx.fillText(dot.char, px, py);
-          }
+    const loop = startArtworkLoop({
+      element: canvas,
+      frameMs: 40,
+      isMoving: () => !siteMotion.isPaused(),
+      draw: (time) => {
+        const w = innerWidth,
+          h = innerHeight,
+          dpr = Math.min(devicePixelRatio, 1.5);
+        if (
+          canvas.width !== Math.round(w * dpr) ||
+          canvas.height !== Math.round(h * dpr)
+        ) {
+          canvas.width = Math.round(w * dpr);
+          canvas.height = Math.round(h * dpr);
         }
-      canvas.dataset.ready = 'true';
-    };
-    const resume = () => {
-      cancelAnimationFrame(frame);
-      last = performance.now();
-      frame = requestAnimationFrame(tick);
-    };
-    window.addEventListener('resize', resume);
-    document.addEventListener('visibilitychange', resume);
-    reduced.addEventListener('change', resume);
-    canvas.addEventListener('background-motion-change', resume);
-    resume();
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, w, h);
+        const scale = Math.max(0.72, Math.min(1.35, w / 1050));
+        const cell = 365 * scale,
+          rowHeight = 355 * scale,
+          cols = Math.ceil(w / cell) + 2,
+          rows = Math.ceil(h / rowHeight) + 1;
+        ctx.font = `bold ${5.7 * scale}px monospace`;
+        for (let row = 0; row < rows; row++)
+          for (let col = 0; col < cols; col++) {
+            const index = (row * 3 + col) % motifs.length;
+            const x =
+                ((col * cell + time * 18 + row * cell * 0.43) % (cols * cell)) -
+                cell,
+              y = row * rowHeight - 90;
+            for (const dot of motifs[index]) {
+              let px = x + dot.x * scale,
+                py = y + dot.y * scale;
+              if (!siteMotion.isPaused()) {
+                const dx = px - pointer.x,
+                  dy = py - pointer.y,
+                  d = Math.hypot(dx, dy);
+                if (d < 100 && d > 0) {
+                  const f = (1 - d / 100) * 12;
+                  px += (dx / d) * f;
+                  py += (dy / d) * f;
+                }
+              }
+              ctx.fillStyle = dot.color;
+              ctx.fillText(dot.char, px, py);
+            }
+          }
+        canvas.dataset.ready = 'true';
+      },
+    });
+    const unsubscribe = siteMotion.subscribe(loop.wake);
     return () => {
-      cancelAnimationFrame(frame);
+      loop.stop();
+      unsubscribe();
       window.removeEventListener('pointermove', move);
       document.removeEventListener('pointerleave', leave);
-      window.removeEventListener('resize', resume);
-      document.removeEventListener('visibilitychange', resume);
-      reduced.removeEventListener('change', resume);
-      canvas.removeEventListener('background-motion-change', resume);
     };
   }, []);
-  return (
-    <>
-      <canvas ref={ref} className="flash-background" aria-hidden="true" />
-      <button
-        type="button"
-        className="background-pause"
-        aria-pressed={paused}
-        onClick={() => {
-          state.current.paused = !paused;
-          setPaused(!paused);
-          ref.current?.dispatchEvent(new Event('background-motion-change'));
-        }}
-      >
-        {paused ? 'Play background' : 'Pause background'}
-      </button>
-    </>
-  );
+  return <canvas ref={ref} className="flash-background" aria-hidden="true" />;
 }
