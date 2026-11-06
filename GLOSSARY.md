@@ -48,6 +48,18 @@ _Avoid_: Consultation, discovery call, sales call
 A person who has asked for an Intro call.
 _Avoid_: Prospect, customer, contact
 
+**Referrer**:
+Someone who already knows Austin's work and suggests a person who might need it.
+_Avoid_: Affiliate, partner
+
+**Introduction**:
+A person a Referrer has suggested who has not yet asked for an Intro call. They are contacted only after giving permission. An Introduction becomes a Lead when they ask for one.
+_Avoid_: Prospect, contact
+
 **Referral**:
-A Lead introduced by someone who already knows Austin's work, with the Lead's consent.
-_Avoid_: Affiliate, partner signup
+The private record of one Introduction from one Referrer, from receipt to outcome.
+_Avoid_: Affiliate signup, partner lead
+
+**Referral stage**:
+Where a Referral sits in its lifecycle: received, permission confirmed, introduced, call booked, qualified, proposal, won or closed.
+_Avoid_: Stage (that is a Product's coarse phase), status
