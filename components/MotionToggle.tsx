@@ -1,4 +1,5 @@
 'use client';
+
 import { useSyncExternalStore } from 'react';
 import { siteMotion } from '../lib/motion';
 
@@ -12,6 +13,7 @@ export function useSiteMotionPaused() {
 
 export default function MotionToggle({ className }: { className?: string }) {
   const paused = useSiteMotionPaused();
+
   return (
     <button
       type="button"

@@ -1,9 +1,13 @@
 import { pageMetadata } from '../../../lib/seo';
 import { SiteFooter, SiteHeader } from '../../../components/SiteChrome';
+
 const title = 'OpenNGP FAQ — Workspaces, imports, and development status';
+
 const description =
   'Answers about OpenNGP campaign workspaces, reviewed imports, access controls, and current release limits.';
+
 export const metadata = pageMetadata(title, description, '/openngp/faq');
+
 const questions = [
   [
     'Who is OpenNGP for?',
@@ -70,6 +74,7 @@ const questions = [
     'There is no confirmed public launch date. Remaining workflows, accessibility, scale, clean installation and distribution must pass their release reviews first.',
   ],
 ];
+
 export default function FAQ() {
   return (
     <>

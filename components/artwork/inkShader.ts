@@ -23,32 +23,41 @@ export function createInkShader(
     alpha: true,
     premultipliedAlpha: false,
   });
+
   if (!gl) return null;
   const cleanup: (() => void)[] = [];
   const dispose = () => cleanup.splice(0).forEach((release) => release());
+
   const fail = () => {
     dispose();
+
     return null;
   };
 
   const compile = (type: number, source: string) => {
     const shader = gl.createShader(type);
+
     if (!shader) return null;
     cleanup.push(() => gl.deleteShader(shader));
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
+
     return gl.getShaderParameter(shader, gl.COMPILE_STATUS) ? shader : null;
   };
+
   const vertex = compile(gl.VERTEX_SHADER, VERTEX);
   const pixels = compile(gl.FRAGMENT_SHADER, fragment(palette));
+
   if (!vertex || !pixels) return fail();
 
   const program = gl.createProgram();
+
   if (!program) return fail();
   cleanup.push(() => gl.deleteProgram(program));
   gl.attachShader(program, vertex);
   gl.attachShader(program, pixels);
   gl.linkProgram(program);
+
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return fail();
   // WebGL useProgram is a native graphics method, not a React hook.
   // oxlint-disable-next-line react/react-compiler
@@ -57,9 +66,12 @@ export function createInkShader(
   const position = gl.getAttribLocation(program, 'p');
   const time = gl.getUniformLocation(program, 't');
   const buffer = gl.createBuffer();
+
   if (buffer) cleanup.push(() => gl.deleteBuffer(buffer));
   const texture = gl.createTexture();
+
   if (texture) cleanup.push(() => gl.deleteTexture(texture));
+
   if (position < 0 || !time || !buffer || !texture) return fail();
 
   gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -76,6 +88,7 @@ export function createInkShader(
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
   let ready = false;
+
   return {
     setMask(image) {
       gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -97,6 +110,7 @@ export function createInkShader(
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.uniform1f(time, seconds);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
+
       return true;
     },
     dispose,

@@ -1,16 +1,20 @@
 import type { Metadata } from 'next';
+
 export const SITE_URL = 'https://patchworkmd.dev';
+
 export function pageMetadata(
   title: string,
   description: string,
   path = '/',
 ): Metadata {
   const url = SITE_URL + path;
+
   const image =
     SITE_URL +
     '/social/' +
     (path === '/' ? 'patchwork' : path.slice(1).replaceAll('/', '-')) +
     '-v1.png';
+
   return {
     title,
     description,

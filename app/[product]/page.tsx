@@ -10,19 +10,25 @@ type Params = { params: Promise<{ product: string }> };
 
 function productPage(slug: string) {
   const resolution = resolveProduct(slug);
+
   if (resolution.kind === 'redirect') permanentRedirect(resolution.to);
+
   if (resolution.kind === 'missing') notFound();
+
   return resolution.product;
 }
 
 export async function generateMetadata({ params }: Params) {
   const resolution = resolveProduct((await params).product);
+
   if (resolution.kind === 'missing')
     return { title: 'Not found', robots: { index: false } };
+
   const product =
     resolution.kind === 'redirect'
       ? productPage(resolution.to.slice(1))
       : resolution.product;
+
   return pageMetadata(
     product.name + ' — ' + product.page.tagline,
     product.page.intro + ' ' + product.page.release + '.',
@@ -32,6 +38,7 @@ export async function generateMetadata({ params }: Params) {
 
 export default async function Product({ params }: Params) {
   const { slug, name, logo, page } = productPage((await params).product);
+
   return (
     <>
       <SiteHeader product />

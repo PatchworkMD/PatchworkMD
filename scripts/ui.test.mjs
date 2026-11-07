@@ -8,6 +8,7 @@ import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
+
 registerHooks({
   resolve(specifier, context, nextResolve) {
     if (
@@ -18,12 +19,14 @@ registerHooks({
       const base = specifier.startsWith('@/')
         ? pathToFileURL(root + specifier.slice(2)).href
         : new URL(specifier, context.parentURL).href;
+
       for (const suffix of ['', '.tsx', '.ts']) {
         if (existsSync(fileURLToPath(base + suffix))) {
           return nextResolve(base + suffix, context);
         }
       }
     }
+
     return nextResolve(specifier, context);
   },
   load(url, context, nextLoad) {
@@ -39,16 +42,20 @@ registerHooks({
         }).outputText,
       };
     }
+
     return nextLoad(url, context);
   },
 });
 
 const { ButtonGroup } = await import('../components/ui/button-group.tsx');
+
 const { InputGroup, InputGroupAddon, InputGroupInput } =
   await import('../components/ui/input-group.tsx');
+
 const { Label } = await import('../components/ui/label.tsx');
 const { PaginationLink } = await import('../components/ui/pagination.tsx');
 const { ItemGroup, Item } = await import('../components/ui/item.tsx');
+
 const {
   Carousel,
   CarouselContent,
@@ -56,8 +63,10 @@ const {
   CarouselPrevious,
   CarouselNext,
 } = await import('../components/ui/carousel.tsx');
+
 const { Spinner } = await import('../components/ui/spinner.tsx');
 const { useIsMobile } = await import('../hooks/use-mobile.ts');
+
 const html = (component, props, ...children) =>
   renderToStaticMarkup(React.createElement(component, props, ...children));
 
@@ -71,6 +80,7 @@ const IMPLICIT_ROLES = {
   section: 'region',
   ul: 'list',
 };
+
 const elements = (markup) =>
   [...markup.matchAll(/<([a-z]+)([^>]*)>/g)].map(([, tag, attrs]) => ({
     role:
@@ -78,19 +88,23 @@ const elements = (markup) =>
     name: /\baria-label="([^"]*)"/.exec(attrs)?.[1],
     attrs,
   }));
+
 const roles = (markup) => elements(markup).map((element) => element.role);
 
 test('groups expose a named group role around their controls', () => {
   const [buttons] = elements(
     html(ButtonGroup, { 'aria-label': 'Actions' }, 'Save'),
   );
+
   assert.deepEqual([buttons.role, buttons.name], ['group', 'Actions']);
+
   const markup = html(
     InputGroup,
     {},
     React.createElement(InputGroupAddon, {}, '$'),
     React.createElement(InputGroupInput, { id: 'amount' }),
   );
+
   assert.equal(roles(markup)[0], 'group');
   assert.match(markup, /<input[^>]*id="amount"/);
   assert.match(
@@ -105,6 +119,7 @@ test('pagination renders its link text and active state', () => {
     { href: '/?page=2', isActive: true },
     '2',
   );
+
   const [link] = elements(markup);
   assert.equal(link.role, 'link');
   assert.match(link.attrs, /href="\/\?page=2"/);
@@ -119,6 +134,7 @@ test('item groups are lists of items, and a standalone item claims no list role'
     React.createElement(Item, {}, 'First'),
     React.createElement(Item, {}, 'Second'),
   );
+
   assert.equal(roles(markup)[0], 'list');
   assert.equal(roles(markup).filter((role) => role === 'listitem').length, 2);
   assert.ok(!roles(html(Item, {}, 'Standalone')).includes('listitem'));
@@ -136,11 +152,14 @@ test('carousel is a named region with slide groups and disabled navigation befor
     React.createElement(CarouselPrevious),
     React.createElement(CarouselNext),
   );
+
   const [region] = elements(markup);
   assert.deepEqual([region.role, region.name], ['region', 'Work samples']);
+
   const slide = elements(markup).find(({ attrs }) =>
     attrs.includes('aria-roledescription="slide"'),
   );
+
   assert.equal(slide?.role, 'group');
   const buttons = elements(markup).filter(({ role }) => role === 'button');
   assert.equal(buttons.length, 2);
@@ -150,15 +169,18 @@ test('carousel is a named region with slide groups and disabled navigation befor
 test('spinner is a named status and the mobile hook has a server snapshot', () => {
   const [spinner] = elements(html(Spinner, { 'aria-label': 'Saving' }));
   assert.deepEqual([spinner.role, spinner.name], ['status', 'Saving']);
+
   function MobileState() {
     return React.createElement('span', {}, String(useIsMobile()));
   }
+
   assert.equal(html(MobileState), '<span>false</span>');
 });
 
 test('the product film renders without autoplay and with a play control and empty status', async () => {
   const { default: ProductFilm } =
     await import('../components/ProductFilm.tsx');
+
   const markup = html(ProductFilm, {
     name: '2DO',
     film: {
@@ -168,6 +190,7 @@ test('the product film renders without autoplay and with a play control and empt
       caption: 'Silent film',
     },
   });
+
   assert.doesNotMatch(markup, /autoplay/i);
   assert.match(markup, /<video[^>]*aria-label="Product film"/);
   const button = elements(markup).find(({ role }) => role === 'button');

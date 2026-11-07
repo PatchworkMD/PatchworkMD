@@ -3,6 +3,7 @@ import { bookingDestination, introEmail } from '../lib/booking';
 
 export default function IntroCallLink({ className }: { className?: string }) {
   const destination = bookingDestination(config.calBookingUrl);
+
   return (
     <a className={className} href={destination}>
       {destination === introEmail

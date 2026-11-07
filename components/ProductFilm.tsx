@@ -1,4 +1,5 @@
 'use client';
+
 import { useEffect, useRef, useState } from 'react';
 import { siteMotion } from '../lib/motion';
 import type { ProductPage } from '../lib/products';
@@ -29,8 +30,10 @@ export default function ProductFilm({
 
   useEffect(() => {
     const element = video.current;
+
     if (!element) return;
     let heldByPolicy = true;
+
     const follow = () => {
       if (siteMotion.allowsMotion()) {
         if (heldByPolicy) {
@@ -42,19 +45,24 @@ export default function ProductFilm({
         element.pause();
       }
     };
+
     follow();
+
     return siteMotion.subscribe(follow);
   }, []);
 
   const toggle = () => {
     const element = video.current;
+
     if (!element) return;
+
     if (failed) {
       setFailed(false);
       element.load();
     } else if (!element.paused) {
       return element.pause();
     }
+
     void play(element);
   };
 

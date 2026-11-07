@@ -9,13 +9,16 @@ const hook = new URL(
   '../.claude/hooks/block-dangerous-git.sh',
   import.meta.url,
 );
+
 const run = (input) => spawnSync(hook.pathname, { input }).status;
+
 const exitCode = (command, cwd) =>
   run(JSON.stringify({ tool_input: { command }, cwd }));
 
 function repoOn(branch) {
   const dir = mkdtempSync(join(tmpdir(), 'guardrail-'));
   spawnSync('git', ['init', '-q', '-b', branch, dir]);
+
   return dir;
 }
 

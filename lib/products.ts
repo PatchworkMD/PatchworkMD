@@ -394,10 +394,13 @@ const aliases = new Map([['localmodelfit', 'localmodelmatch']]);
 
 export function resolveProduct(slug: string): Resolution {
   const canonical = aliases.get(slug);
+
   if (canonical) return { kind: 'redirect', to: '/' + canonical };
   const product = products.find((candidate) => candidate.slug === slug);
   const release = product?.page?.release ?? product?.stage;
+
   if (!product?.page || !release) return { kind: 'missing' };
+
   return {
     kind: 'page',
     product: { ...product, page: { ...product.page, release } },
@@ -406,19 +409,25 @@ export function resolveProduct(slug: string): Resolution {
 
 export function stageOf(slug: string): Stage {
   const stage = productFact(slug).stage;
+
   if (!stage) throw new Error(`No Stage recorded for ${slug}`);
+
   return stage;
 }
 
 export function availabilityOf(slug: string): string {
   const availability = productFact(slug).availability;
+
   if (!availability) throw new Error(`No availability recorded for ${slug}`);
+
   return availability;
 }
 
 function productFact(slug: string) {
   const product = products.find((candidate) => candidate.slug === slug);
+
   if (!product) throw new Error(`No Product ${slug}`);
+
   return product;
 }
 

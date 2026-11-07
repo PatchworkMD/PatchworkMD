@@ -13,6 +13,7 @@ test('only a direct Cal.com event is accepted', () => {
     bookingDestination(' https://cal.com/austin/intro '),
     'https://cal.com/austin/intro',
   );
+
   for (const value of [
     'https://cal.com',
     'https://cal.com/austin',
@@ -34,6 +35,7 @@ test('checked-in configuration is valid', () => {
   const config = JSON.parse(
     readFileSync(new URL('../lib/booking-config.json', import.meta.url)),
   );
+
   assert.equal(typeof config.calBookingUrl, 'string');
   assert.ok(bookingDestination(config.calBookingUrl));
 });

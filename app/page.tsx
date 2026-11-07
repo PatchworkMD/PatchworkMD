@@ -1,8 +1,10 @@
 import { pageMetadata } from '../lib/seo';
+
 export const metadata = pageMetadata(
   'patchwork.md | Mac apps, web tools & campaign software',
   'Independent software from PatchworkMD. Explore Orbit, 2DO, Dreamer, LocalModelMatch, and OpenNGP, with demos and current release details.',
 );
+
 import Link from 'next/link';
 import IntroCallLink from '../components/IntroCallLink';
 import Image from 'next/image';
@@ -11,6 +13,7 @@ import FlashBackground from '../components/FlashBackground';
 import MotionToggle from '../components/MotionToggle';
 import { SiteFooter, SiteHeader } from '../components/SiteChrome';
 import { availabilityOf, indexedProducts, stageOf } from '../lib/products';
+
 export default function Home() {
   return (
     <>

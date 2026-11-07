@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 const THEMES = { light: '', dark: '.dark' } as const;
 
 const INITIAL_DIMENSION = { width: 320, height: 200 } as const;
+
 type TooltipNameType = number | string;
 
 export type ChartConfig = Record<
@@ -102,6 +103,7 @@ ${colorConfig
     const color =
       itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ??
       itemConfig.color;
+
     return color ? `  --color-${key}: ${color};` : null;
   })
   .join('\n')}
@@ -154,6 +156,7 @@ function ChartTooltipContent({
     const [item] = payload;
     const key = String(labelKey ?? item?.dataKey ?? item?.name ?? 'value');
     const itemConfig = getPayloadConfigFromPayload(config, item, key);
+
     const value =
       !labelKey && typeof label === 'string'
         ? (config[label]?.label ?? label)

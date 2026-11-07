@@ -10,8 +10,11 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 
 type CarouselApi = UseEmblaCarouselType[1];
+
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;
+
 type CarouselOptions = UseCarouselParameters[0];
+
 type CarouselPlugin = UseCarouselParameters[1];
 
 type CarouselProps = {
@@ -58,10 +61,12 @@ function Carousel({
     },
     plugins,
   );
+
   const subscribe = React.useCallback(
     (onChange: () => void) => {
       api?.on('reInit', onChange);
       api?.on('select', onChange);
+
       return () => {
         api?.off('reInit', onChange);
         api?.off('select', onChange);
@@ -69,11 +74,13 @@ function Carousel({
     },
     [api],
   );
+
   const canScrollPrev = React.useSyncExternalStore(
     subscribe,
     () => api?.canScrollPrev() ?? false,
     () => false,
   );
+
   const canScrollNext = React.useSyncExternalStore(
     subscribe,
     () => api?.canScrollNext() ?? false,

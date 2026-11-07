@@ -5,6 +5,7 @@ export function bookingDestination(value: string): string {
   if (!value.trim()) return introEmail;
   const url = new URL(value.trim());
   const segments = url.pathname.split('/').filter(Boolean);
+
   if (
     url.protocol !== 'https:' ||
     url.hostname !== 'cal.com' ||
@@ -20,5 +21,6 @@ export function bookingDestination(value: string): string {
       'Booking URL must be a direct HTTPS cal.com account/event URL without query parameters.',
     );
   }
+
   return url.href;
 }

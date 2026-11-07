@@ -1,10 +1,12 @@
 import { pageMetadata } from '../../lib/seo';
 import { SiteFooter, SiteHeader } from '../../components/SiteChrome';
+
 export const metadata = pageMetadata(
   'Privacy & site information | patchwork.md',
   'How patchwork.md handles website visits, hosting, and contact information.',
   '/privacy',
 );
+
 export default function Privacy() {
   return (
     <>

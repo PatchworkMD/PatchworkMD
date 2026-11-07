@@ -4,6 +4,7 @@ const ACCENT_STRIDE = 9;
 function seeded(index: number, salt: number) {
   let value = (index + 1) * 2654435761 + salt * 40503;
   value = (value ^ (value >>> 13)) >>> 0;
+
   return (value % 1000) / 1000;
 }
 
@@ -27,6 +28,7 @@ export default function OrbitStarfield() {
     const size = 1 + seeded(i, 3) * 2;
     const duration = (3 + seeded(i, 4) * 4).toFixed(2);
     const delay = (seeded(i, 5) * -8).toFixed(2);
+
     return { left, top, size, duration, delay, className: accentClass(i) };
   });
 
