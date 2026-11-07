@@ -46,17 +46,20 @@ test('the sitemap lists every Product and nothing unknown', () => {
     new URL('../public/sitemap.xml', import.meta.url),
     'utf8',
   );
+
   const paths = [
     ...sitemap.matchAll(/<loc>https:\/\/patchworkmd\.dev(\/[^<]*)<\/loc>/g),
   ]
     .map(([, path]) => path)
     .sort((a, b) => a.localeCompare(b));
+
   const expected = [
     '/',
     '/openngp/faq',
     '/privacy',
     ...products.map((product) => product.href),
   ].sort((a, b) => a.localeCompare(b));
+
   assert.deepEqual(paths, expected);
 });
 

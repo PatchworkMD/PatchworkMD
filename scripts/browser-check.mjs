@@ -20,6 +20,7 @@ let browser;
 before(
   async () => {
     await mkdir(output, { recursive: true });
+
     if (!process.env.SITE_CHECK_URL) {
       await assertNothingServing(base);
       site = startSite(
@@ -36,6 +37,7 @@ before(
           : ['vinext', 'start', '-p', port],
       );
     }
+
     const ready = waitForSite(base, { describe: site?.describe });
     await (site ? Promise.race([ready, site.exited]) : ready);
     browser = await chromium.launch({
@@ -54,11 +56,13 @@ after(async () => {
 
 async function open(path, options = {}) {
   const { init, initArg, ...contextOptions } = options;
+
   const page = await browser.newPage({
     viewport: { width: 1440, height: 900 },
     reducedMotion: 'no-preference',
     ...contextOptions,
   });
+
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
   page.on('console', (message) => {
@@ -73,27 +77,33 @@ async function open(path, options = {}) {
     const request = window.requestAnimationFrame.bind(window);
     window.requestAnimationFrame = (callback) => {
       window.__frames++;
+
       return request(callback);
     };
   });
+
   if (init) await page.addInitScript(init, initArg);
   await page.goto(base + path, { waitUntil: 'networkidle' });
+
   return { page, errors };
 }
 
 const instrumentGraphics = (failStage) => {
   const proto = WebGLRenderingContext.prototype;
+
   const live = (gl, delta) => {
     gl.canvas.__live = (gl.canvas.__live ?? 0) + delta;
     window.__glCreated = (window.__glCreated ?? 0) + Math.max(delta, 0);
     window.__glDeleted = (window.__glDeleted ?? 0) + Math.max(-delta, 0);
   };
+
   const failing = {
     compile: ['getShaderParameter', () => false],
     link: ['getProgramParameter', () => false],
     buffer: ['createBuffer', () => null],
     texture: ['createTexture', () => null],
   }[failStage];
+
   for (const name of [
     'createShader',
     'createProgram',
@@ -104,10 +114,13 @@ const instrumentGraphics = (failStage) => {
     proto[name] = function (...args) {
       if (failing?.[0] === name) return failing[1]();
       const resource = original.apply(this, args);
+
       if (resource) live(this, 1);
+
       return resource;
     };
   }
+
   for (const name of [
     'deleteShader',
     'deleteProgram',
@@ -117,25 +130,32 @@ const instrumentGraphics = (failStage) => {
     const original = Object.getOwnPropertyDescriptor(proto, name).value;
     proto[name] = function (resource) {
       if (resource) live(this, -1);
+
       return original.call(this, resource);
     };
   }
+
   if (failing && !failing[0].startsWith('create')) {
     const original = Object.getOwnPropertyDescriptor(proto, failing[0]).value;
     proto[failing[0]] = function (...args) {
       original.apply(this, args);
+
       return failing[1]();
     };
   }
+
   const drawArrays = Object.getOwnPropertyDescriptor(proto, 'drawArrays').value;
   proto.drawArrays = function (...args) {
     this.canvas.__draws = (this.canvas.__draws ?? 0) + 1;
+
     return drawArrays.apply(this, args);
   };
+
   const text = CanvasRenderingContext2D.prototype;
   const fillText = Object.getOwnPropertyDescriptor(text, 'fillText').value;
   text.fillText = function (...args) {
     this.canvas.__draws = (this.canvas.__draws ?? 0) + 1;
+
     return fillText.apply(this, args);
   };
 };
@@ -147,20 +167,24 @@ async function filmSettles(page, state, { media }) {
   const read = () =>
     page.evaluate(() => {
       const video = document.querySelector('video');
+
       return {
         ui: document.querySelector('.product-motion-figure').dataset.filmState,
         media: video.error ? 'error' : video.paused ? 'paused' : 'playing',
       };
     });
+
   try {
     await page.waitForFunction(
       ([state, media]) => {
         const video = document.querySelector('video');
+
         const actual = video.error
           ? 'error'
           : video.paused
             ? 'paused'
             : 'playing';
+
         return (
           document.querySelector('.product-motion-figure').dataset.filmState ===
             state && actual === media
@@ -179,12 +203,16 @@ async function filmSettles(page, state, { media }) {
 
 const overflows = (page) =>
   page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
+
 const pixels = (locator) => locator.evaluate((canvas) => canvas.toDataURL());
+
 const framesDuring = async (page, ms) => {
   const start = await page.evaluate(() => window.__frames);
   await page.waitForTimeout(ms);
+
   return (await page.evaluate(() => window.__frames)) - start;
 };
+
 const runningAnimations = (page) =>
   page.evaluate(
     () =>
@@ -224,12 +252,16 @@ describe('routes and metadata', () => {
       (await (await fetch(base + path)).text())
         .replace(/<script[\s\S]*?<\/script>/g, '')
         .replaceAll('<!-- -->', '');
+
     const [home, orbit, openngp, localmodelmatch] = await Promise.all(
       ['/', '/orbit', '/openngp', '/localmodelmatch'].map(page),
     );
+
     const escape = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
     const count = (html, text) =>
       html.match(new RegExp(escape(text), 'g'))?.length ?? 0;
+
     assert.match(home, new RegExp(`<strong>${stageOf('orbit')}</strong>`));
     assert.match(orbit, new RegExp(`<dd>${stageOf('orbit')}</dd>`));
     assert.match(openngp, new RegExp(`class="eyebrow">${stageOf('openngp')}<`));
@@ -250,6 +282,7 @@ describe('layout, keyboard, and booking at every width', () => {
       const { page, errors } = await open('/', {
         viewport: { width, height: 900 },
       });
+
       assert.equal(await overflows(page), false);
       await page.keyboard.press('Tab');
       assert.equal(
@@ -258,6 +291,7 @@ describe('layout, keyboard, and booking at every width', () => {
       );
       const calls = page.locator('.intro-call-button');
       assert.equal(await calls.count(), 2);
+
       for (const link of await calls.all()) {
         assert.match(
           await link.getAttribute('href'),
@@ -268,6 +302,7 @@ describe('layout, keyboard, and booking at every width', () => {
           box && box.height >= 44 && box.x >= 0 && box.x + box.width <= width,
         );
       }
+
       await calls.last().focus();
       assert.notEqual(
         await calls
@@ -284,6 +319,7 @@ describe('layout, keyboard, and booking at every width', () => {
         'motion control overlaps the wordmark',
       );
       await page.screenshot({ path: shot(`home-${width}`), fullPage: true });
+
       for (const path of ['/orbit', '/privacy', '/2d0']) {
         await page.goto(base + path, { waitUntil: 'networkidle' });
         assert.equal(await overflows(page), false, `${path} overflow`);
@@ -292,6 +328,7 @@ describe('layout, keyboard, and booking at every width', () => {
           fullPage: true,
         });
       }
+
       assert.deepEqual(errors, []);
       await page.close();
     });
@@ -356,10 +393,12 @@ describe('homepage motion', () => {
         HTMLCanvasElement.prototype,
         'getContext',
       ).value;
+
       HTMLCanvasElement.prototype.getContext = function (type, ...rest) {
         return type === 'webgl' ? null : getContext.call(this, type, ...rest);
       };
     };
+
     for (const [path, shader, lettering, ascii] of [
       ['/', '.ink-shader', '.flash-lettering text', '.flash-background'],
       [
@@ -389,11 +428,14 @@ describe('artwork lifecycle', () => {
         init: instrumentGraphics,
         initArg: stage,
       });
+
       await page.locator('.orbit-ascii-rocket[data-ready="true"]').waitFor();
+
       const { created, deleted } = await page.evaluate(() => ({
         created: window.__glCreated,
         deleted: window.__glDeleted,
       }));
+
       assert.ok(created > 0, `${stage}: something was allocated first`);
       assert.equal(deleted, created, `${stage}: partial allocations released`);
       assert.equal(
@@ -427,6 +469,7 @@ describe('artwork lifecycle', () => {
       true,
       'navigation stayed in the same document',
     );
+
     const draws = () =>
       page.evaluate(() =>
         window.__homeCanvases.map((canvas) => [
@@ -434,6 +477,7 @@ describe('artwork lifecycle', () => {
           canvas.__draws,
         ]),
       );
+
     const before = await draws();
     await page.waitForTimeout(600);
     assert.deepEqual(await draws(), before, 'unmounted canvases stop drawing');
@@ -452,11 +496,13 @@ describe('site-wide pause', () => {
   test('Pause motion holds while scrolling: no reveal or entrance animates', async () => {
     const { page, errors } = await open('/');
     await page.locator('.background-pause').click();
+
     for (let y = 0; y < 6000; y += 600) {
       await page.mouse.wheel(0, 600);
       await page.waitForTimeout(80);
       assert.equal(await runningAnimations(page), 0, `animation at ${y}px`);
     }
+
     assert.equal(
       await page
         .locator('.intro-call > div')
@@ -532,6 +578,7 @@ describe('2DO product film', () => {
           viewport: { width, height: 900 },
           reducedMotion,
         });
+
         const video = page.locator('video');
         const button = page.locator('.film-toggle');
         await page.waitForTimeout(600);
@@ -607,9 +654,11 @@ describe('2DO product film', () => {
   test('pausing the site while the film is still loading is not reported as a failure', async () => {
     const page = await browser.newPage({ reducedMotion: 'no-preference' });
     let release;
+
     const held = new Promise((resolve) => {
       release = resolve;
     });
+
     await page.route('**/*.mp4', async (route) => {
       await held;
       await route.continue();

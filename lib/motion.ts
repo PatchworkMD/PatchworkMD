@@ -8,6 +8,7 @@ function reduced() {
     reducedQuery = matchMedia('(prefers-reduced-motion: reduce)');
     reducedQuery.addEventListener('change', notify);
   }
+
   return reducedQuery.matches;
 }
 
@@ -15,6 +16,7 @@ export const siteMotion = {
   subscribe: (listener: () => void) => {
     reduced();
     listeners.add(listener);
+
     return () => {
       listeners.delete(listener);
     };

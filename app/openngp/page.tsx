@@ -2,10 +2,14 @@ import { pageMetadata } from '../../lib/seo';
 import { stageOf } from '../../lib/products';
 import Link from 'next/link';
 import { SiteFooter, SiteHeader } from '../../components/SiteChrome';
+
 const title = 'OpenNGP — Campaign records, organized by workspace';
+
 const description =
   'Local-first fundraising and organizing software with separate campaign workspaces. Explore current workflows and development status.';
+
 export const metadata = pageMetadata(title, description, '/openngp');
+
 export default function OpenNGPPage() {
   return (
     <>

@@ -45,6 +45,7 @@ test('a server that exits before it is ready reports its output', async () => {
     '-e',
     'console.error("port in use"); process.exit(3)',
   ]);
+
   await assert.rejects(site.exited, /exited early \(3\)\.\nport in use/);
   site.stop();
 });

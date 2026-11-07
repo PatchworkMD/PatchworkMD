@@ -1,4 +1,5 @@
 'use client';
+
 import AsciiArtwork, { type AsciiArtworkProps } from './artwork/AsciiArtwork';
 
 // Orbit sibling of the homepage rose: a procedural rocket in shaded ASCII
@@ -39,7 +40,9 @@ const burst = {
   decay: 0.9,
   label: 'Launch burst',
 } as const;
+
 const glyphs: AsciiArtworkProps['glyphs'] = [60, 180];
+
 const classNames = {
   root: 'orbit-mark',
   stage: 'orbit-lettering-stage',

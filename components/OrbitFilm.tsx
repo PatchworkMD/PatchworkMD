@@ -10,15 +10,18 @@ export default function OrbitFilm() {
 
   useEffect(() => {
     const video = videoRef.current;
+
     if (!video) return;
     const setReady = () => setState('ready');
     const setError = () => setState('error');
+
     if (video.error) setError();
     else if (video.readyState >= 1) setReady();
     video.addEventListener('loadedmetadata', setReady);
     video.addEventListener('canplay', setReady);
     video.addEventListener('play', setReady);
     video.addEventListener('error', setError);
+
     return () => {
       video.removeEventListener('loadedmetadata', setReady);
       video.removeEventListener('canplay', setReady);

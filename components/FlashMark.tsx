@@ -1,4 +1,5 @@
 'use client';
+
 import AsciiArtwork, { type AsciiArtworkProps } from './artwork/AsciiArtwork';
 
 // Original procedural rose: layered petals rendered as shaded ASCII characters.
@@ -88,7 +89,9 @@ const burst = {
   decay: 0.91,
   label: 'Scatter rose',
 } as const;
+
 const glyphs: AsciiArtworkProps['glyphs'] = [85, 170];
+
 const classNames = {
   root: 'flash-art',
   stage: 'lettering-stage',

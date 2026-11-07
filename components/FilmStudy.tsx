@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 const vertexSource = `attribute vec2 position;
 varying vec2 uv;
 void main() { uv = position * .5 + .5; gl_Position = vec4(position, 0., 1.); }`;
+
 const fragmentSource = `precision mediump float;
 varying vec2 uv;
 uniform sampler2D photograph;
@@ -37,12 +38,15 @@ export default function FilmStudy() {
 
   useEffect(() => {
     const canvas = canvasRef.current;
+
     if (!canvas) return;
+
     const gl = canvas.getContext('webgl', {
       alpha: false,
       antialias: false,
       powerPreference: 'low-power',
     });
+
     if (!gl) return;
     let disposed = false;
     let frame = 0;
@@ -53,30 +57,41 @@ export default function FilmStudy() {
     const pointer = [0.5, 0.5];
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
     const shaders: WebGLShader[] = [];
+
     const compile = (type: number, source: string) => {
       const shader = gl.createShader(type);
+
       if (!shader) return null;
       shaders.push(shader);
       gl.shaderSource(shader, source);
       gl.compileShader(shader);
+
       return gl.getShaderParameter(shader, gl.COMPILE_STATUS) ? shader : null;
     };
+
     const vertex = compile(gl.VERTEX_SHADER, vertexSource);
     const fragment = compile(gl.FRAGMENT_SHADER, fragmentSource);
     const program = gl.createProgram();
+
     if (!vertex || !fragment || !program) {
       shaders.forEach((shader) => gl.deleteShader(shader));
+
       if (program) gl.deleteProgram(program);
+
       return;
     }
+
     gl.attachShader(program, vertex);
     gl.attachShader(program, fragment);
     gl.linkProgram(program);
+
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
       shaders.forEach((shader) => gl.deleteShader(shader));
       gl.deleteProgram(program);
+
       return;
     }
+
     const activateProgram = gl.useProgram.bind(gl);
     activateProgram(program);
     const buffer = gl.createBuffer();
@@ -93,6 +108,7 @@ export default function FilmStudy() {
     const sizeUniform = gl.getUniformLocation(program, 'resolution');
     const timeUniform = gl.getUniformLocation(program, 'time');
     const pointerUniform = gl.getUniformLocation(program, 'pointer');
+
     const draw = () => {
       if (!loaded || disposed) return;
       gl.viewport(0, 0, canvas.width, canvas.height);
@@ -101,8 +117,10 @@ export default function FilmStudy() {
       gl.uniform1f(timeUniform, elapsed);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
     };
+
     const tick = (now: number) => {
       if (disposed) return;
+
       if (
         visible &&
         !document.hidden &&
@@ -114,14 +132,18 @@ export default function FilmStudy() {
         last = now;
         draw();
       }
+
       if (visible && !document.hidden && !motion.matches && !pausedRef.current)
         frame = requestAnimationFrame(tick);
     };
+
     const resume = () => {
       cancelAnimationFrame(frame);
       last = performance.now();
+
       if (!disposed && loaded) frame = requestAnimationFrame(tick);
     };
+
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
       const scale = Math.min(devicePixelRatio || 1, 1.5);
@@ -129,28 +151,34 @@ export default function FilmStudy() {
       canvas.height = Math.max(1, Math.round(rect.height * scale));
       draw();
     };
+
     const onMotion = () => {
       setReduced(motion.matches);
       draw();
       resume();
     };
+
     const onPointer = (event: PointerEvent) => {
       if (motion.matches || pausedRef.current) return;
       const rect = canvas.getBoundingClientRect();
       pointer[0] = (event.clientX - rect.left) / rect.width;
       pointer[1] = 1 - (event.clientY - rect.top) / rect.height;
     };
+
     const onLost = () => {
       loaded = false;
       cancelAnimationFrame(frame);
       setReady(false);
     };
+
     const observer = new ResizeObserver(resize);
     observer.observe(canvas);
+
     const intersection = new IntersectionObserver((entries) => {
       visible = entries[0].isIntersecting;
       resume();
     });
+
     intersection.observe(canvas);
     canvas.addEventListener('pointermove', onPointer);
     canvas.addEventListener('webglcontextlost', onLost);
@@ -180,7 +208,9 @@ export default function FilmStudy() {
       setReady(true);
       resume();
     };
+
     photograph.src = '/brand/studio.jpg';
+
     return () => {
       disposed = true;
       photograph.onload = null;

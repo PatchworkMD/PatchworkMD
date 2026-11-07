@@ -1,14 +1,18 @@
 import { pageMetadata } from '../../lib/seo';
 import Image from 'next/image';
 import { SiteFooter, SiteHeader } from '../../components/SiteChrome';
+
 const title = 'App Design Research | PatchworkMD';
+
 const description =
   'Review screenshots, interface text, and app code in Codex.';
+
 export const metadata = pageMetadata(
   title,
   description,
   '/app-design-research',
 );
+
 const faq = [
   [
     'What can I review?',
@@ -31,6 +35,7 @@ const faq = [
     'Remove private task names, credentials and personal information from screenshots or code before submitting them. This is not a separate privacy guarantee for Codex processing.',
   ],
 ];
+
 export default function Page() {
   return (
     <>

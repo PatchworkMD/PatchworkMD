@@ -21,17 +21,23 @@ export function startArtworkLoop({
 
   const tick = (now: number) => {
     frame = 0;
+
     if (stopped || !visible || document.hidden) return;
     const moving = siteMotion.allowsMotion();
+
     if (moving && last && now - last < frameMs) {
       frame = requestAnimationFrame(tick);
+
       return;
     }
+
     if (moving && last) seconds += Math.min(now - last, 100) / 1000;
     last = moving ? now : 0;
     draw(seconds);
+
     if (moving) frame = requestAnimationFrame(tick);
   };
+
   const wake = () => {
     if (!frame && !stopped) frame = requestAnimationFrame(tick);
   };
@@ -40,6 +46,7 @@ export function startArtworkLoop({
     visible = entry.isIntersecting;
     wake();
   });
+
   observer.observe(element);
   const unsubscribe = siteMotion.subscribe(wake);
   document.addEventListener('visibilitychange', wake);

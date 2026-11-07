@@ -13,6 +13,7 @@ const live = JSON.parse(
     encoding: 'utf8',
   }),
 ).map(({ name }) => name);
+
 const missing = documented.filter((label) => !live.includes(label));
 
 if (missing.length) {
@@ -21,4 +22,5 @@ if (missing.length) {
   );
   process.exit(1);
 }
+
 console.log(`All ${documented.length} triage labels exist.`);

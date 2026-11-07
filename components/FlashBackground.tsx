@@ -1,8 +1,11 @@
 'use client';
+
 import { useEffect, useRef } from 'react';
 import { siteMotion } from '../lib/motion';
 import { startArtworkLoop } from './artwork/loop';
+
 type Dot = { x: number; y: number; color: string; char: string };
+
 function makeFlash(): Dot[][] {
   const drawings = [
     // Swallow, heart, dagger, and horseshoe: original contours inspired by traditional flash.
@@ -44,33 +47,43 @@ function makeFlash(): Dot[][] {
       ],
     ],
   ];
+
   return drawings.map((paths) => {
     const c = document.createElement('canvas');
     c.width = 320;
     c.height = 340;
     const g = c.getContext('2d');
+
     if (!g) return [];
     g.lineWidth = 7;
     g.lineCap = 'round';
     g.lineJoin = 'round';
+
     for (const [path, fill] of paths) {
       const shape = new Path2D(path);
+
       if (fill !== 'none') {
         g.fillStyle = fill;
         g.fill(shape);
       }
+
       g.strokeStyle = '#17272d';
       g.stroke(shape);
     }
+
     const data = g.getImageData(0, 0, 320, 340).data,
       dots: Dot[] = [];
+
     for (let y = 0; y < 340; y += 5)
       for (let x = 0; x < 320; x += 4) {
         const i = (y * 320 + x) * 4;
+
         if (data[i + 3] < 100) continue;
+
         const red = data[i],
           green = data[i + 1],
           blue = data[i + 2];
+
         dots.push({
           x,
           y,
@@ -78,28 +91,36 @@ function makeFlash(): Dot[][] {
           char: red < 45 ? '@' : (x + y) % 3 ? '#' : '+',
         });
       }
+
     return dots;
   });
 }
+
 export default function FlashBackground() {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     const canvas = ref.current;
+
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
+
     if (!ctx) return;
     const motifs = makeFlash();
     const pointer = { x: -1000, y: -1000 };
+
     const move = (e: PointerEvent) => {
       pointer.x = e.clientX;
       pointer.y = e.clientY;
     };
+
     const leave = () => {
       pointer.x = -1000;
       pointer.y = -1000;
     };
+
     window.addEventListener('pointermove', move);
     document.addEventListener('pointerleave', leave);
+
     const loop = startArtworkLoop({
       element: canvas,
       frameMs: 40,
@@ -107,6 +128,7 @@ export default function FlashBackground() {
         const w = innerWidth,
           h = innerHeight,
           dpr = Math.min(devicePixelRatio, 1.5);
+
         if (
           canvas.width !== Math.round(w * dpr) ||
           canvas.height !== Math.round(h * dpr)
@@ -114,46 +136,58 @@ export default function FlashBackground() {
           canvas.width = Math.round(w * dpr);
           canvas.height = Math.round(h * dpr);
         }
+
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         ctx.clearRect(0, 0, w, h);
         const scale = Math.max(0.72, Math.min(1.35, w / 1050));
+
         const cell = 365 * scale,
           rowHeight = 355 * scale,
           cols = Math.ceil(w / cell) + 2,
           rows = Math.ceil(h / rowHeight) + 1;
+
         ctx.font = `bold ${5.7 * scale}px monospace`;
+
         for (let row = 0; row < rows; row++)
           for (let col = 0; col < cols; col++) {
             const index = (row * 3 + col) % motifs.length;
+
             const x =
                 ((col * cell + time * 18 + row * cell * 0.43) % (cols * cell)) -
                 cell,
               y = row * rowHeight - 90;
+
             for (const dot of motifs[index]) {
               let px = x + dot.x * scale,
                 py = y + dot.y * scale;
+
               if (siteMotion.allowsMotion()) {
                 const dx = px - pointer.x,
                   dy = py - pointer.y,
                   d = Math.hypot(dx, dy);
+
                 if (d < 100 && d > 0) {
                   const f = (1 - d / 100) * 12;
                   px += (dx / d) * f;
                   py += (dy / d) * f;
                 }
               }
+
               ctx.fillStyle = dot.color;
               ctx.fillText(dot.char, px, py);
             }
           }
+
         canvas.dataset.ready = 'true';
       },
     });
+
     return () => {
       loop.stop();
       window.removeEventListener('pointermove', move);
       document.removeEventListener('pointerleave', leave);
     };
   }, []);
+
   return <canvas ref={ref} className="flash-background" aria-hidden="true" />;
 }

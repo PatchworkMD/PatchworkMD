@@ -1,4 +1,5 @@
 'use client';
+
 /* SVG and canvas provide the live artwork; replacing them with img would remove animation. */
 /* oxlint-disable jsx-a11y/prefer-tag-over-role */
 import { useEffect, useRef, type ReactNode } from 'react';
@@ -55,12 +56,14 @@ export default function AsciiArtwork({
     const svg = letteringRef.current;
     const shaderCanvas = shaderRef.current;
     const canvas = asciiRef.current;
+
     if (!root || !svg || !shaderCanvas || !canvas) return;
     const ctx = canvas.getContext('2d');
     const ink = document.createElement('canvas');
     ink.width = 360;
     ink.height = 360;
     const pen = ink.getContext('2d');
+
     if (!ctx || !pen) return;
 
     pen.lineWidth = 5;
@@ -75,9 +78,11 @@ export default function AsciiArtwork({
     });
     const points: number[][] = [];
     const pixels = pen.getImageData(0, 0, 360, 360).data;
+
     for (let y = 0; y < 360; y += 5)
       for (let x = 0; x < 360; x += 4) {
         const i = (y * 360 + x) * 4;
+
         if (pixels[i + 3] > 100)
           points.push([
             x - 180,
@@ -95,8 +100,10 @@ export default function AsciiArtwork({
     const drawAscii = () => {
       const w = canvas.clientWidth;
       const h = canvas.clientHeight;
+
       if (!w || !h) return;
       const dpr = Math.min(devicePixelRatio, 2);
+
       if (
         canvas.width !== Math.round(w * dpr) ||
         canvas.height !== Math.round(h * dpr)
@@ -104,28 +111,34 @@ export default function AsciiArtwork({
         canvas.width = Math.round(w * dpr);
         canvas.height = Math.round(h * dpr);
       }
+
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, w, h);
       const scale = Math.min(w / 380, h / 370);
       const spread = 1 + (moving() ? control.current.burst : 0) * burst.spread;
       ctx.font = `${7.5 * scale}px monospace`;
       ctx.textAlign = 'center';
+
       for (const [x, y, r, g, b] of points) {
         let px = w / 2 + x * (burst.axis === 'x' ? spread : 1) * scale;
         let py = h / 2 + y * (burst.axis === 'y' ? spread : 1) * scale;
+
         if (moving()) {
           const dx = px - (pointer.x + 0.5) * w;
           const dy = py - (pointer.y + 0.5) * h;
           const distance = Math.hypot(dx, dy);
+
           if (distance > 0 && distance < 65) {
             const push = (1 - distance / 65) * 13;
             px += (dx / distance) * push;
             py += (dy / distance) * push;
           }
         }
+
         ctx.fillStyle = `rgb(${r},${g},${b})`;
         ctx.fillText(r < glyphs[0] ? '@' : r < glyphs[1] ? '#' : '*', px, py);
       }
+
       if (moving()) control.current.burst *= burst.decay;
       canvas.dataset.ready = 'true';
     };
@@ -138,14 +151,17 @@ export default function AsciiArtwork({
         drawAscii();
       },
     });
+
     control.current.wake = loop.wake;
 
     let disposed = false;
     const mask = svg.cloneNode(true);
+
     if (shader && mask instanceof SVGSVGElement) {
       mask.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
       mask.setAttribute('width', '1000');
       mask.setAttribute('height', '390');
+
       if (lettering.maskOmit)
         mask
           .querySelectorAll(lettering.maskOmit)
@@ -159,6 +175,7 @@ export default function AsciiArtwork({
         shader.setMask(image);
         loop.wake();
       };
+
       image.src =
         'data:image/svg+xml;charset=utf-8,' +
         encodeURIComponent(new XMLSerializer().serializeToString(mask));
@@ -169,12 +186,15 @@ export default function AsciiArtwork({
       pointer.x = (event.clientX - rect.left) / rect.width - 0.5;
       pointer.y = (event.clientY - rect.top) / rect.height - 0.5;
     };
+
     const leave = () => {
       pointer.x = -10;
       pointer.y = -10;
     };
+
     canvas.addEventListener('pointermove', move);
     canvas.addEventListener('pointerleave', leave);
+
     return () => {
       disposed = true;
       loop.stop();
