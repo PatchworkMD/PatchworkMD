@@ -4,9 +4,13 @@ Status: internal operating draft. No referral offer is published and no reward h
 
 ## Patchy launch gate
 
-Austin’s grill 02:30 instruction: Patchy takes real leads only after the site and Cal.com booking are live. Keep real-lead intake disabled until the production site is reachable and its booking CTAs open the confirmed live event, with booking confirmation, rescheduling, and cancellation verified. A draft PR, preview, or email fallback does not satisfy this gate. Record the production URL, event URL, verification date, and release owner in the private operating record before enabling intake. Do not store lead data here.
+Austin’s grill 02:30 instruction: Patchy takes real leads only after the site and Cal.com booking are live. Keep real-lead intake disabled until the production site is reachable and its booking CTAs open the confirmed live event, with the $375 deposit, booking confirmation, rescheduling, and cancellation verified. A draft PR, preview, or email fallback does not satisfy this gate. Record the production URL, event URL, verification date, and release owner in the private operating record before enabling intake. Do not store lead data here.
 
 The event-creation bot creates the Cal.com event using Austin sign-in and hands back its URL and settings. Event creation alone does not enable Patchy.
+
+## Standard offer
+
+PatchworkMD Ops (Austin, RGE 2081): Pilot $750, with $375 to book (deposit at booking, the rest on delivery); Care $500/month after the pilot. Prices come from `lib/ops-pricing.ts` and `/ops`; quote them from there rather than retyping them. A referral reward tied to these amounts still needs Austin's approved terms.
 
 ## Intake
 

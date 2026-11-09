@@ -3,6 +3,7 @@ import { mkdir } from 'node:fs/promises';
 import { after, before, describe, test } from 'node:test';
 import { chromium } from 'playwright-core';
 import { availabilityOf, stageOf } from '../lib/products.ts';
+import { opsPricing } from '../lib/ops-pricing.ts';
 import {
   assertNothingServing,
   startSite,
@@ -349,6 +350,48 @@ describe('2DO landing page', () => {
   });
 });
 
+describe('PatchworkMD Ops pricing', () => {
+  test('one pricing block states config prices plainly and ends in the intro-call CTA', async () => {
+    const { page, errors } = await open('/ops');
+    const html = await page.content();
+    assert.ok(
+      html.includes('<link rel="canonical" href="https://patchworkmd.dev/ops"'),
+    );
+    const block = page.locator('.ops-pricing');
+    assert.equal(await block.count(), 1);
+    const text = await page.locator('main').innerText();
+    const amounts = [...text.matchAll(/\$(\d[\d,]*)/g)].map(([, n]) =>
+      Number(n.replaceAll(',', '')),
+    );
+    const allowed = Object.values(opsPricing);
+    assert.ok(amounts.length > 0);
+    assert.deepEqual(
+      amounts.filter((amount) => !allowed.includes(amount)),
+      [],
+      'every price on the page is a config price',
+    );
+    for (const price of allowed)
+      assert.ok(amounts.includes(price), `${price} is shown`);
+    assert.doesNotMatch(
+      text,
+      /limited|spots? left|only \d+|hurry|act now|today only|expires/i,
+    );
+    assert.doesNotMatch(text, /taken by Cal\.com/, 'no Cal.com URL yet');
+    const last = block.locator(':scope > :last-child');
+    assert.equal(
+      await last.getAttribute('class'),
+      'intro-call-button',
+      'block ends in the CTA',
+    );
+    assert.match(
+      await last.getAttribute('href'),
+      /^mailto:hello@patchworkmd\.dev\?subject=Project%20intro$/,
+    );
+    assert.deepEqual(errors, []);
+    await page.close();
+  });
+});
+
 describe('layout, keyboard, and booking at every width', () => {
   for (const width of widths) {
     test(`${width}px: no overflow, skip link first, booking targets usable`, async () => {
@@ -396,6 +439,7 @@ describe('layout, keyboard, and booking at every width', () => {
         '/2do',
         '/2do/privacy',
         '/2do/support',
+        '/ops',
       ]) {
         await page.goto(base + path, { waitUntil: 'networkidle' });
         assert.equal(await overflows(page), false, `${path} overflow`);

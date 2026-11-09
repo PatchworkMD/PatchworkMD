@@ -57,6 +57,7 @@ test('the sitemap lists every Product and nothing unknown', () => {
     '/2do/privacy',
     '/2do/support',
     '/openngp/faq',
+    '/ops',
     '/privacy',
     ...products.map((product) => product.href),
   ].sort((a, b) => a.localeCompare(b));

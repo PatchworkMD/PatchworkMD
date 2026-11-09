@@ -195,3 +195,13 @@ test('the 2DO beta button waits for the TestFlight link, then links to it', asyn
   );
   assert.doesNotMatch(open, /<button/);
 });
+
+test('the Cal.com deposit line shows only when a booking URL is configured', async () => {
+  const { default: DepositNote } =
+    await import('../components/DepositNote.tsx');
+  assert.equal(html(DepositNote, { bookingUrl: '' }), '');
+  assert.match(
+    html(DepositNote, { bookingUrl: 'https://cal.com/austin/ops-pilot' }),
+    />Deposit: \$375, taken by Cal\.com at booking<\//,
+  );
+});

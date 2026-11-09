@@ -6,12 +6,20 @@ Set `calBookingUrl` to Austin’s confirmed `https://cal.com/account/event` URL.
 
 A direct hosted link avoids iframe scrolling on small screens, extra client JavaScript, and loading the calendar provider before a visitor chooses to schedule. No new dependency, account, tracking system, or paid service is required.
 
+## Paid PatchworkMD Ops booking
+
+PatchworkMD Ops prices (Austin, RGE 2081) live in `lib/ops-pricing.ts`: Pilot $750, with $375 to book (deposit at booking, the rest on delivery); Care $500/month after the pilot. `/ops` shows them in one pricing block that ends in the intro-call CTA. `scripts/ops.test.mjs` fails if a price appears anywhere else in the site source.
+
+The Cal.com event becomes a paid booking that takes the $375 deposit. That needs Cal.com Payments (the Stripe app) on Austin's account, which is his to connect. Until `calBookingUrl` is set, the CTA keeps the email fallback and `/ops` does not mention Cal.com. Once it is set, `components/DepositNote.tsx` adds "Deposit: $375, taken by Cal.com at booking" above the CTA.
+
+The same URL drives the homepage CTAs. Decide whether homepage intro calls should also go to the paid event before setting it (STATUS gate).
+
 ## Release gate
 
-1. The event-creation bot creates the event using Austin sign-in and returns the exact event URL, duration, timezone, availability, conferencing location, and booking questions. Do not place credentials in this repository.
+1. Austin connects Cal.com Payments (Stripe). The event-creation bot then creates the paid event using Austin sign-in and returns the exact event URL, duration, timezone, availability, conferencing location, price, and booking questions. Do not place credentials or payment keys in this repository.
 2. Set the URL, then run `npm test`, `npm run lint`, `npx tsc --noEmit`, and `npm run build`.
 3. At desktop, 390px, and 320px, follow both CTAs with keyboard and touch. Confirm focus visibility, no horizontal overflow, and no browser errors. Check the motion-rich presentation with the normal preference, then reduced motion before load and after changing the preference while the page is open. Artwork must stop moving, pointer effects must stop, and scrolling must not animate under reduced motion; keep the booking CTA readable in both modes.
-4. On Cal.com, confirm available slots and the time-zone selector. Complete a test booking with Austin’s approval; check confirmation, calendar delivery, cancellation, and rescheduling. Do not create a booking on someone else’s calendar without permission.
+4. On Cal.com, confirm available slots, the time-zone selector, and the $375 deposit at checkout. Complete a test booking with Austin’s approval; check payment, the receipt, confirmation, calendar delivery, cancellation with the refund rule, and rescheduling. Do not create a booking on someone else’s calendar without permission.
 5. Austin reviews the PR and separately authorizes merge and production deployment.
 6. After authorized deployment, verify the production site and live event together and record the result. Only then may Patchy take real leads. A preview or email fallback does not clear this gate.
 
