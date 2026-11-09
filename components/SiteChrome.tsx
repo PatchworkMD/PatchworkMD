@@ -49,7 +49,7 @@ export function SiteHeader({ product = false, faq = false, openngp = false, inst
               <Link href="/#skills">Approach</Link>
               <Link href="/orbit">Orbit</Link>
               <a href="https://github.com/PatchworkMD">GitHub ↗</a>
-              <a href="mailto:hello@patchworkmd.dev">Contact ↗</a>
+              <Link href="/#intro-call">Let’s talk ↗</Link>
             </>
           )}
         </nav>
