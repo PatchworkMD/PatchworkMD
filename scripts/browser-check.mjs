@@ -242,6 +242,22 @@ describe('routes and metadata', () => {
     assert.ok(count(home, availabilityOf('orbit')) >= 2, 'spotlight and index');
     assert.ok(count(orbit, availabilityOf('orbit')) >= 1);
   });
+  test('no [PLACEHOLDER] text renders on any public page', async () => {
+    const sitemap = await (await fetch(`${base}/sitemap.xml`)).text();
+    const paths = [
+      ...sitemap.matchAll(/<loc>https:\/\/patchworkmd\.dev(\/[^<]*)<\/loc>/g),
+    ].map(([, path]) => path);
+    assert.ok(paths.includes('/2do/privacy') && paths.includes('/2do/support'));
+    for (const path of paths) {
+      const response = await fetch(base + path);
+      assert.equal(response.status, 200, path);
+      const markup = (await response.text())
+        .replace(/<script[\s\S]*?<\/script>/g, '')
+        .replace(/<style[\s\S]*?<\/style>/g, '');
+      assert.doesNotMatch(markup, /\[[A-Z][A-Z0-9 _-]*\]/, path);
+    }
+  });
+
   test('2DO app pages state the App Store facts and link to each other', async () => {
     const markup = async (path) => {
       const response = await fetch(base + path);
@@ -280,12 +296,14 @@ describe('routes and metadata', () => {
       'non-personalized ads only',
       'App Tracking Transparency',
       'does not load the ad SDK',
-      '[SUPPORT EMAIL]',
+      'support@patchworkmd.dev',
     ])
       assert.ok(privacy.includes(fact), `privacy states ${fact}`);
     assert.match(privacy, /id="ads"/);
     assert.ok(!privacy.includes('[AD SDK]'), 'ad SDK placeholder filled');
     assert.match(privacy, /href="https:\/\/policies\.google\.com\/privacy"/);
+    for (const html of [privacy, support])
+      assert.match(html, /href="mailto:support@patchworkmd\.dev"/);
     for (const section of ['faq', 'restore', 'cancel', 'contact'])
       assert.match(support, new RegExp(`id="${section}"`), section);
     assert.match(

@@ -1,4 +1,4 @@
-export const supportEmail = '[SUPPORT EMAIL]';
+export const supportEmail = 'support@patchworkmd.dev';
 
 export const TESTFLIGHT_URL = '[TESTFLIGHT LINK]';
 
