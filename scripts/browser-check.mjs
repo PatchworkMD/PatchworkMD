@@ -258,6 +258,34 @@ describe('routes and metadata', () => {
     }
   });
 
+  test('2DO pages call the mascot Marky, never Buddy, in text or attributes', async () => {
+    const sitemap = await (await fetch(`${base}/sitemap.xml`)).text();
+    const paths = [
+      ...sitemap.matchAll(/<loc>https:\/\/patchworkmd\.dev(\/[^<]*)<\/loc>/g),
+    ].map(([, path]) => path);
+    const twoDo = ['/2d0', '/2do', '/2do/privacy', '/2do/support'];
+    for (const path of twoDo) assert.ok(paths.includes(path), path);
+    for (const path of paths) {
+      const response = await fetch(base + path);
+      assert.equal(response.status, 200, path);
+      assert.doesNotMatch(await response.text(), /buddy/i, path);
+    }
+    const { page, errors } = await open('/2do');
+    const rendered = await page.evaluate(() =>
+      [
+        document.title,
+        document.body.innerText,
+        ...[...document.querySelectorAll('*')].flatMap((element) =>
+          [...element.attributes].map((attribute) => attribute.value),
+        ),
+      ].join('\n'),
+    );
+    assert.doesNotMatch(rendered, /buddy/i);
+    assert.match(rendered, /Marky/);
+    assert.deepEqual(errors, []);
+    await page.close();
+  });
+
   test('2DO app pages state the App Store facts and link to each other', async () => {
     const markup = async (path) => {
       const response = await fetch(base + path);
