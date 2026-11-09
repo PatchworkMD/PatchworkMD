@@ -8,13 +8,13 @@ Independent software for Mac, the web, and campaign teams.
 
 ## Selected work
 
-| Project | What it is | Signal |
-| --- | --- | --- |
-| [LocalModelMatch](https://localmodelmatch.com) | Runtime-aware model fit for real machines. | Public preview |
-| [Orbit](https://patchworkmd.dev/orbit) | A Mac app for coding-agent sessions and approvals. | Release candidate |
-| [OpenNGP](https://patchworkmd.dev/openngp) | Fundraising and organizing software with separate campaign workspaces. | In development |
-| [Dreamer](https://patchworkmd.dev/dreamer) | Agent handoffs, reviewable work, and useful context between sessions. | In development |
-| [2D0](https://patchworkmd.dev/2d0) | Capture tasks and keep lists on Mac and iPhone. | In development |
+| Project                                        | What it is                                                             | Signal            |
+| ---------------------------------------------- | ---------------------------------------------------------------------- | ----------------- |
+| [LocalModelMatch](https://localmodelmatch.com) | Runtime-aware model fit for real machines.                             | Public preview    |
+| [Orbit](https://patchworkmd.dev/orbit)         | A Mac app for coding-agent sessions and approvals.                     | Release candidate |
+| [OpenNGP](https://patchworkmd.dev/openngp)     | Fundraising and organizing software with separate campaign workspaces. | In development    |
+| [Dreamer](https://patchworkmd.dev/dreamer)     | Agent handoffs, reviewable work, and useful context between sessions.  | In development    |
+| [2DO](https://patchworkmd.dev/2d0)             | Capture tasks and keep lists on Mac and iPhone.                        | In development    |
 
 ## The throughline
 
@@ -38,6 +38,6 @@ I move between SwiftUI and AppKit, React and TypeScript, Python and FastAPI, and
 
 ## Site development
 
-Use Node 22.13+ and `npm ci`. Run `npm run dev` locally; verify changes with `npm test`, `npm run lint`, `npx tsc --noEmit`, and `npm run build`.
+Use Node 22.15.0 or newer (the test loader requires `node:module.registerHooks`) and `npm ci`. Run `npm run dev` locally; verify changes with `npm test`, `npm run lint`, `npx tsc --noEmit`, and `npm run build`.
 
 Intro-call links use `lib/booking-config.json`. An empty URL opens an email request; a confirmed Cal.com event enables hosted booking. See [setup and release checks](docs/operations/intro-calls.md) and the [internal referral operations draft](docs/operations/referrals.md). Never put prospect information in this repository.

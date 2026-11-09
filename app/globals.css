@@ -821,9 +821,11 @@ details[open] .detail {
   margin: 0;
   gap: 24px;
 }
-.faq-entry h2 {
+.faq-entry .faq-question {
   font-size: 16px;
+  font-weight: 500;
   line-height: 1.5;
+  text-wrap: balance;
 }
 .faq-entry .detail {
   max-width: 720px;

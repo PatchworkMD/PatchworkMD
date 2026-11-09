@@ -1,9 +1,14 @@
 import { pageMetadata } from '../../lib/seo';
-import Image from "next/image";
+import Image from 'next/image';
 import { SiteFooter, SiteHeader } from '../../components/SiteChrome';
 const title = 'App Design Research | PatchworkMD';
-const description = 'Review screenshots, interface text, and app code in Codex.';
-export const metadata = pageMetadata(title, description, '/app-design-research');
+const description =
+  'Review screenshots, interface text, and app code in Codex.';
+export const metadata = pageMetadata(
+  title,
+  description,
+  '/app-design-research',
+);
 const faq = [
   [
     'What can I review?',
@@ -33,7 +38,18 @@ export default function Page() {
       <main id="main">
         <section className="intro adr-intro">
           <div className="intro-copy">
-            <div className="adr-identity"><Image src="/app-design-research-icon.svg" alt="" width={40} height={40} unoptimized /><p className="eyebrow">App Design Research<span>Version 0.1.1</span></p></div>
+            <div className="adr-identity">
+              <Image
+                src="/app-design-research-icon.svg"
+                alt=""
+                width={40}
+                height={40}
+                unoptimized
+              />
+              <p className="eyebrow">
+                App Design Research<span>Version 0.1.1</span>
+              </p>
+            </div>
             <h1>
               A second look at
               <br />
@@ -52,7 +68,13 @@ export default function Page() {
           </div>
         </section>
         <figure className="product-art">
-          <Image src="/adr-hero.png" alt="" width={1672} height={941} unoptimized />
+          <Image
+            src="/adr-hero.png"
+            alt=""
+            width={1672}
+            height={941}
+            unoptimized
+          />
           <figcaption>
             Original marketing illustration; abstract screens are not app
             screenshots.
@@ -140,7 +162,7 @@ export default function Page() {
           {faq.map(([a, b]) => (
             <details className="faq-entry" key={a}>
               <summary>
-                <h2>{a}</h2>
+                <span className="faq-question">{a}</span>
                 <span className="plus" aria-hidden="true">
                   +
                 </span>

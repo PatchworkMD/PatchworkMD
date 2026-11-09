@@ -43,14 +43,19 @@ export default function OrbitFilm() {
           aria-label="Orbit product film"
           aria-describedby="orbit-film-status"
         >
-          <source src="/orbit/orbit-film.mp4" type="video/mp4" onError={() => setState('error')} />
+          <source
+            src="/orbit/orbit-film.mp4"
+            type="video/mp4"
+            onError={() => setState('error')}
+          />
           <track
             kind="captions"
             src="/orbit/orbit-film.vtt"
             srcLang="en"
             label="English"
           />
-          Your browser does not support the Orbit film. Use the transcript below.
+          Your browser does not support the Orbit film. Use the transcript
+          below.
         </video>
       </div>
       <figcaption id="orbit-film-caption" className="orbit-film-caption">
@@ -59,7 +64,11 @@ export default function OrbitFilm() {
           Download MP4 ↗
         </a>
       </figcaption>
-      <output id="orbit-film-status" className="orbit-film-status" aria-live="polite">
+      <output
+        id="orbit-film-status"
+        className="orbit-film-status"
+        aria-live="polite"
+      >
         {state === 'ready'
           ? 'Film ready. Captions are available from the player menu.'
           : state === 'error'

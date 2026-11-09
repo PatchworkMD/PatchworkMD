@@ -8,10 +8,26 @@ import OrbitAsciiArt from '../../components/OrbitAsciiArt';
 import './orbit.css';
 
 const showcase = [
-  ['/orbit/screenshots/orbit-sessions.png', 'Sessions', 'Every running, idle and recent session at a glance.'],
-  ['/orbit/screenshots/orbit-question.png', 'Question', 'Answer an agent question without leaving the flow.'],
-  ['/orbit/screenshots/orbit-approval.png', 'Approval', 'Review the exact command, then Allow or Deny.'],
-  ['/orbit/screenshots/orbit-results.png', 'Results', 'See what finished and reply straight from the card.'],
+  [
+    '/orbit/screenshots/orbit-sessions.png',
+    'Sessions',
+    'Every running, idle and recent session at a glance.',
+  ],
+  [
+    '/orbit/screenshots/orbit-question.png',
+    'Question',
+    'Answer an agent question without leaving the flow.',
+  ],
+  [
+    '/orbit/screenshots/orbit-approval.png',
+    'Approval',
+    'Review the exact command, then Allow or Deny.',
+  ],
+  [
+    '/orbit/screenshots/orbit-results.png',
+    'Results',
+    'See what finished and reply straight from the card.',
+  ],
 ] as const;
 
 export const metadata: Metadata = pageMetadata(
@@ -64,7 +80,8 @@ export default function OrbitPage() {
               <h1 id="orbit-title">Your coding agents, in view.</h1>
             </div>
             <p className="orbit-lede">
-              A native macOS companion that keeps coding-agent sessions, questions and approvals close.
+              A native macOS companion that keeps coding-agent sessions,
+              questions and approvals close.
             </p>
             <a className="orbit-cta" href="#film">
               Watch Orbit <span aria-hidden="true">↓</span>
@@ -81,7 +98,10 @@ export default function OrbitPage() {
               />
               <figcaption>Question capture · demonstration session</figcaption>
             </figure>
-            <aside className="orbit-hero-meta" aria-label="Orbit release details">
+            <aside
+              className="orbit-hero-meta"
+              aria-label="Orbit release details"
+            >
               <dl>
                 <div>
                   <dt>Status</dt>
@@ -108,27 +128,51 @@ export default function OrbitPage() {
           <OrbitAsciiArt />
         </section>
 
-        <section id="film" className="orbit-film-section" aria-labelledby="film-heading">
+        <section
+          id="film"
+          className="orbit-film-section"
+          aria-labelledby="film-heading"
+        >
           <div className="orbit-section-heading">
             <p className="eyebrow">Product film · 01</p>
             <h2 id="film-heading">Watch Orbit at work.</h2>
             <p>
-              See Orbit’s session list, questions and approval requests, recorded with demonstration sessions. Playback is optional; the transcript keeps the product focus readable without sound.
+              See Orbit’s session list, questions and approval requests,
+              recorded with demonstration sessions. Playback is optional; the
+              transcript keeps the product focus readable without sound.
             </p>
           </div>
           <OrbitFilm />
           <details className="orbit-transcript">
             <summary>
               <span>Read the film transcript</span>
-              <span className="orbit-plus" aria-hidden="true">+</span>
+              <span className="orbit-plus" aria-hidden="true">
+                +
+              </span>
             </summary>
             <div className="orbit-transcript-copy">
-              <p><strong>Opening.</strong> Orbit. Your coding agents, in view.</p>
-              <p><strong>Sessions.</strong> Stay with the work.</p>
-              <p><strong>Question.</strong> Read the question. Consider the choices.</p>
-              <p><strong>Approval.</strong> Review the request. Choose Allow or Deny.</p>
-              <p><strong>Close.</strong> Orbit. Release candidate. A native macOS companion for coding-agent sessions, questions and approvals.</p>
-              <p><strong>Demonstration note.</strong> The native UI uses synthetic sessions for this product film.</p>
+              <p>
+                <strong>Opening.</strong> Orbit. Your coding agents, in view.
+              </p>
+              <p>
+                <strong>Sessions.</strong> Stay with the work.
+              </p>
+              <p>
+                <strong>Question.</strong> Read the question. Consider the
+                choices.
+              </p>
+              <p>
+                <strong>Approval.</strong> Review the request. Choose Allow or
+                Deny.
+              </p>
+              <p>
+                <strong>Close.</strong> Orbit. Release candidate. A native macOS
+                companion for coding-agent sessions, questions and approvals.
+              </p>
+              <p>
+                <strong>Demonstration note.</strong> The native UI uses
+                synthetic sessions for this product film.
+              </p>
             </div>
           </details>
         </section>
@@ -141,14 +185,25 @@ export default function OrbitPage() {
           <div className="orbit-showcase-grid">
             {showcase.map(([src, title, caption]) => (
               <figure key={src}>
-                <Image src={src} alt={`Orbit ${title.toLowerCase()} view`} width={1152} height={960} unoptimized />
-                <figcaption>{title} · {caption}</figcaption>
+                <Image
+                  src={src}
+                  alt={`Orbit ${title.toLowerCase()} view`}
+                  width={1152}
+                  height={960}
+                  unoptimized
+                />
+                <figcaption>
+                  {title} · {caption}
+                </figcaption>
               </figure>
             ))}
           </div>
         </section>
 
-        <section className="orbit-principles" aria-labelledby="principles-heading">
+        <section
+          className="orbit-principles"
+          aria-labelledby="principles-heading"
+        >
           <div className="orbit-section-heading orbit-section-heading-wide">
             <p className="eyebrow">Features · 03</p>
             <h2 id="principles-heading">Sessions, questions and approvals.</h2>
@@ -157,12 +212,18 @@ export default function OrbitPage() {
             <article>
               <span className="orbit-index">01</span>
               <h3>Coding sessions</h3>
-              <p>Keep the active coding-agent session visible in a native macOS companion.</p>
+              <p>
+                Keep the active coding-agent session visible in a native macOS
+                companion.
+              </p>
             </article>
             <article>
               <span className="orbit-index">02</span>
               <h3>Questions in place</h3>
-              <p>Follow an agent question while the related session stays close by.</p>
+              <p>
+                Follow an agent question while the related session stays close
+                by.
+              </p>
             </article>
             <article>
               <span className="orbit-index">03</span>
@@ -172,16 +233,25 @@ export default function OrbitPage() {
           </div>
         </section>
 
-        <section id="start" className="orbit-availability" aria-labelledby="availability-heading">
+        <section
+          id="start"
+          className="orbit-availability"
+          aria-labelledby="availability-heading"
+        >
           <div className="orbit-section-heading">
             <p className="eyebrow">Availability · 04</p>
             <h2 id="availability-heading">The candidate is still local.</h2>
           </div>
           <div className="orbit-availability-copy">
             <p>
-              A public signed installer is not available yet. Orbit has a local release candidate; signing, notarization and public distribution checks remain open.
+              A public signed installer is not available yet. Orbit has a local
+              release candidate; signing, notarization and public distribution
+              checks remain open.
             </p>
-            <p>Orbit is designed for macOS 14 and later. Installation instructions will follow the remaining release checks.</p>
+            <p>
+              Orbit is designed for macOS 14 and later. Installation
+              instructions will follow the remaining release checks.
+            </p>
           </div>
         </section>
 
@@ -195,7 +265,9 @@ export default function OrbitPage() {
               <details className="orbit-faq-entry" key={question}>
                 <summary>
                   <span>{question}</span>
-                  <span className="orbit-plus" aria-hidden="true">+</span>
+                  <span className="orbit-plus" aria-hidden="true">
+                    +
+                  </span>
                 </summary>
                 <p>{answer}</p>
               </details>
@@ -203,7 +275,10 @@ export default function OrbitPage() {
           </div>
         </section>
 
-        <section className="orbit-contact" aria-labelledby="orbit-contact-heading">
+        <section
+          className="orbit-contact"
+          aria-labelledby="orbit-contact-heading"
+        >
           <h2 id="orbit-contact-heading">Stay close to the work.</h2>
           <div>
             <p>For project questions, feedback and support.</p>
