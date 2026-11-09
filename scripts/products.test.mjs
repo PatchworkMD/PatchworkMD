@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import {
+  availabilityOf,
   indexedProducts,
   products,
   resolveProduct,
@@ -30,7 +31,7 @@ test('unknown slugs and hand-built Product pages are missing from the route', ()
 
 test('the homepage index lists OpenNGP, 2DO, Dreamer, and Orbit with their Stage', () => {
   assert.deepEqual(
-    indexedProducts().map(({ name, href, index }) => [name, href, index.stage]),
+    indexedProducts().map(({ name, href, stage }) => [name, href, stage]),
     [
       ['OpenNGP', '/openngp', 'In development'],
       ['2DO', '/2d0', 'In development'],
@@ -63,4 +64,20 @@ test('hand-built Product pages read their Stage from the catalogue', () => {
   assert.equal(stageOf('orbit'), 'Release candidate');
   assert.equal(stageOf('openngp'), 'In development');
   assert.throws(() => stageOf('type-b'), /No Stage recorded for type-b/);
+});
+
+test('a Product without its own Release status shows its Stage', () => {
+  const resolution = resolveProduct('localmodelmatch');
+  assert.equal(resolution.kind, 'page');
+  assert.equal(resolution.product.page.release, 'Public preview');
+  assert.equal(stageOf('localmodelmatch'), 'Public preview');
+});
+
+test('availability facts have one owner and unknown facts fail loudly', () => {
+  assert.equal(
+    availabilityOf('orbit'),
+    'A public signed installer is not available yet.',
+  );
+  assert.throws(() => availabilityOf('dreamer'), /No availability/);
+  assert.throws(() => stageOf('nope'), /No Product nope/);
 });

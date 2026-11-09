@@ -10,7 +10,7 @@ export type Note = readonly [title: string, body: string];
 type Link = { href: string; label: string };
 
 export type ProductPage = {
-  release: string;
+  release?: string;
   tagline: string;
   intro: string;
   benefits: Note[];
@@ -25,13 +25,18 @@ export type Product = {
   slug: string;
   name: string;
   href: string;
+  stage?: Stage;
+  availability?: string;
   logo?: { src: string; alt: string };
-  index?: { platform: string; stage: Stage; summary: string; detail: string };
+  index?: { platform: string; summary: string; detail: string };
   page?: ProductPage;
 };
 
 export type Resolution =
-  | { kind: 'page'; product: Product & { page: ProductPage } }
+  | {
+      kind: 'page';
+      product: Product & { page: ProductPage & { release: string } };
+    }
   | { kind: 'redirect'; to: string }
   | { kind: 'missing' };
 
@@ -189,7 +194,6 @@ const pages = {
     ],
   },
   localmodelmatch: {
-    release: 'Public preview',
     tagline: 'Find a model that fits your machine.',
     intro:
       'Compare local AI models with runtime-aware memory estimates and Hugging Face discovery.',
@@ -306,9 +310,9 @@ export const products: Product[] = [
     slug: 'openngp',
     name: 'OpenNGP',
     href: '/openngp',
+    stage: 'In development',
     index: {
       platform: 'Campaign software',
-      stage: 'In development',
       summary:
         'Fundraising and organizing software with separate campaign workspaces.',
       detail:
@@ -320,9 +324,9 @@ export const products: Product[] = [
     name: '2DO',
     href: '/2d0',
     logo: { src: '/2do-current-icon.png', alt: '2DO app icon' },
+    stage: 'In development',
     index: {
       platform: 'Mac & iPhone',
-      stage: 'In development',
       summary: 'Capture tasks and keep lists on Mac and iPhone.',
       detail:
         'Local-first storage and a whiteboard-inspired interface. Mac and iPhone releases are in preparation.',
@@ -334,9 +338,9 @@ export const products: Product[] = [
     name: 'Dreamer',
     href: '/dreamer',
     logo: { src: '/dreamer-nightcap.png', alt: 'Dreamer logo' },
+    stage: 'In development',
     index: {
       platform: 'Agent tools',
-      stage: 'In development',
       summary:
         'Review what an agent finished and carry context into the next session.',
       detail:
@@ -348,19 +352,21 @@ export const products: Product[] = [
     slug: 'orbit',
     name: 'Orbit',
     href: '/orbit',
+    availability: 'A public signed installer is not available yet.',
     logo: { src: '/orbit-icon.png', alt: 'Orbit app icon' },
+    stage: 'Release candidate',
     index: {
       platform: 'macOS',
-      stage: 'Release candidate',
       summary: 'A Mac app for coding-agent sessions and approvals.',
-      detail:
-        'Native coding-agent sessions and approvals. Public distribution is not available yet.',
+      detail: 'Native coding-agent sessions and approvals.',
     },
   },
   {
     slug: 'localmodelmatch',
     name: 'LocalModelMatch',
     href: '/localmodelmatch',
+    stage: 'Public preview',
+    availability: 'Available to try · Estimates, not benchmarks',
     page: pages.localmodelmatch,
   },
   {
@@ -390,18 +396,34 @@ export function resolveProduct(slug: string): Resolution {
   const canonical = aliases.get(slug);
   if (canonical) return { kind: 'redirect', to: '/' + canonical };
   const product = products.find((candidate) => candidate.slug === slug);
-  if (!product?.page) return { kind: 'missing' };
-  return { kind: 'page', product: { ...product, page: product.page } };
+  const release = product?.page?.release ?? product?.stage;
+  if (!product?.page || !release) return { kind: 'missing' };
+  return {
+    kind: 'page',
+    product: { ...product, page: { ...product.page, release } },
+  };
 }
 
 export function stageOf(slug: string): Stage {
-  const stage = products.find((product) => product.slug === slug)?.index?.stage;
+  const stage = productFact(slug).stage;
   if (!stage) throw new Error(`No Stage recorded for ${slug}`);
   return stage;
 }
 
+export function availabilityOf(slug: string): string {
+  const availability = productFact(slug).availability;
+  if (!availability) throw new Error(`No availability recorded for ${slug}`);
+  return availability;
+}
+
+function productFact(slug: string) {
+  const product = products.find((candidate) => candidate.slug === slug);
+  if (!product) throw new Error(`No Product ${slug}`);
+  return product;
+}
+
 export function indexedProducts() {
-  return products.flatMap(({ index, ...product }) =>
-    index ? [{ ...product, index }] : [],
+  return products.flatMap(({ index, stage, ...product }) =>
+    index && stage ? [{ ...product, index, stage }] : [],
   );
 }
