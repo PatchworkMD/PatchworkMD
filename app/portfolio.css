@@ -428,6 +428,14 @@ footer a {
 .site-information p + p {
   margin-top: 16px;
 }
+.site-information ul {
+  margin-block: 16px;
+  padding-left: 1.25em;
+  list-style: disc;
+}
+.site-information li + li {
+  margin-top: 6px;
+}
 .site-information p a {
   text-decoration: underline;
   text-underline-offset: 4px;

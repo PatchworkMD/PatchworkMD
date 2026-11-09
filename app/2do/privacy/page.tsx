@@ -51,12 +51,50 @@ export default function TwoDoPrivacy() {
         <section id="ads">
           <h2>Ads</h2>
           <p>
-            2DO is free with ads. The ad provider and the exact data it collects
-            are listed here once the provider is chosen.
+            The free version of 2DO shows one small banner ad on the task list
+            screen. Google AdMob provides the ads. I request non-personalized
+            ads only. 2DO does not use the iOS advertising identifier (IDFA),
+            does not ask for App Tracking Transparency permission, and does no
+            cross-app tracking.
           </p>
           <p>
-            <strong>[AD SDK]</strong> Provider name, data types collected,
-            purpose, and a link to its privacy policy.
+            Your tasks, list names, and anything else you type in 2DO stay on
+            your device. They are never sent to Google or used to choose an ad.
+          </p>
+          <p>
+            To load and show an ad, prevent fraud, limit how often an ad is
+            shown, and count impressions, Google’s SDK may collect:
+          </p>
+          <ul>
+            <li>
+              Coarse location: your device’s IP address and the approximate
+              location it implies
+            </li>
+            <li>Device ID: a device identifier</li>
+            <li>Advertising data: the ads shown and taps on them</li>
+            <li>Product interaction: other product interactions</li>
+            <li>Performance data: diagnostic performance information</li>
+            <li>Crash data: crash logs not tied to you</li>
+          </ul>
+          <p>
+            Google describes how it uses this data in{' '}
+            <a href="https://policies.google.com/privacy">
+              Google’s privacy policy
+            </a>
+            .
+          </p>
+          <p>
+            If you are in the European Economic Area, the United Kingdom, or
+            Switzerland, 2DO asks for your consent before loading any ad. You
+            can change your choice at any time in Settings.
+          </p>
+          <p>
+            Ads are off for anyone with Remove Ads or 2DO Plus: 2DO does not
+            load the ad SDK and makes no ad requests.
+          </p>
+          <p>
+            2DO is not directed to children, and I do not knowingly show ads to
+            children. You can report an inappropriate ad from Settings.
           </p>
         </section>
         <section>

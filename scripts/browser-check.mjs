@@ -276,11 +276,16 @@ describe('routes and metadata', () => {
       'TelemetryDeck',
       'no personal data',
       'no cross-app tracking',
-      '[AD SDK]',
+      'Google AdMob',
+      'non-personalized ads only',
+      'App Tracking Transparency',
+      'does not load the ad SDK',
       '[SUPPORT EMAIL]',
     ])
       assert.ok(privacy.includes(fact), `privacy states ${fact}`);
     assert.match(privacy, /id="ads"/);
+    assert.ok(!privacy.includes('[AD SDK]'), 'ad SDK placeholder filled');
+    assert.match(privacy, /href="https:\/\/policies\.google\.com\/privacy"/);
     for (const section of ['faq', 'restore', 'cancel', 'contact'])
       assert.match(support, new RegExp(`id="${section}"`), section);
     assert.match(

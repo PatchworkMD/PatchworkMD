@@ -30,7 +30,7 @@ const questions = [
   ],
   [
     'Does 2DO track me?',
-    'No cross-app tracking. Anonymized usage signals go to TelemetryDeck without personal data. The privacy policy has the details.',
+    'No cross-app tracking. Ads come from Google AdMob, non-personalized, without the advertising identifier. Anonymized usage signals go to TelemetryDeck without personal data. The privacy policy has the details.',
   ],
 ] as const;
 
