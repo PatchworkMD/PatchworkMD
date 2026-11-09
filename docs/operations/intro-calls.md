@@ -21,6 +21,6 @@ For each received inquiry, record date, source if volunteered, fit, whether a ca
 
 ## Runnable browser check
 
-Run a local production build and server, then use `SITE_CHECK_URL=http://localhost:3020 node scripts/browser-check.mjs` with Playwright Core available. If it is supplied by the host, set `PLAYWRIGHT_MODULE` to its `index.mjs` and `BROWSER_EXECUTABLE` to the installed Chromium binary. The check writes screenshots and `results.json` to ignored `outputs/browser-check/`.
+Run `npm run build && npm run check:browser`. The suite starts the built site with `vinext start` (set `SITE_CHECK_RUNTIME=worker` for Wrangler, or `SITE_CHECK_URL` for an already running server). Install a browser with `npx playwright-core install chromium`, or set `BROWSER_EXECUTABLE`. Screenshots go to ignored `outputs/browser-check/`.
 
-The check covers desktop 1440px, 390px, and 320px; homepage, Orbit, and privacy overflow; booking targets and keyboard focus; background motion, pause, initial and dynamically changed reduced-motion settings; and console, page, and HTTP errors. It opens no booking and makes no external submission.
+The suite covers Product-page routing, Alias redirects, 404s and metadata; catalogue Stage on custom pages; layout at 1440px, 390px, and 320px; skip-link order, booking targets, and focus; the site-wide pause, hidden-tab and reduced-motion frame scheduling, and the WebGL fallback; the 2DO film's motion permission, keyboard toggle, and failed-load message; and console, page, and HTTP errors. It opens no booking and makes no external submission.

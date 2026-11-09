@@ -16,16 +16,16 @@ Suggested introduction, for Austin to use: “With your permission, I’d like t
 
 ## Private tracker fields
 
-Referral ID; received date; referrer name and contact; prospect name and contact; permission confirmed date; stated need; source; owner; stage; next action and due date; intro-call date; outcome; approved terms version; reward eligibility decision and reason; reward due/fulfilled date if applicable.
+Referral ID; received date; Referrer name and contact details; Introduction name and contact details; permission confirmed date; stated need; source; owner; Referral stage; next action and due date; intro-call date; outcome; approved terms version; reward eligibility decision and reason; reward due/fulfilled date if applicable.
 
-Stages: received → permission confirmed → introduced → call booked → qualified → proposal → won / closed. A referral without permission stays at received and is not contacted. Assign an owner and next action whenever a stage changes. Record duplicate referrals and resolve credit before discussing any reward.
+Referral stages: received → permission confirmed → introduced → call booked → qualified → proposal → won / closed. A referral without permission stays at received and is not contacted. Assign an owner and next action whenever the Referral stage changes. Record duplicate referrals and resolve credit before discussing any reward.
 
 ## Weekly operating review
 
-- Review new introductions and overdue next actions.
+- Review new Introductions and overdue next actions.
 - Confirm booked calls and capture an outcome after each call.
 - Resolve duplicates and open questions with Austin.
-- Report counts of permission-confirmed introductions, booked calls, qualified opportunities, and won work. Report “not yet measured” when there is no data.
+- Report counts of permission-confirmed Introductions, booked calls, qualified opportunities, and won work. Report “not yet measured” when there is no data.
 - Review reward obligations only against approved terms. Do not infer eligibility or promise compensation.
 
 ## Launch decisions

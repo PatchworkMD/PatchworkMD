@@ -8,8 +8,9 @@ import IntroCallLink from '../components/IntroCallLink';
 import Image from 'next/image';
 import FlashMark from '../components/FlashMark';
 import FlashBackground from '../components/FlashBackground';
+import MotionToggle from '../components/MotionToggle';
 import { SiteFooter, SiteHeader } from '../components/SiteChrome';
-import { indexedProducts } from '../lib/products';
+import { indexedProducts, stageOf } from '../lib/products';
 export default function Home() {
   return (
     <>
@@ -27,8 +28,9 @@ export default function Home() {
           }),
         }}
       />
-      <FlashBackground />
       <SiteHeader />
+      <FlashBackground />
+      <MotionToggle className="background-pause" />
       <main id="main" className="portfolio-candidate">
         <section className="cover">
           <h1 className="visually-hidden">patchwork.md</h1>
@@ -102,7 +104,7 @@ export default function Home() {
         >
           <div className="section-kicker">
             <span>02 / Mac app</span>
-            <span>Release candidate</span>
+            <span>{stageOf('orbit')}</span>
           </div>
           <div className="orbit-spotlight-grid">
             <div>
@@ -115,12 +117,12 @@ export default function Home() {
                 into a native Mac surface.
               </p>
               <Link className="text-link" href="/orbit">
-                View the Orbit campaign ↗
+                Explore Orbit ↗
               </Link>
             </div>
             <aside className="orbit-status" aria-label="Orbit availability">
-              <span className="orbit-status-label">Current status</span>
-              <strong>Release candidate</strong>
+              <span className="orbit-status-label">Stage</span>
+              <strong>{stageOf('orbit')}</strong>
               <p>
                 Local candidate only. A public signed installer is not available
                 yet.

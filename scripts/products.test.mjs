@@ -1,7 +1,12 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
-import { indexedProducts, products, resolveProduct } from '../lib/products.ts';
+import {
+  indexedProducts,
+  products,
+  resolveProduct,
+  stageOf,
+} from '../lib/products.ts';
 
 test('a catalogue slug resolves to its Product page', () => {
   const resolution = resolveProduct('2d0');
@@ -52,4 +57,10 @@ test('the sitemap lists every Product and nothing unknown', () => {
     ...products.map((product) => product.href),
   ].sort((a, b) => a.localeCompare(b));
   assert.deepEqual(paths, expected);
+});
+
+test('hand-built Product pages read their Stage from the catalogue', () => {
+  assert.equal(stageOf('orbit'), 'Release candidate');
+  assert.equal(stageOf('openngp'), 'In development');
+  assert.throws(() => stageOf('type-b'), /No Stage recorded for type-b/);
 });
