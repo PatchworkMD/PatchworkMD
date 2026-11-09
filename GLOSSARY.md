@@ -24,6 +24,18 @@ _Avoid_: Availability label, signal
 A retired slug that permanently redirects to a Product page, such as `localmodelfit`.
 _Avoid_: Old URL, legacy route
 
+**PatchworkMD Ops**:
+The admin-automation service for small businesses, presented at `/ops`. It is a service, not a Product.
+_Avoid_: agency, retainer
+
+**Pilot**:
+The first, fixed-price PatchworkMD Ops engagement, scoped in writing before work starts. Booked with a deposit; the rest is due on delivery.
+_Avoid_: trial, sprint
+
+**Care**:
+The optional monthly PatchworkMD Ops service after a Pilot.
+_Avoid_: retainer, maintenance plan
+
 ## Spelling
 
 **2DO**:
