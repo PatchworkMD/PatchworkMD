@@ -27,7 +27,7 @@ _Avoid_: Old URL, legacy route
 ## Spelling
 
 **2DO**:
-The task app for Mac and iPhone. Its Product page slug is `2d0`.
+The task app for Mac and iPhone. Its Product page slug is `2d0`. Its App Store pages are `/2do`, `/2do/privacy`, and `/2do/support`; their prices and support email live in `app/2do/facts.ts`.
 _Avoid_: 2D0, 2do, ToDo
 
 **LocalModelMatch**:

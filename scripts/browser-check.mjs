@@ -242,6 +242,52 @@ describe('routes and metadata', () => {
     assert.ok(count(home, availabilityOf('orbit')) >= 2, 'spotlight and index');
     assert.ok(count(orbit, availabilityOf('orbit')) >= 1);
   });
+  test('2DO app pages state the App Store facts and link to each other', async () => {
+    const markup = async (path) => {
+      const response = await fetch(base + path);
+      assert.equal(response.status, 200, path);
+      return (await response.text())
+        .replace(/<script[\s\S]*?<\/script>/g, '')
+        .replaceAll('<!-- -->', '');
+    };
+    const paths = ['/2do', '/2do/privacy', '/2do/support'];
+    const [app, privacy, support] = await Promise.all(paths.map(markup));
+    for (const [path, html] of [app, privacy, support].map((html, i) => [
+      paths[i],
+      html,
+    ]))
+      assert.ok(
+        html.includes(
+          `<link rel="canonical" href="https://patchworkmd.dev${path}"`,
+        ),
+        `${path} canonical`,
+      );
+    assert.match(app, /href="\/2do\/privacy"/);
+    assert.match(app, /href="\/2do\/support"/);
+    for (const fact of [
+      'Remove Ads',
+      '$2.99',
+      '2DO Plus',
+      '$3.99 a month',
+      '$29.99 a year',
+      '7-day free trial',
+      '$79.99',
+      'There is no account',
+      'TelemetryDeck',
+      'no personal data',
+      'no cross-app tracking',
+      '[AD SDK]',
+      '[SUPPORT EMAIL]',
+    ])
+      assert.ok(privacy.includes(fact), `privacy states ${fact}`);
+    assert.match(privacy, /id="ads"/);
+    for (const section of ['faq', 'restore', 'cancel', 'contact'])
+      assert.match(support, new RegExp(`id="${section}"`), section);
+    assert.match(
+      support,
+      /href="https:\/\/support\.apple\.com\/en-us\/118428"/,
+    );
+  });
 });
 
 describe('layout, keyboard, and booking at every width', () => {
@@ -284,11 +330,18 @@ describe('layout, keyboard, and booking at every width', () => {
         'motion control overlaps the wordmark',
       );
       await page.screenshot({ path: shot(`home-${width}`), fullPage: true });
-      for (const path of ['/orbit', '/privacy', '/2d0']) {
+      for (const path of [
+        '/orbit',
+        '/privacy',
+        '/2d0',
+        '/2do',
+        '/2do/privacy',
+        '/2do/support',
+      ]) {
         await page.goto(base + path, { waitUntil: 'networkidle' });
         assert.equal(await overflows(page), false, `${path} overflow`);
         await page.screenshot({
-          path: shot(`${path.slice(1)}-${width}`),
+          path: shot(`${path.slice(1).replaceAll('/', '-')}-${width}`),
           fullPage: true,
         });
       }
