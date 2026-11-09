@@ -295,6 +295,60 @@ describe('routes and metadata', () => {
   });
 });
 
+describe('2DO landing page', () => {
+  test('Marky leads in the app colors with one beta button that waits for the TestFlight link', async () => {
+    const { page, errors } = await open('/2do');
+    const hero = page.locator('.twodo-hero');
+    assert.equal(
+      await hero.evaluate((el) => getComputedStyle(el).backgroundColor),
+      'rgb(240, 243, 241)',
+      'Whiteboard background token',
+    );
+    assert.equal(
+      await page
+        .locator('.twodo-hero h1')
+        .evaluate((el) => getComputedStyle(el).color),
+      'rgb(32, 41, 35)',
+      'Whiteboard ink token',
+    );
+    assert.ok(await page.getByRole('img', { name: /^Marky/ }).isVisible());
+    const actions = page.locator('main a, main button');
+    assert.equal(await actions.count(), 1, 'exactly one call to action');
+    assert.equal(
+      (await actions.first().textContent()).trim(),
+      'beta opens soon',
+    );
+    assert.equal(await actions.first().isDisabled(), true);
+    assert.equal(
+      await page
+        .locator(
+          'input, form, a[href^="mailto:"], .intro-call-button, header nav',
+        )
+        .count(),
+      0,
+      'no email capture or second call to action',
+    );
+    for (const path of ['/2do/privacy', '/2do/support'])
+      assert.equal(await page.locator(`footer a[href="${path}"]`).count(), 1);
+    assert.deepEqual(errors, []);
+    await page.close();
+  });
+
+  test('Marky blinks only while motion is allowed', async () => {
+    const { page, errors } = await open('/2do');
+    assert.ok((await runningAnimations(page)) > 0, 'blink runs');
+    await page.locator('.background-pause').click();
+    assert.equal(await runningAnimations(page), 0, 'Pause stops the blink');
+    await page.locator('.background-pause').click();
+    assert.ok((await runningAnimations(page)) > 0, 'Play resumes it');
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    assert.equal(await runningAnimations(page), 0, 'reduced motion');
+    assert.ok(await page.getByRole('img', { name: /^Marky/ }).isVisible());
+    assert.deepEqual(errors, []);
+    await page.close();
+  });
+});
+
 describe('layout, keyboard, and booking at every width', () => {
   for (const width of widths) {
     test(`${width}px: no overflow, skip link first, booking targets usable`, async () => {

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { pageMetadata } from '../../../lib/seo';
-import { SiteFooter, SiteHeader } from '../../../components/SiteChrome';
+import { SiteHeader } from '../../../components/SiteChrome';
+import TwoDoFooter from '../TwoDoFooter';
 import SupportEmail from '../SupportEmail';
 import { appleCancelUrl, appleRefundUrl, prices } from '../facts';
 
@@ -88,7 +89,7 @@ export default function TwoDoSupport() {
           </p>
         </section>
       </main>
-      <SiteFooter />
+      <TwoDoFooter />
     </>
   );
 }

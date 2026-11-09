@@ -1,5 +1,28 @@
 export const supportEmail = '[SUPPORT EMAIL]';
 
+export const TESTFLIGHT_URL = '[TESTFLIGHT LINK]';
+
+export function testflightLink(value: string = TESTFLIGHT_URL): string | null {
+  const trimmed = value.trim();
+  if (!trimmed || /^\[.*\]$/.test(trimmed)) return null;
+  const url = new URL(trimmed);
+  if (
+    url.protocol !== 'https:' ||
+    url.hostname !== 'testflight.apple.com' ||
+    url.port ||
+    url.username ||
+    url.password ||
+    !/^\/join\/[A-Za-z0-9]+$/.test(url.pathname) ||
+    url.search ||
+    url.hash
+  ) {
+    throw new Error(
+      'TESTFLIGHT_URL must be a public TestFlight invite: https://testflight.apple.com/join/<code>.',
+    );
+  }
+  return url.href;
+}
+
 export const prices = {
   removeAds: '$2.99',
   plusMonthly: '$3.99 a month',
