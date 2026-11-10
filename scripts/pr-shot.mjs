@@ -10,8 +10,8 @@ import {
 } from './site-server.mjs';
 
 const usage = `Usage:
-  node scripts/pr-shot.mjs pages --out <dir> [--label before|after] [--url <base>] <path>...
-    Full-page shots of each path at 1440 and 390 px, light and dark.
+  node scripts/pr-shot.mjs pages --out <dir> [--label before|after] [--url <base>] [--selector <css>] <path>...
+    Full-page shots of each path at 1440 and 390 px, light and dark (or just the first --selector match).
     Without --url it serves the built site in the current directory (run npm run build first).
   <command> | node scripts/pr-shot.mjs terminal --out <dir> --name <file>
     Renders piped output as a terminal-style PNG.`;
@@ -24,6 +24,7 @@ const { values, positionals } = parseArgs({
     url: { type: 'string' },
     port: { type: 'string', default: '3041' },
     name: { type: 'string', default: 'checks' },
+    selector: { type: 'string' },
   },
 });
 const [mode, ...paths] = positionals;
@@ -72,7 +73,9 @@ async function shootPages(paths) {
             values.out,
             `${values.label}-${slug}-${width}-${colorScheme}.png`,
           );
-          await page.screenshot({ path: file, fullPage: true });
+          await (values.selector
+            ? page.locator(values.selector).first().screenshot({ path: file })
+            : page.screenshot({ path: file, fullPage: true }));
           console.log(`${response?.status() ?? '?'} ${path} → ${file}`);
           await page.close();
         }
