@@ -9,7 +9,7 @@ Read `CONTEXT.md`, `GLOSSARY.md`, and `docs/adr/` first. `STATUS.md` holds the c
 - `lib/booking.ts`, `lib/booking-config.json`: intro-call destination ([ADR 0002](docs/adr/0002-direct-cal-com-link-with-email-fallback.md)).
 - `components/`: site chrome and motion artwork. `components/ui/` is a generated shadcn kit no page imports yet.
 - `components/artwork/`: the shared artwork lifecycle (`loop.ts`), WebGL ink shader, and `AsciiArtwork`; `FlashMark`, `OrbitAsciiArt`, and `FlashBackground` are its adapters. `lib/motion.ts` is the one motion policy: `allowsMotion()` combines the Pause motion control with `prefers-reduced-motion`, and its `subscribe` fires on either. The artwork loop, `FlashBackground`, and `ProductFilm` read it; the CSS side is the single `data-motion` block at the end of `app/globals.css`. `components/MotionToggle.tsx` is the control.
-- `scripts/stake.mjs`: the stake tier runner (`npm run stake`); `scripts/private-data.mjs`: its private-data scan. `knip.json`: knip entry points and the allowlist for the gated `components/ui` kit.
+- `scripts/stake.mjs`: the stake tier runner (`npm run stake`); `scripts/private-data.mjs`: its private-data scan. `scripts/pr-shot.mjs`: PR screenshots (pages at 1440/390 light/dark, or piped command output as a PNG). `knip.json`: knip entry points and the allowlist for the gated `components/ui` kit.
 - `scripts/*.test.mjs`: `node --test` unit suites. `scripts/site-server.mjs`: starts the built site with bounded readiness checks and captured output. `scripts/browser-check.mjs`: built-site browser suite.
 
 ## Commands
@@ -25,6 +25,7 @@ Read `CONTEXT.md`, `GLOSSARY.md`, and `docs/adr/` first. `STATUS.md` holds the c
 - Before every push, run `npm run stake` and paste its last line in the PR body under `Stake:` (`.github/pull_request_template.md`). It must finish in 60 s.
 - Fix the root cause of a failing stake check; never loosen or skip it. After two identical failures, stop and report the exact error.
 - A new regression class gets a stake check (one offline file, under 10 s) rather than a prose rule.
+- Every PR body carries screenshots (Austin, RGE 2132), committed under `.github/pr-assets/<branch>/`, each with one plain-language line. Web UI changes: before and after at 1440 and 390 px, light and dark, via `node scripts/pr-shot.mjs pages`. Non-UI changes: the passing check output as a PNG via `npm run stake | node scripts/pr-shot.mjs terminal`. Synthetic data only.
 
 - Feature branches and PRs only. Never merge, deploy, force-push, or push `main`.
 - `.claude/hooks/block-dangerous-git.sh` enforces this for Claude Code's Bash tool only: it blocks force and forced-refspec pushes, pushes to `main`/`master`, local and PR merges, hard resets, forced cleans, forced branch deletes, and discarding the working tree. It does not cover Codex, other agents, or GitHub connector tools; those rely on these rules. `scripts/guardrails.test.mjs` lists the exact cases.
