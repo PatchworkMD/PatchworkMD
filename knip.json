@@ -1,0 +1,19 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": [
+    "app/**/{page,layout}.tsx",
+    "components/ui/**/*.tsx",
+    "hooks/**/*.ts",
+    "scripts/*.mjs"
+  ],
+  "project": [
+    "app/**/*.{ts,tsx,css}",
+    "components/**/*.{ts,tsx}",
+    "hooks/**/*.ts",
+    "lib/**/*.{ts,json}",
+    "scripts/*.mjs"
+  ],
+  "ignore": ["components/FilmStudy.tsx"],
+  "ignoreDependencies": ["next", "shadcn", "tw-animate-css"],
+  "ignoreExportsUsedInFile": true
+}

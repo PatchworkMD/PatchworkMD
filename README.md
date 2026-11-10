@@ -38,6 +38,6 @@ I move between SwiftUI and AppKit, React and TypeScript, Python and FastAPI, and
 
 ## Site development
 
-Use Node 22.15.0 or newer (the test loader requires `node:module.registerHooks`) and `npm ci`. Run `npm run dev` locally; verify changes with `npm test`, `npm run lint`, `npx tsc --noEmit`, and `npm run build`.
+Use Node 22.15.0 or newer (the test loader requires `node:module.registerHooks`) and `npm ci`. Run `npm run dev` locally; verify changes with `npm run stake` (all fast checks in parallel), then `npm run build && npm run check:browser` for UI changes.
 
 Intro-call links use `lib/booking-config.json`. An empty URL opens an email request; a confirmed Cal.com event enables hosted booking. See [setup and release checks](docs/operations/intro-calls.md) and the [internal referral operations draft](docs/operations/referrals.md). Never put prospect information in this repository.

@@ -6,8 +6,27 @@ on:
     branches: [main]
 
 jobs:
-  verify:
+  stake:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.15.0
+          cache: npm
+      - uses: actions/cache@v4
+        with:
+          path: tsconfig.tsbuildinfo
+          key: tsbuildinfo-${{ github.sha }}
+          restore-keys: tsbuildinfo-
+      - run: npm ci
+      - run: npm run stake
+
+  browser:
+    needs: stake
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -15,7 +34,6 @@ jobs:
           node-version: 22.15.0
           cache: npm
       - run: npm ci
-      - run: npm run verify
       - run: npm run build
       - run: npx playwright-core install --with-deps chromium
       - run: npm run check:browser
@@ -28,3 +46,15 @@ jobs:
           name: browser-check-${{ github.sha }}
           path: outputs/browser-check/
           if-no-files-found: ignore
+
+  required:
+    if: always()
+    needs: [stake, browser]
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          STAKE: ${{ needs.stake.result }}
+          BROWSER: ${{ needs.browser.result }}
+        run: |
+          echo "stake=$STAKE browser=$BROWSER"
+          test "$STAKE" = success && test "$BROWSER" = success

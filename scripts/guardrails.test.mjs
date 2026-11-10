@@ -9,13 +9,18 @@ const hook = new URL(
   '../.claude/hooks/block-dangerous-git.sh',
   import.meta.url,
 );
-const run = (input) => spawnSync(hook.pathname, { input }).status;
+const isolated = () =>
+  Object.fromEntries(
+    Object.entries(process.env).filter(([key]) => !key.startsWith('GIT_')),
+  );
+const run = (input) =>
+  spawnSync(hook.pathname, { input, env: isolated() }).status;
 const exitCode = (command, cwd) =>
   run(JSON.stringify({ tool_input: { command }, cwd }));
 
 function repoOn(branch) {
   const dir = mkdtempSync(join(tmpdir(), 'guardrail-'));
-  spawnSync('git', ['init', '-q', '-b', branch, dir]);
+  spawnSync('git', ['init', '-q', '-b', branch, dir], { env: isolated() });
   return dir;
 }
 
@@ -97,6 +102,20 @@ test('git -C decides which checkout a bare push comes from', () => {
   const feature = repoOn('feature');
   assert.equal(exitCode(`git -C ${main} push`, feature), 2);
   assert.equal(exitCode(`git -C ${feature} push`, main), 0);
+});
+
+test('an inherited GIT_DIR, as in a worktree hook, reaches neither git init nor the hook', () => {
+  const victim = repoOn('feature');
+  process.env.GIT_DIR = join(victim, '.git');
+  try {
+    assert.equal(exitCode('git push', repoOn('main')), 2);
+  } finally {
+    delete process.env.GIT_DIR;
+  }
+  const bare = spawnSync('git', ['-C', victim, 'config', 'core.bare'], {
+    encoding: 'utf8',
+  });
+  assert.equal(bare.stdout.trim(), 'false');
 });
 
 test('unreadable hook input fails closed', () => {
