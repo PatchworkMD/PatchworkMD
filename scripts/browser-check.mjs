@@ -242,6 +242,157 @@ describe('routes and metadata', () => {
     assert.ok(count(home, availabilityOf('orbit')) >= 2, 'spotlight and index');
     assert.ok(count(orbit, availabilityOf('orbit')) >= 1);
   });
+  test('no [PLACEHOLDER] text renders on any public page', async () => {
+    const sitemap = await (await fetch(`${base}/sitemap.xml`)).text();
+    const paths = [
+      ...sitemap.matchAll(/<loc>https:\/\/patchworkmd\.dev(\/[^<]*)<\/loc>/g),
+    ].map(([, path]) => path);
+    assert.ok(paths.includes('/2do/privacy') && paths.includes('/2do/support'));
+    for (const path of paths) {
+      const response = await fetch(base + path);
+      assert.equal(response.status, 200, path);
+      const markup = (await response.text())
+        .replace(/<script[\s\S]*?<\/script>/g, '')
+        .replace(/<style[\s\S]*?<\/style>/g, '');
+      assert.doesNotMatch(markup, /\[[A-Z][A-Z0-9 _-]*\]/, path);
+    }
+  });
+
+  test('2DO pages call the mascot Marky, never Buddy, in text or attributes', async () => {
+    const sitemap = await (await fetch(`${base}/sitemap.xml`)).text();
+    const paths = [
+      ...sitemap.matchAll(/<loc>https:\/\/patchworkmd\.dev(\/[^<]*)<\/loc>/g),
+    ].map(([, path]) => path);
+    const twoDo = ['/2d0', '/2do', '/2do/privacy', '/2do/support'];
+    for (const path of twoDo) assert.ok(paths.includes(path), path);
+    for (const path of paths) {
+      const response = await fetch(base + path);
+      assert.equal(response.status, 200, path);
+      assert.doesNotMatch(await response.text(), /buddy/i, path);
+    }
+    const { page, errors } = await open('/2do');
+    const rendered = await page.evaluate(() =>
+      [
+        document.title,
+        document.body.innerText,
+        ...[...document.querySelectorAll('*')].flatMap((element) =>
+          [...element.attributes].map((attribute) => attribute.value),
+        ),
+      ].join('\n'),
+    );
+    assert.doesNotMatch(rendered, /buddy/i);
+    assert.match(rendered, /Marky/);
+    assert.deepEqual(errors, []);
+    await page.close();
+  });
+
+  test('2DO app pages state the App Store facts and link to each other', async () => {
+    const markup = async (path) => {
+      const response = await fetch(base + path);
+      assert.equal(response.status, 200, path);
+      return (await response.text())
+        .replace(/<script[\s\S]*?<\/script>/g, '')
+        .replaceAll('<!-- -->', '');
+    };
+    const paths = ['/2do', '/2do/privacy', '/2do/support'];
+    const [app, privacy, support] = await Promise.all(paths.map(markup));
+    for (const [path, html] of [app, privacy, support].map((html, i) => [
+      paths[i],
+      html,
+    ]))
+      assert.ok(
+        html.includes(
+          `<link rel="canonical" href="https://patchworkmd.dev${path}"`,
+        ),
+        `${path} canonical`,
+      );
+    assert.match(app, /href="\/2do\/privacy"/);
+    assert.match(app, /href="\/2do\/support"/);
+    for (const fact of [
+      'Remove Ads',
+      '$2.99',
+      '2DO Plus',
+      '$3.99 a month',
+      '$29.99 a year',
+      '7-day free trial',
+      '$79.99',
+      'There is no account',
+      'TelemetryDeck',
+      'no personal data',
+      'no cross-app tracking',
+      'Google AdMob',
+      'non-personalized ads only',
+      'App Tracking Transparency',
+      'does not load the ad SDK',
+      'support@patchworkmd.dev',
+    ])
+      assert.ok(privacy.includes(fact), `privacy states ${fact}`);
+    assert.match(privacy, /id="ads"/);
+    assert.ok(!privacy.includes('[AD SDK]'), 'ad SDK placeholder filled');
+    assert.match(privacy, /href="https:\/\/policies\.google\.com\/privacy"/);
+    for (const html of [privacy, support])
+      assert.match(html, /href="mailto:support@patchworkmd\.dev"/);
+    for (const section of ['faq', 'restore', 'cancel', 'contact'])
+      assert.match(support, new RegExp(`id="${section}"`), section);
+    assert.match(
+      support,
+      /href="https:\/\/support\.apple\.com\/en-us\/118428"/,
+    );
+  });
+});
+
+describe('2DO landing page', () => {
+  test('Marky leads in the app colors with one beta button that waits for the TestFlight link', async () => {
+    const { page, errors } = await open('/2do');
+    const hero = page.locator('.twodo-hero');
+    assert.equal(
+      await hero.evaluate((el) => getComputedStyle(el).backgroundColor),
+      'rgb(240, 243, 241)',
+      'Whiteboard background token',
+    );
+    assert.equal(
+      await page
+        .locator('.twodo-hero h1')
+        .evaluate((el) => getComputedStyle(el).color),
+      'rgb(32, 41, 35)',
+      'Whiteboard ink token',
+    );
+    assert.ok(await page.getByRole('img', { name: /^Marky/ }).isVisible());
+    const actions = page.locator('main a, main button');
+    assert.equal(await actions.count(), 1, 'exactly one call to action');
+    assert.equal(
+      (await actions.first().textContent()).trim(),
+      'beta opens soon',
+    );
+    assert.equal(await actions.first().isDisabled(), true);
+    assert.equal(
+      await page
+        .locator(
+          'input, form, a[href^="mailto:"], .intro-call-button, header nav',
+        )
+        .count(),
+      0,
+      'no email capture or second call to action',
+    );
+    for (const path of ['/2do/privacy', '/2do/support'])
+      assert.equal(await page.locator(`footer a[href="${path}"]`).count(), 1);
+    assert.deepEqual(errors, []);
+    await page.close();
+  });
+
+  test('Marky blinks only while motion is allowed', async () => {
+    const { page, errors } = await open('/2do');
+    assert.ok((await runningAnimations(page)) > 0, 'blink runs');
+    await page.locator('.background-pause').click();
+    assert.equal(await runningAnimations(page), 0, 'Pause stops the blink');
+    await page.locator('.background-pause').click();
+    assert.ok((await runningAnimations(page)) > 0, 'Play resumes it');
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    assert.equal(await runningAnimations(page), 0, 'reduced motion');
+    assert.ok(await page.getByRole('img', { name: /^Marky/ }).isVisible());
+    assert.deepEqual(errors, []);
+    await page.close();
+  });
 });
 
 describe('layout, keyboard, and booking at every width', () => {
@@ -284,11 +435,18 @@ describe('layout, keyboard, and booking at every width', () => {
         'motion control overlaps the wordmark',
       );
       await page.screenshot({ path: shot(`home-${width}`), fullPage: true });
-      for (const path of ['/orbit', '/privacy', '/2d0']) {
+      for (const path of [
+        '/orbit',
+        '/privacy',
+        '/2d0',
+        '/2do',
+        '/2do/privacy',
+        '/2do/support',
+      ]) {
         await page.goto(base + path, { waitUntil: 'networkidle' });
         assert.equal(await overflows(page), false, `${path} overflow`);
         await page.screenshot({
-          path: shot(`${path.slice(1)}-${width}`),
+          path: shot(`${path.slice(1).replaceAll('/', '-')}-${width}`),
           fullPage: true,
         });
       }

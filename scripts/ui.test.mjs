@@ -177,3 +177,21 @@ test('the product film renders without autoplay and with a play control and empt
   assert.ok(status);
   assert.match(markup, /<output[^>]*><\/output>/);
 });
+
+test('the 2DO beta button waits for the TestFlight link, then links to it', async () => {
+  const { default: BetaButton } = await import('../app/2do/BetaButton.tsx');
+  const waiting = html(BetaButton, { href: null });
+  assert.match(
+    waiting,
+    /<button[^>]*disabled=""[^>]*>beta opens soon<\/button>/,
+  );
+  assert.doesNotMatch(waiting, /<a /);
+  const open = html(BetaButton, {
+    href: 'https://testflight.apple.com/join/AbC123xy',
+  });
+  assert.match(
+    open,
+    /<a [^>]*href="https:\/\/testflight\.apple\.com\/join\/AbC123xy"[^>]*>Join the TestFlight beta<\/a>/,
+  );
+  assert.doesNotMatch(open, /<button/);
+});

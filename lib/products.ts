@@ -117,7 +117,7 @@ const pages = {
       ],
       [
         'Set your style',
-        'Choose a writing tool, ink color, mood and buddy personality. Sound and haptics are optional.',
+        'Choose a writing tool, ink color, mood and Marky’s personality. Sound and haptics are optional.',
       ],
       [
         'On-device task storage',

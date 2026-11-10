@@ -27,7 +27,7 @@ _Avoid_: Old URL, legacy route
 ## Spelling
 
 **2DO**:
-The task app for Mac and iPhone. Its Product page slug is `2d0`.
+The task app for Mac and iPhone. Its Product page slug is `2d0`. `/2do` is its landing page, with Marky (the app's marker mascot) and one Join the TestFlight beta button; `/2do/privacy` and `/2do/support` are its App Store pages. Prices, the support email, and `TESTFLIGHT_URL` live in `app/2do/facts.ts`.
 _Avoid_: 2D0, 2do, ToDo
 
 **LocalModelMatch**:
