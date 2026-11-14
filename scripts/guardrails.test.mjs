@@ -9,13 +9,19 @@ const hook = new URL(
   '../.claude/hooks/block-dangerous-git.sh',
   import.meta.url,
 );
-const run = (input) => spawnSync(hook.pathname, { input }).status;
+// A git hook (pre-commit runs this suite) exports GIT_DIR and friends. Inherited, they point every temp repo below
+// back at the real one, so the branch checks read the wrong checkout. Run the hook and git without them.
+const cleanEnv = Object.fromEntries(
+  Object.entries(process.env).filter(([key]) => !key.startsWith('GIT_')),
+);
+const run = (input) =>
+  spawnSync(hook.pathname, { input, env: cleanEnv }).status;
 const exitCode = (command, cwd) =>
   run(JSON.stringify({ tool_input: { command }, cwd }));
 
 function repoOn(branch) {
   const dir = mkdtempSync(join(tmpdir(), 'guardrail-'));
-  spawnSync('git', ['init', '-q', '-b', branch, dir]);
+  spawnSync('git', ['init', '-q', '-b', branch, dir], { env: cleanEnv });
   return dir;
 }
 
