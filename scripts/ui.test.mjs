@@ -177,3 +177,56 @@ test('the product film renders without autoplay and with a play control and empt
   assert.ok(status);
   assert.match(markup, /<output[^>]*><\/output>/);
 });
+
+test('the 2DO beta button waits for the TestFlight link, then links to it', async () => {
+  const { default: BetaButton } = await import('../app/2do/BetaButton.tsx');
+  const waiting = html(BetaButton, { href: null });
+  assert.match(
+    waiting,
+    /<button[^>]*disabled=""[^>]*>beta opens soon<\/button>/,
+  );
+  assert.doesNotMatch(waiting, /<a /);
+  const open = html(BetaButton, {
+    href: 'https://testflight.apple.com/join/AbC123xy',
+  });
+  assert.match(
+    open,
+    /<a [^>]*href="https:\/\/testflight\.apple\.com\/join\/AbC123xy"[^>]*>Join the TestFlight beta<\/a>/,
+  );
+  assert.doesNotMatch(open, /<button/);
+});
+
+test('the App Store button replaces the beta button once the store link is set', async () => {
+  const { default: BetaButton } = await import('../app/2do/BetaButton.tsx');
+  const { appStoreLink } = await import('../app/2do/facts.ts');
+  assert.equal(
+    appStoreLink(),
+    null,
+    'the placeholder means no store button yet',
+  );
+  assert.equal(
+    appStoreLink('https://apps.apple.com/us/app/2d0/id6809248837'),
+    'https://apps.apple.com/us/app/2d0/id6809248837',
+  );
+  assert.equal(
+    appStoreLink('https://apps.apple.com/app/id6809248837'),
+    'https://apps.apple.com/app/id6809248837',
+  );
+  for (const bad of [
+    'https://apps.apple.com/app/id1234567890',
+    'http://apps.apple.com/app/id6809248837',
+    'https://example.com/app/id6809248837',
+    'https://apps.apple.com/app/id6809248837?ref=x',
+  ]) {
+    assert.throws(() => appStoreLink(bad), /APP_STORE_URL/);
+  }
+  const live = html(BetaButton, {
+    href: 'https://testflight.apple.com/join/AbC123xy',
+    storeHref: 'https://apps.apple.com/app/id6809248837',
+  });
+  assert.match(
+    live,
+    /<a [^>]*href="https:\/\/apps\.apple\.com\/app\/id6809248837"[^>]*>Get 2DO on the App Store<\/a>/,
+  );
+  assert.doesNotMatch(live, /TestFlight/);
+});

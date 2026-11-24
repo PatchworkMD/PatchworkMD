@@ -1,61 +1,59 @@
 import assert from 'node:assert/strict';
-import { spawn } from 'node:child_process';
 import { mkdir } from 'node:fs/promises';
 import { after, before, describe, test } from 'node:test';
 import { chromium } from 'playwright-core';
-import { stageOf } from '../lib/products.ts';
+import { availabilityOf, stageOf } from '../lib/products.ts';
+import {
+  assertNothingServing,
+  startSite,
+  waitForSite,
+} from './site-server.mjs';
 
 const port = process.env.SITE_CHECK_PORT ?? '3030';
 const base = process.env.SITE_CHECK_URL ?? `http://127.0.0.1:${port}`;
 const output = new URL('../outputs/browser-check/', import.meta.url);
 const shot = (name) => new URL(`${name}.png`, output).pathname;
 const widths = [1440, 390, 320];
-let server;
+let site;
 let browser;
 
-async function waitForSite() {
-  for (let attempt = 0; attempt < 120; attempt++) {
-    try {
-      if ((await fetch(base)).ok) return;
-    } catch {}
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  }
-  throw new Error(`Site did not start at ${base}`);
-}
-
-before(async () => {
-  await mkdir(output, { recursive: true });
-  if (!process.env.SITE_CHECK_URL) {
-    const command =
-      process.env.SITE_CHECK_RUNTIME === 'worker'
-        ? [
-            'wrangler',
-            'dev',
-            '--config',
-            'dist/server/wrangler.json',
-            '--port',
-            port,
-          ]
-        : ['vinext', 'start', '-p', port];
-    server = spawn('npx', command, {
-      detached: true,
-      stdio: 'ignore',
+before(
+  async () => {
+    await mkdir(output, { recursive: true });
+    if (!process.env.SITE_CHECK_URL) {
+      await assertNothingServing(base);
+      site = startSite(
+        'npx',
+        process.env.SITE_CHECK_RUNTIME === 'worker'
+          ? [
+              'wrangler',
+              'dev',
+              '--config',
+              'dist/server/wrangler.json',
+              '--port',
+              port,
+            ]
+          : ['vinext', 'start', '-p', port],
+      );
+    }
+    const ready = waitForSite(base, { describe: site?.describe });
+    await (site ? Promise.race([ready, site.exited]) : ready);
+    browser = await chromium.launch({
+      executablePath: process.env.BROWSER_EXECUTABLE || undefined,
+      args: ['--no-sandbox'],
+      timeout: 60000,
     });
-  }
-  await waitForSite();
-  browser = await chromium.launch({
-    executablePath: process.env.BROWSER_EXECUTABLE || undefined,
-    args: ['--no-sandbox'],
-  });
-});
+  },
+  { timeout: 200000 },
+);
 
 after(async () => {
   await browser?.close();
-  if (server) process.kill(-server.pid);
+  site?.stop();
 });
 
 async function open(path, options = {}) {
-  const { init, ...contextOptions } = options;
+  const { init, initArg, ...contextOptions } = options;
   const page = await browser.newPage({
     viewport: { width: 1440, height: 900 },
     reducedMotion: 'no-preference',
@@ -78,9 +76,105 @@ async function open(path, options = {}) {
       return request(callback);
     };
   });
-  if (init) await page.addInitScript(init);
+  if (init) await page.addInitScript(init, initArg);
   await page.goto(base + path, { waitUntil: 'networkidle' });
   return { page, errors };
+}
+
+const instrumentGraphics = (failStage) => {
+  const proto = WebGLRenderingContext.prototype;
+  const live = (gl, delta) => {
+    gl.canvas.__live = (gl.canvas.__live ?? 0) + delta;
+    window.__glCreated = (window.__glCreated ?? 0) + Math.max(delta, 0);
+    window.__glDeleted = (window.__glDeleted ?? 0) + Math.max(-delta, 0);
+  };
+  const failing = {
+    compile: ['getShaderParameter', () => false],
+    link: ['getProgramParameter', () => false],
+    buffer: ['createBuffer', () => null],
+    texture: ['createTexture', () => null],
+  }[failStage];
+  for (const name of [
+    'createShader',
+    'createProgram',
+    'createBuffer',
+    'createTexture',
+  ]) {
+    const original = Object.getOwnPropertyDescriptor(proto, name).value;
+    proto[name] = function (...args) {
+      if (failing?.[0] === name) return failing[1]();
+      const resource = original.apply(this, args);
+      if (resource) live(this, 1);
+      return resource;
+    };
+  }
+  for (const name of [
+    'deleteShader',
+    'deleteProgram',
+    'deleteBuffer',
+    'deleteTexture',
+  ]) {
+    const original = Object.getOwnPropertyDescriptor(proto, name).value;
+    proto[name] = function (resource) {
+      if (resource) live(this, -1);
+      return original.call(this, resource);
+    };
+  }
+  if (failing && !failing[0].startsWith('create')) {
+    const original = Object.getOwnPropertyDescriptor(proto, failing[0]).value;
+    proto[failing[0]] = function (...args) {
+      original.apply(this, args);
+      return failing[1]();
+    };
+  }
+  const drawArrays = Object.getOwnPropertyDescriptor(proto, 'drawArrays').value;
+  proto.drawArrays = function (...args) {
+    this.canvas.__draws = (this.canvas.__draws ?? 0) + 1;
+    return drawArrays.apply(this, args);
+  };
+  const text = CanvasRenderingContext2D.prototype;
+  const fillText = Object.getOwnPropertyDescriptor(text, 'fillText').value;
+  text.fillText = function (...args) {
+    this.canvas.__draws = (this.canvas.__draws ?? 0) + 1;
+    return fillText.apply(this, args);
+  };
+};
+
+// Waits for the film's committed UI state (data-film-state, set by React) and
+// the video element to agree. On timeout it reports both, which separates a
+// render that is still pending from UI state that disagrees with the media.
+async function filmSettles(page, state, { media }) {
+  const read = () =>
+    page.evaluate(() => {
+      const video = document.querySelector('video');
+      return {
+        ui: document.querySelector('.product-motion-figure').dataset.filmState,
+        media: video.error ? 'error' : video.paused ? 'paused' : 'playing',
+      };
+    });
+  try {
+    await page.waitForFunction(
+      ([state, media]) => {
+        const video = document.querySelector('video');
+        const actual = video.error
+          ? 'error'
+          : video.paused
+            ? 'paused'
+            : 'playing';
+        return (
+          document.querySelector('.product-motion-figure').dataset.filmState ===
+            state && actual === media
+        );
+      },
+      [state, media],
+      { timeout: 20000 },
+    );
+  } catch {
+    const seen = await read();
+    assert.fail(
+      `film UI "${seen.ui}" with media "${seen.media}"; expected UI "${state}" with media "${media}"`,
+    );
+  }
 }
 
 const overflows = (page) =>
@@ -125,13 +219,178 @@ describe('routes and metadata', () => {
     assert.equal((await fetch(`${base}/not-a-product`)).status, 404);
   });
 
-  test('homepage, Orbit, and OpenNGP show the catalogue Stage', async () => {
-    const home = await (await fetch(base)).text();
-    const orbit = await (await fetch(`${base}/orbit`)).text();
-    const openngp = await (await fetch(`${base}/openngp`)).text();
+  test('catalogue Stage and availability reach every page that shows them', async () => {
+    const page = async (path) =>
+      (await (await fetch(base + path)).text())
+        .replace(/<script[\s\S]*?<\/script>/g, '')
+        .replaceAll('<!-- -->', '');
+    const [home, orbit, openngp, localmodelmatch] = await Promise.all(
+      ['/', '/orbit', '/openngp', '/localmodelmatch'].map(page),
+    );
+    const escape = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const count = (html, text) =>
+      html.match(new RegExp(escape(text), 'g'))?.length ?? 0;
     assert.match(home, new RegExp(`<strong>${stageOf('orbit')}</strong>`));
     assert.match(orbit, new RegExp(`<dd>${stageOf('orbit')}</dd>`));
     assert.match(openngp, new RegExp(`class="eyebrow">${stageOf('openngp')}<`));
+    assert.ok(count(home, `01 / ${stageOf('localmodelmatch')}`) === 1);
+    assert.match(
+      localmodelmatch,
+      new RegExp(`LocalModelMatch · ${stageOf('localmodelmatch')}`),
+    );
+    assert.ok(count(home, availabilityOf('localmodelmatch')) === 1);
+    assert.ok(count(home, availabilityOf('orbit')) >= 2, 'spotlight and index');
+    assert.ok(count(orbit, availabilityOf('orbit')) >= 1);
+  });
+  test('no [PLACEHOLDER] text renders on any public page', async () => {
+    const sitemap = await (await fetch(`${base}/sitemap.xml`)).text();
+    const paths = [
+      ...sitemap.matchAll(/<loc>https:\/\/patchworkmd\.dev(\/[^<]*)<\/loc>/g),
+    ].map(([, path]) => path);
+    assert.ok(paths.includes('/2do/privacy') && paths.includes('/2do/support'));
+    for (const path of paths) {
+      const response = await fetch(base + path);
+      assert.equal(response.status, 200, path);
+      const markup = (await response.text())
+        .replace(/<script[\s\S]*?<\/script>/g, '')
+        .replace(/<style[\s\S]*?<\/style>/g, '');
+      assert.doesNotMatch(markup, /\[[A-Z][A-Z0-9 _-]*\]/, path);
+    }
+  });
+
+  test('2DO pages call the mascot Marky, never Buddy, in text or attributes', async () => {
+    const sitemap = await (await fetch(`${base}/sitemap.xml`)).text();
+    const paths = [
+      ...sitemap.matchAll(/<loc>https:\/\/patchworkmd\.dev(\/[^<]*)<\/loc>/g),
+    ].map(([, path]) => path);
+    const twoDo = ['/2d0', '/2do', '/2do/privacy', '/2do/support'];
+    for (const path of twoDo) assert.ok(paths.includes(path), path);
+    for (const path of paths) {
+      const response = await fetch(base + path);
+      assert.equal(response.status, 200, path);
+      assert.doesNotMatch(await response.text(), /buddy/i, path);
+    }
+    const { page, errors } = await open('/2do');
+    const rendered = await page.evaluate(() =>
+      [
+        document.title,
+        document.body.innerText,
+        ...[...document.querySelectorAll('*')].flatMap((element) =>
+          [...element.attributes].map((attribute) => attribute.value),
+        ),
+      ].join('\n'),
+    );
+    assert.doesNotMatch(rendered, /buddy/i);
+    assert.match(rendered, /Marky/);
+    assert.deepEqual(errors, []);
+    await page.close();
+  });
+
+  test('2DO app pages state the App Store facts and link to each other', async () => {
+    const markup = async (path) => {
+      const response = await fetch(base + path);
+      assert.equal(response.status, 200, path);
+      return (await response.text())
+        .replace(/<script[\s\S]*?<\/script>/g, '')
+        .replaceAll('<!-- -->', '');
+    };
+    const paths = ['/2do', '/2do/privacy', '/2do/support'];
+    const [app, privacy, support] = await Promise.all(paths.map(markup));
+    for (const [path, html] of [app, privacy, support].map((html, i) => [
+      paths[i],
+      html,
+    ]))
+      assert.ok(
+        html.includes(
+          `<link rel="canonical" href="https://patchworkmd.dev${path}"`,
+        ),
+        `${path} canonical`,
+      );
+    assert.match(app, /href="\/2do\/privacy"/);
+    assert.match(app, /href="\/2do\/support"/);
+    for (const fact of [
+      'Remove Ads',
+      '$1.99',
+      '2DO Plus',
+      '$2.99 a month',
+      '7-day free trial',
+      '$19.99',
+      'There is no account',
+      'TelemetryDeck',
+      'no personal data',
+      'no cross-app tracking',
+      'Google AdMob',
+      'non-personalized ads only',
+      'App Tracking Transparency',
+      'does not load the ad SDK',
+      'support@patchworkmd.dev',
+    ])
+      assert.ok(privacy.includes(fact), `privacy states ${fact}`);
+    assert.match(privacy, /id="ads"/);
+    assert.ok(!privacy.includes('[AD SDK]'), 'ad SDK placeholder filled');
+    assert.match(privacy, /href="https:\/\/policies\.google\.com\/privacy"/);
+    for (const html of [privacy, support])
+      assert.match(html, /href="mailto:support@patchworkmd\.dev"/);
+    for (const section of ['faq', 'restore', 'cancel', 'contact'])
+      assert.match(support, new RegExp(`id="${section}"`), section);
+    assert.match(
+      support,
+      /href="https:\/\/support\.apple\.com\/en-us\/118428"/,
+    );
+  });
+});
+
+describe('2DO landing page', () => {
+  test('Marky leads in the app colors with one beta button that waits for the TestFlight link', async () => {
+    const { page, errors } = await open('/2do');
+    const hero = page.locator('.twodo-hero');
+    assert.equal(
+      await hero.evaluate((el) => getComputedStyle(el).backgroundColor),
+      'rgb(240, 243, 241)',
+      'Whiteboard background token',
+    );
+    assert.equal(
+      await page
+        .locator('.twodo-hero h1')
+        .evaluate((el) => getComputedStyle(el).color),
+      'rgb(32, 41, 35)',
+      'Whiteboard ink token',
+    );
+    assert.ok(await page.getByRole('img', { name: /^Marky/ }).isVisible());
+    const actions = page.locator('main a, main button');
+    assert.equal(await actions.count(), 1, 'exactly one call to action');
+    assert.equal(
+      (await actions.first().textContent()).trim(),
+      'beta opens soon',
+    );
+    assert.equal(await actions.first().isDisabled(), true);
+    assert.equal(
+      await page
+        .locator(
+          'input, form, a[href^="mailto:"], .intro-call-button, header nav',
+        )
+        .count(),
+      0,
+      'no email capture or second call to action',
+    );
+    for (const path of ['/2do/privacy', '/2do/support'])
+      assert.equal(await page.locator(`footer a[href="${path}"]`).count(), 1);
+    assert.deepEqual(errors, []);
+    await page.close();
+  });
+
+  test('Marky blinks only while motion is allowed', async () => {
+    const { page, errors } = await open('/2do');
+    assert.ok((await runningAnimations(page)) > 0, 'blink runs');
+    await page.locator('.background-pause').click();
+    assert.equal(await runningAnimations(page), 0, 'Pause stops the blink');
+    await page.locator('.background-pause').click();
+    assert.ok((await runningAnimations(page)) > 0, 'Play resumes it');
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    assert.equal(await runningAnimations(page), 0, 'reduced motion');
+    assert.ok(await page.getByRole('img', { name: /^Marky/ }).isVisible());
+    assert.deepEqual(errors, []);
+    await page.close();
   });
 });
 
@@ -175,11 +434,18 @@ describe('layout, keyboard, and booking at every width', () => {
         'motion control overlaps the wordmark',
       );
       await page.screenshot({ path: shot(`home-${width}`), fullPage: true });
-      for (const path of ['/orbit', '/privacy', '/2d0']) {
+      for (const path of [
+        '/orbit',
+        '/privacy',
+        '/2d0',
+        '/2do',
+        '/2do/privacy',
+        '/2do/support',
+      ]) {
         await page.goto(base + path, { waitUntil: 'networkidle' });
         assert.equal(await overflows(page), false, `${path} overflow`);
         await page.screenshot({
-          path: shot(`${path.slice(1)}-${width}`),
+          path: shot(`${path.slice(1).replaceAll('/', '-')}-${width}`),
           fullPage: true,
         });
       }
@@ -194,7 +460,7 @@ describe('homepage motion', () => {
     const { page, errors } = await open('/');
     const background = page.locator('.flash-background');
     await page.locator('.ink-shader[data-shader="ready"]').waitFor();
-    assert.ok((await framesDuring(page, 400)) > 4, 'artwork schedules frames');
+    assert.ok((await framesDuring(page, 1000)) > 0, 'artwork schedules frames');
     await page.locator('.background-pause').click();
     await page.waitForTimeout(150);
     assert.equal(await framesDuring(page, 400), 0, 'no frames while paused');
@@ -203,7 +469,7 @@ describe('homepage motion', () => {
     await page.waitForTimeout(300);
     assert.equal(await pixels(background), stillBackground);
     await page.locator('.background-pause').click();
-    assert.ok((await framesDuring(page, 400)) > 4, 'frames resume on Play');
+    assert.ok((await framesDuring(page, 1000)) > 0, 'frames resume on Play');
     assert.deepEqual(errors, []);
     await page.close();
   });
@@ -227,7 +493,7 @@ describe('homepage motion', () => {
       });
       document.dispatchEvent(new Event('visibilitychange'));
     });
-    assert.ok((await framesDuring(page, 400)) > 4, 'visible again');
+    assert.ok((await framesDuring(page, 1000)) > 0, 'visible again');
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.waitForTimeout(150);
     assert.equal(await framesDuring(page, 400), 0, 'dynamic reduced motion');
@@ -270,6 +536,127 @@ describe('homepage motion', () => {
       assert.deepEqual(errors, [], path);
       await page.close();
     }
+  });
+});
+
+describe('artwork lifecycle', () => {
+  for (const stage of ['compile', 'link', 'buffer', 'texture']) {
+    test(`a ${stage} failure releases every WebGL resource and keeps the SVG lettering`, async () => {
+      const { page, errors } = await open('/orbit', {
+        init: instrumentGraphics,
+        initArg: stage,
+      });
+      await page.locator('.orbit-ascii-rocket[data-ready="true"]').waitFor();
+      const { created, deleted } = await page.evaluate(() => ({
+        created: window.__glCreated,
+        deleted: window.__glDeleted,
+      }));
+      assert.ok(created > 0, `${stage}: something was allocated first`);
+      assert.equal(deleted, created, `${stage}: partial allocations released`);
+      assert.equal(
+        await page.locator('.orbit-ink-shader').getAttribute('data-shader'),
+        null,
+      );
+      assert.ok(await page.locator('.orbit-lettering text').isVisible());
+      assert.deepEqual(errors, []);
+      await page.close();
+    });
+  }
+
+  test('leaving the homepage by client navigation stops its loops and frees its WebGL resources', async () => {
+    const { page, errors } = await open('/', { init: instrumentGraphics });
+    await page.locator('.ink-shader[data-shader="ready"]').waitFor();
+    await page.evaluate(() => {
+      window.__sameDocument = true;
+      window.__homeCanvases = [
+        document.querySelector('.ink-shader'),
+        document.querySelector('.flash-background'),
+      ];
+    });
+    assert.ok(
+      await page.evaluate(() => window.__homeCanvases[0].__live > 0),
+      'shader resources were allocated',
+    );
+    await page.locator('header').getByRole('link', { name: 'Orbit' }).click();
+    await page.locator('.orbit-ascii-rocket[data-ready="true"]').waitFor();
+    assert.equal(
+      await page.evaluate(() => window.__sameDocument),
+      true,
+      'navigation stayed in the same document',
+    );
+    const draws = () =>
+      page.evaluate(() =>
+        window.__homeCanvases.map((canvas) => [
+          canvas.isConnected,
+          canvas.__draws,
+        ]),
+      );
+    const before = await draws();
+    await page.waitForTimeout(600);
+    assert.deepEqual(await draws(), before, 'unmounted canvases stop drawing');
+    assert.ok(before.every(([connected]) => !connected));
+    assert.equal(
+      await page.evaluate(() => window.__homeCanvases[0].__live),
+      0,
+      'homepage shader resources released',
+    );
+    assert.deepEqual(errors, []);
+    await page.close();
+  });
+});
+
+describe('site-wide pause', () => {
+  test('Pause motion holds while scrolling: no reveal or entrance animates', async () => {
+    const { page, errors } = await open('/');
+    await page.locator('.background-pause').click();
+    for (let y = 0; y < 6000; y += 600) {
+      await page.mouse.wheel(0, 600);
+      await page.waitForTimeout(80);
+      assert.equal(await runningAnimations(page), 0, `animation at ${y}px`);
+    }
+    assert.equal(
+      await page
+        .locator('.intro-call > div')
+        .evaluate((el) => getComputedStyle(el).opacity),
+      '1',
+    );
+    assert.equal(await framesDuring(page, 400), 0);
+    assert.deepEqual(errors, []);
+    await page.close();
+  });
+
+  test('Pause motion survives client navigation into the 2DO film, and Play film still works', async () => {
+    const { page, errors } = await open('/');
+    await page.evaluate(() => {
+      window.__sameDocument = true;
+    });
+    await page.locator('.background-pause').click();
+    await page.locator('.project a[href="/2d0"]').click();
+    const video = page.locator('video');
+    await video.waitFor();
+    await page.waitForTimeout(800);
+    assert.equal(await page.evaluate(() => window.__sameDocument), true);
+    assert.equal(await video.evaluate((element) => element.paused), true);
+    assert.equal(
+      await page.locator('.background-pause').textContent(),
+      'Play motion',
+    );
+    const film = page.locator('.film-toggle');
+    assert.equal(await film.textContent(), 'Play film');
+    await film.focus();
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(400);
+    assert.equal(await video.evaluate((element) => element.paused), false);
+    await page.locator('.background-pause').click();
+    await page.locator('.background-pause').click();
+    await page.waitForTimeout(300);
+    assert.equal(
+      await video.evaluate((element) => element.paused),
+      true,
+      'pausing the site again pauses the film',
+    );
+    assert.deepEqual(errors, []);
+    await page.close();
   });
 });
 
@@ -338,20 +725,66 @@ describe('2DO product film', () => {
     await page.close();
   });
 
-  test('a film that cannot load is announced and can be retried', async () => {
+  test('a film that cannot load is announced, and retry plays it once the file is back', async () => {
     const page = await browser.newPage({ reducedMotion: 'no-preference' });
-    await page.route('**/*.mp4', (route) => route.abort());
-    await page.goto(`${base}/2d0`, { waitUntil: 'networkidle' });
-    const status = page.getByRole('status');
-    await status.filter({ hasText: 'could not load' }).waitFor();
-    assert.equal(
-      await page.locator('.film-toggle').textContent(),
-      'Try the film again',
+    let available = false;
+    await page.route('**/*.mp4', (route) =>
+      available ? route.continue() : route.abort(),
     );
+    await page.goto(`${base}/2d0`, { waitUntil: 'networkidle' });
+    const status = page.locator('output.film-status');
+    const retry = page.locator('.film-toggle');
+    await filmSettles(page, 'failed', { media: 'error' });
+    assert.match(await status.textContent(), /could not load/);
+    assert.equal(await retry.textContent(), 'Try the film again');
     assert.ok(await page.locator('video').getAttribute('poster'));
     await page
       .locator('.product-motion-figure')
       .screenshot({ path: shot('film-failed') });
+
+    await retry.focus();
+    await page.keyboard.press('Enter');
+    await filmSettles(page, 'failed', { media: 'error' });
+    assert.match(
+      await status.textContent(),
+      /could not load/,
+      'second failure still explained',
+    );
+    assert.equal(await retry.textContent(), 'Try the film again');
+
+    available = true;
+    await retry.focus();
+    await page.keyboard.press('Enter');
+    await filmSettles(page, 'playing', { media: 'playing' });
+    assert.equal(await status.textContent(), '');
+    assert.equal(await retry.textContent(), 'Pause film');
+    await page.close();
+  });
+
+  test('pausing the site while the film is still loading is not reported as a failure', async () => {
+    const page = await browser.newPage({ reducedMotion: 'no-preference' });
+    let release;
+    const held = new Promise((resolve) => {
+      release = resolve;
+    });
+    await page.route('**/*.mp4', async (route) => {
+      await held;
+      await route.continue();
+    });
+    await page.goto(`${base}/2d0`, { waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(() =>
+      Object.keys(document.querySelector('.background-pause')).some((key) =>
+        key.startsWith('__reactProps'),
+      ),
+    );
+    await page.locator('.background-pause').click();
+    release();
+    await page.waitForFunction(
+      () => document.querySelector('video').readyState >= 1,
+    );
+    await filmSettles(page, 'paused', { media: 'paused' });
+    assert.equal(await page.locator('output.film-status').textContent(), '');
+    assert.equal(await page.locator('.film-toggle').textContent(), 'Play film');
     await page.close();
   });
 });

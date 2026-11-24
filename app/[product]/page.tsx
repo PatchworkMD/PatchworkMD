@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { SiteFooter, SiteHeader } from '../../components/SiteChrome';
 import ProductFilm from '../../components/ProductFilm';
+import MotionToggle from '../../components/MotionToggle';
 
 type Params = { params: Promise<{ product: string }> };
 
@@ -34,6 +35,7 @@ export default async function Product({ params }: Params) {
   return (
     <>
       <SiteHeader product />
+      {page.film && <MotionToggle className="background-pause" />}
       <main id="main">
         <section className={`intro product-intro product-${slug}`}>
           <div className="intro-copy">

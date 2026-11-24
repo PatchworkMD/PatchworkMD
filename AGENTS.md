@@ -5,11 +5,11 @@ Read `CONTEXT.md`, `GLOSSARY.md`, and `docs/adr/` first. `STATUS.md` holds the c
 ## Map
 
 - `app/page.tsx`: homepage. `app/[product]/page.tsx`: Product pages from the catalogue. `app/orbit/` and `app/openngp/`: hand-built Product pages.
-- `lib/products.ts`: the Product catalogue and `resolveProduct`, the product route's seam.
+- `lib/products.ts`: the Product catalogue (name, Stage, availability, Release status, links) and `resolveProduct`, the product route's seam. Pages read shared facts through `stageOf` and `availabilityOf`; editorial copy stays in the page.
 - `lib/booking.ts`, `lib/booking-config.json`: intro-call destination ([ADR 0002](docs/adr/0002-direct-cal-com-link-with-email-fallback.md)).
 - `components/`: site chrome and motion artwork. `components/ui/` is a generated shadcn kit no page imports yet.
-- `components/artwork/`: the shared artwork lifecycle (`loop.ts`), WebGL ink shader, and `AsciiArtwork`; `FlashMark`, `OrbitAsciiArt`, and `FlashBackground` are its adapters. `lib/motion.ts` + `components/MotionToggle.tsx`: the one site-wide pause.
-- `scripts/*.test.mjs`: `node --test` unit suites. `scripts/browser-check.mjs`: built-site browser suite.
+- `components/artwork/`: the shared artwork lifecycle (`loop.ts`), WebGL ink shader, and `AsciiArtwork`; `FlashMark`, `OrbitAsciiArt`, and `FlashBackground` are its adapters. `lib/motion.ts` is the one motion policy: `allowsMotion()` combines the Pause motion control with `prefers-reduced-motion`, and its `subscribe` fires on either. The artwork loop, `FlashBackground`, and `ProductFilm` read it; the CSS side is the single `data-motion` block at the end of `app/globals.css`. `components/MotionToggle.tsx` is the control.
+- `scripts/*.test.mjs`: `node --test` unit suites. `scripts/site-server.mjs`: starts the built site with bounded readiness checks and captured output. `scripts/browser-check.mjs`: built-site browser suite.
 
 ## Commands
 
@@ -24,7 +24,8 @@ Read `CONTEXT.md`, `GLOSSARY.md`, and `docs/adr/` first. `STATUS.md` holds the c
 - `.claude/hooks/block-dangerous-git.sh` enforces this for Claude Code's Bash tool only: it blocks force and forced-refspec pushes, pushes to `main`/`master`, local and PR merges, hard resets, forced cleans, forced branch deletes, and discarding the working tree. It does not cover Codex, other agents, or GitHub connector tools; those rely on these rules. `scripts/guardrails.test.mjs` lists the exact cases.
 - No AI attribution in commits or PRs.
 - No Introduction, Lead, or Referral data in the repository, fixtures, or logs.
-- Keep every moving element pausable and honour `prefers-reduced-motion`.
+- Keep every moving element pausable and honour `prefers-reduced-motion`: route new automatic motion through `lib/motion.ts`, not a new `matchMedia` check.
+- CSS cascade order: `app/globals.css` (base), then `app/portfolio.css` (portfolio theme, loaded after), then route CSS such as `app/orbit/orbit.css`. Edit a selector in the block that already owns it rather than appending a new override.
 
 ## Agent skills
 

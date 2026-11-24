@@ -5,7 +5,7 @@ import { SiteFooter, SiteHeader } from '../../components/SiteChrome';
 import OrbitFilm from '../../components/OrbitFilm';
 import OrbitStarfield from '../../components/OrbitStarfield';
 import OrbitAsciiArt from '../../components/OrbitAsciiArt';
-import { stageOf } from '../../lib/products';
+import { availabilityOf, stageOf } from '../../lib/products';
 import MotionToggle from '../../components/MotionToggle';
 import './orbit.css';
 
@@ -248,9 +248,8 @@ export default function OrbitPage() {
           </div>
           <div className="orbit-availability-copy">
             <p>
-              A public signed installer is not available yet. Orbit has a local
-              release candidate; signing, notarization and public distribution
-              checks remain open.
+              {availabilityOf('orbit')} Orbit has a local release candidate;
+              signing, notarization and public distribution checks remain open.
             </p>
             <p>
               Orbit is designed for macOS 14 and later. Installation

@@ -4,13 +4,10 @@ export function pageMetadata(
   title: string,
   description: string,
   path = '/',
+  social = path === '/' ? 'patchwork' : path.slice(1).replaceAll('/', '-'),
 ): Metadata {
   const url = SITE_URL + path;
-  const image =
-    SITE_URL +
-    '/social/' +
-    (path === '/' ? 'patchwork' : path.slice(1).replaceAll('/', '-')) +
-    '-v1.png';
+  const image = SITE_URL + '/social/' + social + '-v1.png';
   return {
     title,
     description,

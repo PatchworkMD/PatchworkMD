@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import os
 import re
 import shlex
 import subprocess
@@ -9,7 +10,10 @@ DEFAULT_BRANCHES = {'main', 'master'}
 WRAPPERS = {'env', 'command', 'sudo', 'time', 'nohup', 'exec'}
 SEPARATORS = {';', '&&', '||', '|', '&', '(', ')', '{', '}'}
 GIT_OPTIONS_WITH_VALUE = {'-C', '-c', '--git-dir', '--work-tree', '--namespace'}
-PUSH_FORCE = {'--force', '-f', '--mirror', '--all', '--delete', '-d', '--prune'}
+PUSH_DANGEROUS_LONG = {'--mirror', '--all', '--branches', '--delete', '--prune'}
+PUSH_DANGEROUS_SHORT = set('fd')
+PUSH_OPTIONS_WITH_VALUE = {'--repo', '--push-option', '--receive-pack', '--exec'}
+PUSH_SHORT_WITH_VALUE = set('o')
 MUTATING_HINT = re.compile(
     r'\b(git|gh)\b.*\b(push|merge|reset|clean|branch|checkout|restore)\b'
 )
@@ -45,13 +49,17 @@ def strip_wrappers(tokens):
     return tokens
 
 
-def git_subcommand(tokens):
+def git_subcommand(tokens, cwd):
     rest = tokens[1:]
     while rest and rest[0].startswith('-'):
         option = rest.pop(0)
-        if option in GIT_OPTIONS_WITH_VALUE:
-            rest = rest[1:]
-    return (rest[0], rest[1:]) if rest else (None, [])
+        if option in GIT_OPTIONS_WITH_VALUE and rest:
+            value = rest.pop(0)
+            if option == '-C':
+                cwd = os.path.join(cwd or '.', value)
+        elif option.startswith('-C') and len(option) > 2:
+            cwd = os.path.join(cwd or '.', option[2:])
+    return (rest[0], rest[1:], cwd) if rest else (None, [], cwd)
 
 
 def destination(refspec):
@@ -68,12 +76,43 @@ def current_branch(cwd):
     return result.stdout.strip()
 
 
+def parse_push(args):
+    remote_given = False
+    dangerous = False
+    positional = []
+    rest = list(args)
+    while rest:
+        arg = rest.pop(0)
+        if arg == '--':
+            positional.extend(rest)
+            break
+        if arg.startswith('--'):
+            name, has_value, _ = arg.partition('=')
+            if name in PUSH_OPTIONS_WITH_VALUE and not has_value and rest:
+                rest.pop(0)
+            remote_given = remote_given or name == '--repo'
+            dangerous = (
+                dangerous
+                or name in PUSH_DANGEROUS_LONG
+                or name.startswith('--force')
+            )
+        elif arg.startswith('-') and len(arg) > 1:
+            for index, flag in enumerate(arg[1:]):
+                dangerous = dangerous or flag in PUSH_DANGEROUS_SHORT
+                if flag in PUSH_SHORT_WITH_VALUE:
+                    if index == len(arg) - 2 and rest:
+                        rest.pop(0)
+                    break
+        else:
+            positional.append(arg)
+    refspecs = positional if remote_given else positional[1:]
+    return dangerous, refspecs
+
+
 def check_push(args, cwd):
-    options = [arg for arg in args if arg.startswith('-')]
-    positional = [arg for arg in args if not arg.startswith('-')]
-    if any(o in PUSH_FORCE or o.startswith('--force') for o in options):
-        block('force, mirror, delete, or all-branch push')
-    refspecs = positional[1:]
+    dangerous, refspecs = parse_push(args)
+    if dangerous:
+        block('force, mirror, delete, prune, or all-branch push')
     if any(spec.startswith('+') for spec in refspecs):
         block('forced refspec')
     if any(destination(spec) in DEFAULT_BRANCHES for spec in refspecs):
@@ -83,7 +122,7 @@ def check_push(args, cwd):
 
 
 def check_git(args, cwd):
-    subcommand, rest = git_subcommand(args)
+    subcommand, rest, cwd = git_subcommand(args, cwd)
     if subcommand == 'push':
         check_push(rest, cwd)
     elif subcommand == 'merge':

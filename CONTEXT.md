@@ -21,5 +21,6 @@ The public portfolio site for PatchworkMD (patchworkmd.dev): Austin's independen
 - No visitor analytics, advertising trackers, or browser storage.
 - Referral rewards are not advertised until Austin approves eligibility, reward, trigger, limits, timing, and owner ([docs/operations/referrals.md](docs/operations/referrals.md)).
 - Patchy takes real Leads only after the production site and Cal.com booking are both live and verified.
-- Product facts (name, Stage, Release status, links) have one source: `lib/products.ts`.
+- Product facts (name, Stage, availability, Release status, links) have one source: `lib/products.ts`.
+- One Pause motion control pauses every automatic motion on the site, and its state holds across client navigation. A visitor's explicit Play film still plays.
 - Agents work on feature branches and open PRs. Austin merges and deploys.

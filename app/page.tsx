@@ -10,7 +10,7 @@ import FlashMark from '../components/FlashMark';
 import FlashBackground from '../components/FlashBackground';
 import MotionToggle from '../components/MotionToggle';
 import { SiteFooter, SiteHeader } from '../components/SiteChrome';
-import { indexedProducts, stageOf } from '../lib/products';
+import { availabilityOf, indexedProducts, stageOf } from '../lib/products';
 export default function Home() {
   return (
     <>
@@ -47,7 +47,7 @@ export default function Home() {
         </section>
         <section className="featured" id="featured-work">
           <div className="section-kicker">
-            <span>01 / Public preview</span>
+            <span>01 / {stageOf('localmodelmatch')}</span>
             <span>Local AI / Web app</span>
           </div>
           <a
@@ -70,7 +70,9 @@ export default function Home() {
           </p>
           <div className="featured-grid">
             <div>
-              <p className="availability">Public preview · Local AI</p>
+              <p className="availability">
+                {stageOf('localmodelmatch')} · Local AI
+              </p>
               <h2>
                 <Link href="/localmodelmatch">LocalModelMatch</Link>
               </h2>
@@ -85,7 +87,7 @@ export default function Home() {
                 the options.
               </p>
               <p className="feature-status">
-                Available to try · Estimates, not benchmarks
+                {availabilityOf('localmodelmatch')}
               </p>
               <a className="text-link" href="https://localmodelmatch.com">
                 Try the live preview ↗
@@ -123,10 +125,7 @@ export default function Home() {
             <aside className="orbit-status" aria-label="Orbit availability">
               <span className="orbit-status-label">Stage</span>
               <strong>{stageOf('orbit')}</strong>
-              <p>
-                Local candidate only. A public signed installer is not available
-                yet.
-              </p>
+              <p>Local candidate only. {availabilityOf('orbit')}</p>
               <Link className="text-link" href="/orbit#start">
                 Check Orbit availability ↗
               </Link>
@@ -139,42 +138,48 @@ export default function Home() {
             <span>Current projects</span>
           </div>
           <div className="project-index">
-            {indexedProducts().map(({ name, href, logo, index }, position) => (
-              <article key={name} className="project">
-                <div className="project-name">
-                  <span className="project-number">0{position + 2}</span>
-                  {logo && (
-                    <Image
-                      src={logo.src}
-                      className="app-logo"
-                      alt=""
-                      width={40}
-                      height={40}
-                      unoptimized
-                    />
-                  )}
-                  <h3>
-                    <Link href={href}>{name}</Link>
-                  </h3>
-                  <p>{index.platform}</p>
-                </div>
-                <div className="project-body">
-                  <p className="description">{index.summary}</p>
-                  <details>
-                    <summary>
-                      <span>{index.stage}</span>
-                      <span className="detail-label">
-                        Details{' '}
-                        <span className="plus" aria-hidden="true">
-                          +
+            {indexedProducts().map(
+              ({ name, href, logo, index, stage, availability }, position) => (
+                <article key={name} className="project">
+                  <div className="project-name">
+                    <span className="project-number">0{position + 2}</span>
+                    {logo && (
+                      <Image
+                        src={logo.src}
+                        className="app-logo"
+                        alt=""
+                        width={40}
+                        height={40}
+                        unoptimized
+                      />
+                    )}
+                    <h3>
+                      <Link href={href}>{name}</Link>
+                    </h3>
+                    <p>{index.platform}</p>
+                  </div>
+                  <div className="project-body">
+                    <p className="description">{index.summary}</p>
+                    <details>
+                      <summary>
+                        <span>{stage}</span>
+                        <span className="detail-label">
+                          Details{' '}
+                          <span className="plus" aria-hidden="true">
+                            +
+                          </span>
                         </span>
-                      </span>
-                    </summary>
-                    <p className="detail">{index.detail}</p>
-                  </details>
-                </div>
-              </article>
-            ))}
+                      </summary>
+                      <p className="detail">
+                        {availability
+                          ? `${index.detail} ${availability}`
+                          : index.detail}
+                      </p>
+                    </details>
+                  </div>
+                </article>
+              ),
+            )}
           </div>
         </section>
         <section className="skills" id="skills">

@@ -147,9 +147,6 @@
     transform: translateY(3px);
   }
 }
-:root[data-motion='paused'] :is(.orbit-star, .orbit-ufo) {
-  animation-play-state: paused;
-}
 .orbit-hero-aside {
   display: grid;
   gap: 26px;

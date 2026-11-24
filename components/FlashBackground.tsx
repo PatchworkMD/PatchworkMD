@@ -103,7 +103,6 @@ export default function FlashBackground() {
     const loop = startArtworkLoop({
       element: canvas,
       frameMs: 40,
-      isMoving: () => !siteMotion.isPaused(),
       draw: (time) => {
         const w = innerWidth,
           h = innerHeight,
@@ -133,7 +132,7 @@ export default function FlashBackground() {
             for (const dot of motifs[index]) {
               let px = x + dot.x * scale,
                 py = y + dot.y * scale;
-              if (!siteMotion.isPaused()) {
+              if (siteMotion.allowsMotion()) {
                 const dx = px - pointer.x,
                   dy = py - pointer.y,
                   d = Math.hypot(dx, dy);
@@ -150,10 +149,8 @@ export default function FlashBackground() {
         canvas.dataset.ready = 'true';
       },
     });
-    const unsubscribe = siteMotion.subscribe(loop.wake);
     return () => {
       loop.stop();
-      unsubscribe();
       window.removeEventListener('pointermove', move);
       document.removeEventListener('pointerleave', leave);
     };
