@@ -322,10 +322,17 @@ describe('routes and metadata', () => {
       'Google AdMob',
       'non-personalized ads only',
       'App Tracking Transparency',
+      'asks once whether the ad may be picked for you',
+      'never at first launch',
+      'Apple calls',
       'does not load the ad SDK',
       'support@patchworkmd.dev',
     ])
       assert.ok(privacy.includes(fact), `privacy states ${fact}`);
+    assert.ok(
+      !privacy.includes('does not ask for App Tracking Transparency'),
+      'privacy no longer says 2DO never asks to track',
+    );
     assert.match(privacy, /id="ads"/);
     assert.ok(!privacy.includes('[AD SDK]'), 'ad SDK placeholder filled');
     assert.match(privacy, /href="https:\/\/policies\.google\.com\/privacy"/);

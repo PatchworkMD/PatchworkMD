@@ -31,7 +31,7 @@ const questions = [
   ],
   [
     'Does 2DO track me?',
-    'No cross-app tracking. Ads come from Google AdMob, non-personalized, without the advertising identifier. Anonymized usage signals go to TelemetryDeck without personal data. The privacy policy has the details.',
+    'Only if you allow it. 2DO asks once whether the one ad may be picked for you. If you say yes, Google AdMob may use your advertising identifier to pick the ad, which Apple calls tracking. If you say no, the ad is non-personalized and the advertising identifier is not used. Anonymized usage signals go to TelemetryDeck without personal data. The privacy policy has the details.',
   ],
 ] as const;
 

@@ -31,7 +31,9 @@ export default function TwoDoPrivacy() {
           <h2>The short version</h2>
           <p>
             Your tasks stay on your device. There is no account, so there is
-            nothing to sign up for and no profile of you on a server.
+            nothing to sign up for and no profile of you on a server. The free
+            version shows one small ad. 2DO asks once whether that ad may be
+            picked for you, and it works the same if you say no.
           </p>
         </section>
         <section>
@@ -53,10 +55,21 @@ export default function TwoDoPrivacy() {
           <h2>Ads</h2>
           <p>
             The free version of 2DO shows one small banner ad on the task list
-            screen. Google AdMob provides the ads. I request non-personalized
-            ads only. 2DO does not use the iOS advertising identifier (IDFA),
-            does not ask for App Tracking Transparency permission, and does no
-            cross-app tracking.
+            screen. Google AdMob provides the ads.
+          </p>
+          <p>
+            2DO asks once whether the ad may be picked for you, with Apple’s App
+            Tracking Transparency prompt. It asks after you have finished a task
+            and opened the app again, never at first launch. If you allow it,
+            Google may use your device’s advertising identifier (IDFA) and data
+            from other companies’ apps and websites to pick the ad. Apple calls
+            this tracking.
+          </p>
+          <p>
+            If you say no, or before you are asked, I request non-personalized
+            ads only and the advertising identifier is not used. You can change
+            your answer at any time in the iPhone’s Settings, under Privacy
+            &amp; Security, then Tracking.
           </p>
           <p>
             Your tasks, list names, and anything else you type in 2DO stay on
