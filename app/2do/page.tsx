@@ -5,7 +5,7 @@ import { SiteHeader } from '../../components/SiteChrome';
 import MotionToggle from '../../components/MotionToggle';
 import BetaButton from './BetaButton';
 import TwoDoFooter from './TwoDoFooter';
-import { testflightLink } from './facts';
+import { appStoreLink, testflightLink } from './facts';
 import './2do.css';
 
 const marker = Patrick_Hand({ weight: '400', subsets: ['latin'] });
@@ -55,7 +55,7 @@ export default function TwoDo() {
               2DO is a whiteboard for your tasks. write it down, check it off,
               and Marky cheers you on.
             </p>
-            <BetaButton href={testflightLink()} />
+            <BetaButton href={testflightLink()} storeHref={appStoreLink()} />
             <p className="twodo-note">
               free with ads · no account · your tasks stay on your iPhone
             </p>
