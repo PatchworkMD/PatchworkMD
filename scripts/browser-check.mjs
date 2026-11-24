@@ -310,12 +310,12 @@ describe('routes and metadata', () => {
     assert.match(app, /href="\/2do\/support"/);
     for (const fact of [
       'Remove Ads',
-      '$2.99',
+      '$4.99',
       '2DO Plus',
-      '$3.99 a month',
-      '$29.99 a year',
+      '$2.99 a month',
+      '$19.99 a year',
       '7-day free trial',
-      '$79.99',
+      '$39.99',
       'There is no account',
       'TelemetryDeck',
       'no personal data',

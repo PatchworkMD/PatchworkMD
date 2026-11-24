@@ -24,10 +24,10 @@ export function testflightLink(value: string = TESTFLIGHT_URL): string | null {
 }
 
 export const prices = {
-  removeAds: '$2.99',
-  plusMonthly: '$3.99 a month',
-  plusYearly: '$29.99 a year',
-  plusLifetime: '$79.99',
+  removeAds: '$4.99',
+  plusMonthly: '$2.99 a month',
+  plusYearly: '$19.99 a year',
+  plusLifetime: '$39.99',
   trial: '7-day free trial',
 };
 

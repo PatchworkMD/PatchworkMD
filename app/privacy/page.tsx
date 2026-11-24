@@ -32,10 +32,10 @@ export default function Privacy() {
             browser storage.
           </p>
           <p>
-            ChatGPT Sites hosts this website. OpenAI may process technical
+            Cloudflare hosts this website. Cloudflare may process technical
             information to deliver, secure, and operate the site. See{' '}
-            <a href="https://openai.com/policies/privacy-policy/">
-              OpenAI’s privacy policy
+            <a href="https://www.cloudflare.com/privacypolicy/">
+              Cloudflare’s privacy policy
             </a>{' '}
             for its practices.
           </p>

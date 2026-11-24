@@ -17,7 +17,8 @@
     "verify": "npm run format:check && npm run lint && npm run typecheck && npm test",
     "check:browser": "node --experimental-strip-types --test --test-concurrency=1 scripts/browser-check.mjs",
     "agents:preflight": "node scripts/agent-preflight.mjs",
-    "prepare": "git config core.hooksPath .githooks || echo 'prepare: could not set core.hooksPath; run: git config core.hooksPath .githooks' >&2"
+    "prepare": "git config core.hooksPath .githooks || echo 'prepare: could not set core.hooksPath; run: git config core.hooksPath .githooks' >&2",
+    "build:pages": "node scripts/build-pages.mjs"
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",
