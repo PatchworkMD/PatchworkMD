@@ -23,7 +23,7 @@ const questions = [
   ],
   [
     'What does 2DO Plus cost?',
-    `${prices.plusMonthly} or ${prices.plusYearly}, with a ${prices.trial}. There is also a one-time lifetime option for ${prices.plusLifetime}. Apple shows the price in your currency before you buy.`,
+    `${prices.plusMonthly}, with a ${prices.trial}. There is also a one-time lifetime option for ${prices.plusLifetime}. Apple shows the price in your currency before you buy.`,
   ],
   [
     'When does a subscription renew?',

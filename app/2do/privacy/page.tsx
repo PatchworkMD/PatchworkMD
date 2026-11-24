@@ -103,9 +103,8 @@ export default function TwoDoPrivacy() {
           <p>
             Everything in 2DO is optional to buy: a one-time Remove Ads purchase
             ({prices.removeAds}), and the 2DO Plus subscription at{' '}
-            {prices.plusMonthly} or {prices.plusYearly} with a {prices.trial}.
-            2DO Plus is also available as a one-time lifetime purchase (
-            {prices.plusLifetime}).
+            {prices.plusMonthly} with a {prices.trial}. 2DO Plus is also
+            available as a one-time lifetime purchase ({prices.plusLifetime}).
           </p>
           <p>
             Apple processes every purchase. I do not receive your payment
